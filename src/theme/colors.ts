@@ -1,0 +1,19 @@
+export const COLOR = {
+  // Colores generales.
+  FONDO: "#FFFFFF",
+  TEXTO_PRINCIPAL: "#292526",
+  TEXTO_SECUNDARIO: "#a9a9a9",
+  AZUL_PRIMARIO: "#0F67FE",
+  AZUL_SECUNDARIO: "#2768d8d0",
+
+  // Botones
+  BOTON_PRIMARIO: "#0F67FE",
+  BOTON_SECUNDARIO: "transparent",
+  BOTON_DESTRUCTIVO: "#292526",
+  TEXTO_BOTON_PRIMARIO: "#FFFFFF",
+  TEXTO_BOTON_SECUNDARIO: "#292526",
+  TEXTO_BOTON_DESTRUCTIVO: "#FFFFFF",
+
+  // Extras
+  SIN_COLOR: "transparent",
+};
