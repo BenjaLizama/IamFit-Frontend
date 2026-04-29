@@ -1,4 +1,4 @@
-import Wrapper from "@/src/shared/components/atoms/Wrapper";
+import Wrapper from "@/src/core/components/Wrapper";
 import React from "react";
 import { Text } from "react-native";
 

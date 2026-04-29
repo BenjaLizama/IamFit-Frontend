@@ -1,4 +1,4 @@
-import Wrapper from "@/src/shared/components/atoms/Wrapper";
+import Wrapper from "@/src/core/components/Wrapper";
 import { Text } from "@react-navigation/elements";
 import React from "react";
 
