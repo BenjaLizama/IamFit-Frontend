@@ -44,4 +44,23 @@ export const CustomTextStyle = StyleSheet.create({
     fontSize: 24,
     color: COLOR.TEXTO_PRINCIPAL,
   },
+
+  button_primary: {
+    marginBottom: 2,
+    fontFamily: FONT.PRINCIPAL_BOLD,
+    fontSize: 16,
+    color: COLOR.FONDO,
+  },
+  button_secondary: {
+    marginBottom: 2,
+    fontFamily: FONT.PRINCIPAL_BOLD,
+    fontSize: 16,
+    color: COLOR.TEXTO_PRINCIPAL,
+  },
+  button_destructive: {
+    marginBottom: 2,
+    fontFamily: FONT.PRINCIPAL_BOLD,
+    fontSize: 16,
+    color: COLOR.FONDO,
+  },
 });

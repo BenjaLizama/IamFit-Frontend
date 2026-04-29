@@ -9,4 +9,7 @@ type CustomTextTypes =
   | "body_secondary"
   | "body_interactive"
   | "h1"
-  | "h2";
+  | "h2"
+  | "button_primary"
+  | "button_secondary"
+  | "button_destructive";
