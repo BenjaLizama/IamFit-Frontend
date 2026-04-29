@@ -6,4 +6,7 @@ export const UI = {
 
   // Altura
   button_heigth: 58,
+
+  // Tamaño texto
+  body_size: 16,
 };
