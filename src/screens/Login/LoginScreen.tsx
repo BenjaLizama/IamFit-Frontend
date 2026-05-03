@@ -1,50 +1,61 @@
-import { BottomSheet } from "@/src/core/components/BottomSheet/BottomSheet";
 import { useBottomSheet } from "@/src/core/components/BottomSheet/useBottomSheet";
-import CustomButton from "@/src/core/components/CustomButton/CustomButton";
-import CustomFormInput from "@/src/core/components/CustomFormInput/CustomFormInput";
+import CustomButton from "@/src/core/components/CustomButton";
+import CustomFormInput from "@/src/core/components/CustomFormInput";
 import CustomText from "@/src/core/components/CustomText";
-import IamfitIcon from "@/src/core/components/IamfitIcon/IamfitIcon";
+import IamfitIcon from "@/src/core/components/IamfitIcon";
 import Wrapper from "@/src/core/components/Wrapper";
-import PrivacyPolicyScreen from "@/src/features/legal/screens/PrivacyPolicy/PrivacyPolicyScreen";
+import AuthFormTemplate from "@/src/core/templates/AuthForm/AuthFormTemplate";
 import React from "react";
-import { View } from "react-native";
+import { TextInput, View } from "react-native";
+import { LoginScreenStyles as styles } from "./LoginScreen.styles";
 
 export default function LoginScreen() {
   const { sheetRef, openSheet } = useBottomSheet();
+  const passwordInputRef = React.useRef<TextInput>(null);
 
   return (
     <Wrapper>
-      <IamfitIcon size={150} />
-      <CustomText type="body">body</CustomText>
-      <CustomText type="body_secondary">body_secondary</CustomText>
-      <CustomText type="body_interactive">body_interactive</CustomText>
-      <CustomText type="h1">h1</CustomText>
-      <CustomText type="h2">h2</CustomText>
-      <View
-        style={{
-          flexDirection: "row",
-          gap: 4,
-          justifyContent: "center",
-        }}
-      >
-        <CustomButton type="secondary" isLoading={false}>
-          Hola, soy un botón
-        </CustomButton>
-        <CustomButton type="primary" isLoading={false}>
-          Hola, soy un botón
-        </CustomButton>
-      </View>
-      <CustomButton type="destructive" isLoading={false} onPress={openSheet}>
-        Hola, soy un botón
-      </CustomButton>
-      <CustomFormInput
-        placeholder="Contraseña"
-        secureTextEntry
-        error="Si, falla"
-      ></CustomFormInput>
-      <BottomSheet ref={sheetRef}>
-        <PrivacyPolicyScreen />
-      </BottomSheet>
+      <AuthFormTemplate
+        section1={
+          <View style={styles.first}>
+            <IamfitIcon size={90} />
+            <CustomText type="h1">
+              Accede a tu{"\n"}cuenta
+            </CustomText>
+          </View>
+        }
+        section2={
+          <View style={styles.second}>
+            <CustomFormInput
+              keyboardType="email-address"
+              onSubmitEditing={() => passwordInputRef.current?.focus()}
+              placeholder="Correo electrónico"
+              returnKeyType="next"
+              submitBehavior="submit"
+              error=""
+            />
+            <CustomFormInput
+              ref={passwordInputRef}
+              placeholder="Contraseña"
+              returnKeyType="done"
+              secureTextEntry
+              submitBehavior="blurAndSubmit"
+            />
+          </View>
+        }
+        section3={
+          <View style={styles.last}>
+            <View style={styles.last_first}>
+              <CustomButton type="primary">Acceder ahora</CustomButton>
+              <CustomText type="body">Olvide mi contraseña</CustomText>
+            </View>
+            <CustomText type="body">
+              ¿No tienes una cuenta?
+              <CustomText type="body_interactive"> Registrate ahora</CustomText>
+            </CustomText>
+          </View>
+        }
+      />
     </Wrapper>
   );
 }

@@ -5,21 +5,25 @@ import { Pressable, Text, TextInput, View } from "react-native";
 import { CustomFormInputStyles as styles } from "./CustomFormInput.styles";
 import { CustomFormInputProps } from "./CustomFormInput.types";
 
-export default function CustomFormInput({
-  error,
-  leftIcon,
-  rightIcon,
-  showPasswordToggle,
-  secureTextEntry,
-  editable = true,
-  placeholder = "Correo electronico",
-  placeholderTextColor = COLOR.TEXTO_SECUNDARIO,
-  containerStyle,
-  inputContainerStyle,
-  inputStyle,
-  errorStyle,
-  ...textInputProps
-}: CustomFormInputProps) {
+const CustomFormInput = React.forwardRef<TextInput, CustomFormInputProps>(
+  (
+    {
+      error,
+      leftIcon,
+      rightIcon,
+      showPasswordToggle,
+      secureTextEntry,
+      editable = true,
+      placeholder = "Correo electronico",
+      placeholderTextColor = COLOR.TEXTO_SECUNDARIO,
+      containerStyle,
+      inputContainerStyle,
+      inputStyle,
+      errorStyle,
+      ...textInputProps
+    },
+    ref,
+  ) => {
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
   const hasError = Boolean(error);
   const shouldShowPasswordToggle = Boolean(showPasswordToggle || secureTextEntry);
@@ -39,6 +43,7 @@ export default function CustomFormInput({
 
         <TextInput
           {...textInputProps}
+          ref={ref}
           editable={editable}
           placeholder={placeholder}
           placeholderTextColor={placeholderTextColor}
@@ -68,7 +73,20 @@ export default function CustomFormInput({
         ) : null}
       </View>
 
-      {error ? <Text style={[styles.errorText, errorStyle]}>{error}</Text> : null}
+      <Text
+        style={[
+          styles.errorText,
+          !hasError && styles.errorTextHidden,
+          errorStyle,
+        ]}
+      >
+        {error || "\u00A0"}
+      </Text>
     </View>
   );
-}
+  },
+);
+
+CustomFormInput.displayName = "CustomFormInput";
+
+export default CustomFormInput;

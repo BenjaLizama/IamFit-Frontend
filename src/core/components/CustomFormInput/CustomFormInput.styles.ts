@@ -53,4 +53,8 @@ export const CustomFormInputStyles = StyleSheet.create({
     fontSize: 13,
     color: "#D92D20",
   },
+
+  errorTextHidden: {
+    color: COLOR.SIN_COLOR,
+  },
 });

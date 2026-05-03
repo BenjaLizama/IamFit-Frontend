@@ -36,6 +36,8 @@ export const CustomTextStyle = StyleSheet.create({
   h1: {
     fontFamily: FONT.PRINCIPAL_BOLD,
     fontSize: 32,
+    lineHeight: 38,
+    textAlign: "center",
     color: COLOR.TEXTO_PRINCIPAL,
   },
 
