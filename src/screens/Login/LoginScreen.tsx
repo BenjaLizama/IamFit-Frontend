@@ -1,10 +1,15 @@
 import CustomButton from "@/src/core/components/CustomButton/CustomButton";
 import CustomText from "@/src/core/components/CustomText";
+import { BottomSheet } from "@/src/core/components/BottomSheet/BottomSheet";
+import { useBottomSheet } from "@/src/core/components/BottomSheet/useBottomSheet";
 import Wrapper from "@/src/core/components/Wrapper";
+import PrivacyPolicyScreen from "@/src/screens/PrivacyPolicy/PrivacyPolicyScreen";
 import React from "react";
 import { View } from "react-native";
 
 export default function LoginScreen() {
+  const { sheetRef, openSheet } = useBottomSheet();
+
   return (
     <Wrapper>
       <CustomText type="body">body</CustomText>
@@ -26,9 +31,16 @@ export default function LoginScreen() {
           Hola, soy un botón
         </CustomButton>
       </View>
-      <CustomButton type="destructive" isLoading={false}>
+      <CustomButton
+        type="destructive"
+        isLoading={false}
+        onPress={openSheet}
+      >
         Hola, soy un botón
       </CustomButton>
+      <BottomSheet ref={sheetRef}>
+        <PrivacyPolicyScreen />
+      </BottomSheet>
     </Wrapper>
   );
 }

@@ -16,8 +16,7 @@ export default function MainLayout() {
     <Stack
       initialRouteName="home"
       screenOptions={{
-        headerShown: true,
-        title: "IamFit",
+        headerShown: false,
       }}
     />
   );
