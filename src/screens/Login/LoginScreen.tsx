@@ -1,7 +1,8 @@
-import CustomButton from "@/src/core/components/CustomButton/CustomButton";
-import CustomText from "@/src/core/components/CustomText";
 import { BottomSheet } from "@/src/core/components/BottomSheet/BottomSheet";
 import { useBottomSheet } from "@/src/core/components/BottomSheet/useBottomSheet";
+import CustomButton from "@/src/core/components/CustomButton/CustomButton";
+import CustomFormInput from "@/src/core/components/CustomFormInput/CustomFormInput";
+import CustomText from "@/src/core/components/CustomText";
 import Wrapper from "@/src/core/components/Wrapper";
 import PrivacyPolicyScreen from "@/src/features/legal/screens/PrivacyPolicy/PrivacyPolicyScreen";
 import React from "react";
@@ -31,13 +32,14 @@ export default function LoginScreen() {
           Hola, soy un botón
         </CustomButton>
       </View>
-      <CustomButton
-        type="destructive"
-        isLoading={false}
-        onPress={openSheet}
-      >
+      <CustomButton type="destructive" isLoading={false} onPress={openSheet}>
         Hola, soy un botón
       </CustomButton>
+      <CustomFormInput
+        placeholder="Contraseña"
+        secureTextEntry
+        error="Si, falla"
+      ></CustomFormInput>
       <BottomSheet ref={sheetRef}>
         <PrivacyPolicyScreen />
       </BottomSheet>
