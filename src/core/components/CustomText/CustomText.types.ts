@@ -1,8 +1,11 @@
+import { StyleProp, TextStyle } from "react-native";
+
 export interface CustomTextProps {
   children: React.ReactNode;
   type: CustomTextTypes;
   color?: string;
   onPress?: () => void;
+  style?: StyleProp<TextStyle>;
 }
 
 type CustomTextTypes =

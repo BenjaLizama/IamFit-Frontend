@@ -21,12 +21,18 @@ export default function AuthFormTemplate({
     const keyboardHideEvent =
       Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
 
-    const showSubscription = Keyboard.addListener(keyboardShowEvent, (event) => {
-      Keyboard.scheduleLayoutAnimation(event);
-    });
-    const hideSubscription = Keyboard.addListener(keyboardHideEvent, (event) => {
-      Keyboard.scheduleLayoutAnimation(event);
-    });
+    const showSubscription = Keyboard.addListener(
+      keyboardShowEvent,
+      (event) => {
+        Keyboard.scheduleLayoutAnimation(event);
+      },
+    );
+    const hideSubscription = Keyboard.addListener(
+      keyboardHideEvent,
+      (event) => {
+        Keyboard.scheduleLayoutAnimation(event);
+      },
+    );
 
     return () => {
       showSubscription.remove();
@@ -41,6 +47,9 @@ export default function AuthFormTemplate({
       style={styles.keyboardAvoidingView}
     >
       <ScrollView
+        // --- AQUÍ ESTÁ LA SOLUCIÓN ---
+        scrollEnabled={false} // Bloquea el scroll manual del usuario
+        // -----------------------------
         automaticallyAdjustKeyboardInsets
         contentContainerStyle={styles.contentContainer}
         keyboardShouldPersistTaps="handled"

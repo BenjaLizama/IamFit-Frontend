@@ -5,12 +5,14 @@ import CustomText from "@/src/core/components/CustomText";
 import IamfitIcon from "@/src/core/components/IamfitIcon";
 import Wrapper from "@/src/core/components/Wrapper";
 import AuthFormTemplate from "@/src/core/templates/AuthForm/AuthFormTemplate";
+import { useRouter } from "expo-router";
 import React from "react";
 import { TextInput, View } from "react-native";
 import { LoginScreenStyles as styles } from "./LoginScreen.styles";
 
 export default function LoginScreen() {
   const { sheetRef, openSheet } = useBottomSheet();
+  const router = useRouter();
   const passwordInputRef = React.useRef<TextInput>(null);
 
   return (
@@ -51,7 +53,13 @@ export default function LoginScreen() {
             </View>
             <CustomText type="body">
               ¿No tienes una cuenta?
-              <CustomText type="body_interactive"> Registrate ahora</CustomText>
+              <CustomText
+                onPress={() => router.push("/register/age")}
+                type="body_interactive"
+              >
+                {" "}
+                Registrate ahora
+              </CustomText>
             </CustomText>
           </View>
         }
