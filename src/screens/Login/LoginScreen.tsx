@@ -3,6 +3,7 @@ import { useBottomSheet } from "@/src/core/components/BottomSheet/useBottomSheet
 import CustomButton from "@/src/core/components/CustomButton/CustomButton";
 import CustomFormInput from "@/src/core/components/CustomFormInput/CustomFormInput";
 import CustomText from "@/src/core/components/CustomText";
+import IamfitIcon from "@/src/core/components/IamfitIcon/IamfitIcon";
 import Wrapper from "@/src/core/components/Wrapper";
 import PrivacyPolicyScreen from "@/src/features/legal/screens/PrivacyPolicy/PrivacyPolicyScreen";
 import React from "react";
@@ -13,6 +14,7 @@ export default function LoginScreen() {
 
   return (
     <Wrapper>
+      <IamfitIcon size={150} />
       <CustomText type="body">body</CustomText>
       <CustomText type="body_secondary">body_secondary</CustomText>
       <CustomText type="body_interactive">body_interactive</CustomText>
