@@ -1,4 +1,4 @@
-import WelcomScreen from "@/src/screens/Welcome";
+import WelcomeScreen from "@/src/screens/Welcome";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 
@@ -13,5 +13,5 @@ export default function WelcomePage() {
     return () => clearTimeout(timer);
   }, [router]);
 
-  return <WelcomScreen />;
+  return <WelcomeScreen />;
 }

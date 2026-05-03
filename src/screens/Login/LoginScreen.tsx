@@ -3,7 +3,7 @@ import CustomText from "@/src/core/components/CustomText";
 import { BottomSheet } from "@/src/core/components/BottomSheet/BottomSheet";
 import { useBottomSheet } from "@/src/core/components/BottomSheet/useBottomSheet";
 import Wrapper from "@/src/core/components/Wrapper";
-import PrivacyPolicyScreen from "@/src/screens/PrivacyPolicy/PrivacyPolicyScreen";
+import PrivacyPolicyScreen from "@/src/features/legal/screens/PrivacyPolicy/PrivacyPolicyScreen";
 import React from "react";
 import { View } from "react-native";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Text } from "react-native";
-import { CustomTextStyle as styles } from "./CustomText.style";
+import { CustomTextStyle as styles } from "./CustomText.styles";
 import { CustomTextProps } from "./CustomText.types";
 
 export default function CustomText({
