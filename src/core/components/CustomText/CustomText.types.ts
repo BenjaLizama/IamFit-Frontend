@@ -1,6 +1,7 @@
 export interface CustomTextProps {
   children: React.ReactNode;
   type: CustomTextTypes;
+  color?: string;
   onPress?: () => void;
 }
 

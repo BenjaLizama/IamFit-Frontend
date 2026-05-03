@@ -6,10 +6,18 @@ import { CustomTextProps } from "./CustomText.types";
 export default function CustomText({
   children,
   type = "body",
+  color,
   onPress,
 }: CustomTextProps) {
   return (
-    <Text style={[styles[type], styles.defaultCorrection]} onPress={onPress}>
+    <Text
+      style={[
+        styles[type],
+        styles.defaultCorrection,
+        color ? { color: color } : null,
+      ]}
+      onPress={onPress}
+    >
       {children}
     </Text>
   );

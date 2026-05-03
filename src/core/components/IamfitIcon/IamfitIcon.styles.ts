@@ -17,12 +17,12 @@ export const IamfitIconStyles = StyleSheet.create({
 
     // El fondo si o si necesita un color de fondo
     backgroundColor: COLOR.FONDO,
-    borderRadius: 45,
+    borderRadius: 30,
   },
 
   icon: {
     borderColor: COLOR.AZUL_PRIMARIO,
     borderWidth: 4,
-    borderRadius: 45,
+    borderRadius: 30,
   },
 });
