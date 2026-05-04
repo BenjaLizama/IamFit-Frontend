@@ -4,8 +4,8 @@ import { StyleSheet } from "react-native";
 export const MainTabIconStyles = StyleSheet.create({
   container: {
     position: "relative",
-    height: 40,
-    width: 40,
+    height: 48,
+    width: 48,
     backgroundColor: COLOR.BLANCO_TRANSPARENTE,
     borderRadius: 100,
     justifyContent: "center",

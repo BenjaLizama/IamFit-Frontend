@@ -1,4 +1,4 @@
-import MainTabBar from "@/src/core/components/Navigation/MainTabBar";
+import MainTabBar from "@/src/core/Navigation";
 import Wrapper from "@/src/core/components/Wrapper";
 import { Slot } from "expo-router";
 import { View } from "react-native";
