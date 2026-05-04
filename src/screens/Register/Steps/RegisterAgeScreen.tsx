@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import InputSelector from "../components/InputSelector/InputSelector";
+import InputSelector from "../components/InputSelector";
 import RegisterStepScreen from "./RegisterStepScreen";
 
 const INITIAL_AGE = "18";

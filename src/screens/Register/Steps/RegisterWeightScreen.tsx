@@ -1,5 +1,5 @@
 import { useState } from "react";
-import InputSelector from "../components/InputSelector/InputSelector";
+import InputSelector from "../components/InputSelector";
 import RegisterStepScreen from "./RegisterStepScreen";
 
 const INITIAL_WEIGHT = "75";
