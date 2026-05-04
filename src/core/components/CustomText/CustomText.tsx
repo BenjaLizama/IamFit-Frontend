@@ -7,6 +7,7 @@ export default function CustomText({
   children,
   type = "body",
   color,
+  size,
   style,
   onPress,
 }: CustomTextProps) {
@@ -17,6 +18,7 @@ export default function CustomText({
         styles[type],
         styles.defaultCorrection,
         color ? { color: color } : null,
+        size ? { fontSize: size } : null,
       ]}
       onPress={onPress}
     >

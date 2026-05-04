@@ -4,6 +4,7 @@ export interface CustomTextProps {
   children: React.ReactNode;
   type: CustomTextTypes;
   color?: string;
+  size?: number;
   onPress?: () => void;
   style?: StyleProp<TextStyle>;
 }
