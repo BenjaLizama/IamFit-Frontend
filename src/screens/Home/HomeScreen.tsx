@@ -3,11 +3,14 @@ import Wrapper from "@/src/core/components/Wrapper";
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
 import React from "react";
 import { View } from "react-native";
+import WelcomeUser from "../Register/components/WelcomeUser";
+import { HomeScreenStyles as styles } from "./HomeScreen.styles";
 
 export default function HomeScreen() {
   return (
     <Wrapper>
-      <View style={{ flex: 1, justifyContent: "flex-start" }}>
+      <View style={styles.container}>
+        <WelcomeUser name="Benjamín" />
         <CustomCarousel>
           {/* --- UNA SEMANA ANTES --- */}
           <DayCalendarCard month="Agosto" dayNumber={1} dayText="Sabado" />
