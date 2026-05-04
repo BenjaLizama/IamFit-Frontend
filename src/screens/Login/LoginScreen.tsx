@@ -21,9 +21,7 @@ export default function LoginScreen() {
         section1={
           <View style={styles.first}>
             <IamfitIcon size={90} />
-            <CustomText type="h1">
-              Accede a tu{"\n"}cuenta
-            </CustomText>
+            <CustomText type="h1">Accede a tu{"\n"}cuenta</CustomText>
           </View>
         }
         section2={
@@ -48,7 +46,12 @@ export default function LoginScreen() {
         section3={
           <View style={styles.last}>
             <View style={styles.last_first}>
-              <CustomButton type="primary">Acceder ahora</CustomButton>
+              <CustomButton
+                type="primary"
+                onPress={() => router.push("/(main)/home")}
+              >
+                Acceder ahora
+              </CustomButton>
               <CustomText type="body">Olvide mi contraseña</CustomText>
             </View>
             <CustomText type="body">
