@@ -20,11 +20,15 @@ export default function DayCalendarCard({
 
   return (
     <View style={[styles.container, type ? styles[type] : null]}>
-      <CustomText type={textType}>{formatMonth}</CustomText>
-      <CustomText type={textType} size={26}>
+      <CustomText type={textType} size={12}>
+        {formatMonth}
+      </CustomText>
+      <CustomText type={textType} size={24}>
         {dayNumber}
       </CustomText>
-      <CustomText type={textType}>{fomatDay}</CustomText>
+      <CustomText type={textType} size={12}>
+        {fomatDay}
+      </CustomText>
     </View>
   );
 }
