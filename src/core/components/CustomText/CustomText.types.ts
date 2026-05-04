@@ -17,4 +17,5 @@ type CustomTextTypes =
   | "h2"
   | "button_primary"
   | "button_secondary"
-  | "button_destructive";
+  | "button_destructive"
+  | "button_extra";

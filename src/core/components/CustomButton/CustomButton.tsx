@@ -10,6 +10,7 @@ export default function CustomButton({
   type,
   disabled,
   isLoading,
+  widht,
   onPress,
 }: CustomButtonProps) {
   const { LOADED_COLORS, scaleValue, onPressIn, onPressOut } = ShrinkButton();
@@ -23,7 +24,8 @@ export default function CustomButton({
         onPressOut={onPressOut}
         style={[
           styles[type],
-          styles.button_common,
+          widht ? { width: widht } : null,
+          type !== "extra" && styles.button_common,
           (disabled || isLoading) && styles.disabled,
         ]}
       >

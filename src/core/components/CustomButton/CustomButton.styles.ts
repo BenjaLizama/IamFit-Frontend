@@ -4,7 +4,6 @@ import { StyleSheet } from "react-native";
 export const CustomButtonStyles = StyleSheet.create({
   button_common: {
     height: 58,
-    minWidth: 180,
     width: 280,
     boxSizing: "border-box",
     paddingTop: UI.padding_top,
@@ -27,6 +26,14 @@ export const CustomButtonStyles = StyleSheet.create({
   },
   destructive: {
     backgroundColor: COLOR.TEXTO_PRINCIPAL,
+    borderRadius: UI.button_radius,
+    borderColor: COLOR.TEXTO_PRINCIPAL,
+  },
+  extra: {
+    backgroundColor: COLOR.FONDO,
+    borderRadius: UI.button_radius,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
   },
 
   loading_primary: { backgroundColor: COLOR.AZUL_PRIMARIO },

@@ -1,5 +1,6 @@
 import CustomCarousel from "@/src/core/components/CustomCarousel/CustomCarousel";
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
+import ProgressTaskCard from "@/src/features/home/components/ProgressTaskCard";
 import React from "react";
 import { View } from "react-native";
 import WelcomeUser from "../../features/home/components/WelcomeUser";
@@ -36,6 +37,7 @@ export default function HomeScreen() {
         <DayCalendarCard month="Agosto" dayNumber={14} dayText="Viernes" />
         <DayCalendarCard month="Agosto" dayNumber={15} dayText="Sabado" />
       </CustomCarousel>
+      <ProgressTaskCard></ProgressTaskCard>
     </View>
   );
 }

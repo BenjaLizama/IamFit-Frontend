@@ -4,6 +4,7 @@ export interface CustomButtonProps {
   onPress?: () => void;
   disabled?: boolean;
   isLoading?: boolean;
+  widht?: number;
 }
 
-type CustomButtonType = "primary" | "secondary" | "destructive";
+type CustomButtonType = "primary" | "secondary" | "destructive" | "extra";
