@@ -1,6 +1,7 @@
 export const COLOR = {
   // Colores generales.
   FONDO: "#FFFFFF",
+  FONDO_OPACO: "#0000000b",
   TEXTO_PRINCIPAL: "#292526",
   TEXTO_SECUNDARIO: "#a9a9a9",
   AZUL_PRIMARIO: "#0F67FE",

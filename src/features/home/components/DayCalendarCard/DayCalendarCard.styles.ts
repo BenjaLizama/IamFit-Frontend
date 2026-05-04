@@ -9,7 +9,7 @@ export const DayCalendarCardStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 2,
-    backgroundColor: "#00000016",
+    backgroundColor: COLOR.FONDO_OPACO,
   },
 
   selected: {
