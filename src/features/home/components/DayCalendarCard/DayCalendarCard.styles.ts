@@ -1,11 +1,11 @@
-import { COLOR } from "@/src/theme";
+import { COLOR, UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
 
 export const DayCalendarCardStyles = StyleSheet.create({
   container: {
     height: 84,
     width: 64,
-    borderRadius: 20,
+    borderRadius: UI.meddium_radius,
     justifyContent: "center",
     alignItems: "center",
     gap: 2,

@@ -30,6 +30,8 @@ export const CustomButtonStyles = StyleSheet.create({
     borderColor: COLOR.TEXTO_PRINCIPAL,
   },
   extra: {
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: COLOR.FONDO,
     borderRadius: UI.button_radius,
     paddingHorizontal: 10,

@@ -16,6 +16,10 @@ export const UI = {
 
   // Border radius
   button_radius: 20,
+  small_radius: 15,
+  meddium_radius: 20,
+  large_radius: 30,
+  extra_large_radius: 50,
 
   // Altura
   button_heigth: 58,

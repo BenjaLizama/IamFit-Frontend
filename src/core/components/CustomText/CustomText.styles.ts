@@ -68,7 +68,7 @@ export const CustomTextStyle = StyleSheet.create({
   button_extra: {
     marginBottom: 2,
     fontFamily: FONT.PRINCIPAL_BOLD,
-    fontSize: 16,
+    fontSize: 14,
     color: COLOR.AZUL_PRIMARIO,
   },
 });
