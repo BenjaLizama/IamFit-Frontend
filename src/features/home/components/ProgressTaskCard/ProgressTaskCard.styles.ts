@@ -4,9 +4,6 @@ import { StyleSheet } from "react-native";
 export const ProgressTaskCardStyles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    position: "relative",
-    marginTop: 50,
-    marginHorizontal: 12,
     width: 280,
     borderRadius: UI.large_radius,
     paddingHorizontal: 20,
