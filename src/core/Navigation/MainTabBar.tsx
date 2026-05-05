@@ -6,6 +6,8 @@ import ProfileLogo from "@/assets/images/Icons/profile.svg";
 import { COLOR } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
+import CustomText from "../components/CustomText";
+import ExpandableScreen from "../components/ExpandableScreen";
 import { MainTabBarStyles as styles } from "./MainTabBar.styles";
 import MainTabIcon from "./components/MainTabIcon/MainTabIcon";
 
@@ -19,9 +21,31 @@ export default function MainTabBar() {
         <StatisticsLogo width={24} height={24} fill={COLOR.FONDO} />
       </MainTabIcon>
 
-      <MainTabIcon selected={false} type="big">
-        <AddLogo width={30} height={30} color={COLOR.AZUL_PRIMARIO} />
-      </MainTabIcon>
+      <ExpandableScreen
+        top={-10}
+        initialRadius={100}
+        children1={
+          <MainTabIcon selected={false} type="big">
+            <AddLogo width={30} height={30} color={COLOR.AZUL_PRIMARIO} />
+          </MainTabIcon>
+        }
+        children2={
+          <>
+            <CustomText type="body">Tu chat aqui</CustomText>
+            <CustomText type="body">Tu chat aqui</CustomText>
+            <CustomText type="body">Tu chat aqui</CustomText>
+            <CustomText type="body">Tu chat aqui</CustomText>
+            <CustomText type="body">Tu chat aqui</CustomText>
+            <CustomText type="body">Tu chat aqui</CustomText>
+            <CustomText type="body">Tu chat aqui</CustomText>
+            <CustomText type="body">Tu chat aqui</CustomText>
+            <CustomText type="body">Tu chat aqui</CustomText>
+            <CustomText type="body">Tu chat aqui</CustomText>
+            <CustomText type="body">Tu chat aqui</CustomText>
+          </>
+        }
+        headerChildren={<CustomText type="h2">Habla con M.I.A</CustomText>}
+      />
 
       <MainTabIcon selected={false}>
         <PeopleLogo width={24} height={24} fill={COLOR.FONDO} />

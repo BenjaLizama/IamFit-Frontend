@@ -3,4 +3,5 @@ export interface ExpandableScreenProps {
   children2: React.ReactNode;
   headerChildren: React.ReactNode;
   initialRadius?: number;
+  top?: number;
 }

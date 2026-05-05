@@ -12,6 +12,7 @@ export default function ExpandableScreen({
   children2,
   headerChildren,
   initialRadius = 20,
+  top = 0,
 }: ExpandableScreenProps) {
   const cardRef = useRef<View>(null);
 
@@ -22,10 +23,14 @@ export default function ExpandableScreen({
     backdropStyle,
     headerSmallStyle,
     headerLargeStyle,
+    bodyAnimatedStyle,
+    initialDims,
+    pressAnimationStyle, // <--- Viene del hook
     collapse,
     expand,
     setInitialDims,
-    initialDims,
+    handlePressIn,
+    handlePressOut,
   } = useExpandableScreen({ SCREEN_WIDTH, SCREEN_HEIGHT, initialRadius });
 
   const onBaseLayout = (event: any) => {
@@ -41,17 +46,29 @@ export default function ExpandableScreen({
 
   return (
     <View style={styles.container}>
-      <View
+      <Animated.View
         ref={cardRef}
         collapsable={false}
         onLayout={onBaseLayout}
         style={[
           styles.baseCard,
-          { borderRadius: initialRadius, opacity: isVisible ? 1 : 0 },
+          {
+            borderRadius: initialRadius,
+            opacity: isVisible ? 1 : 0,
+            ...(top && { top }), // Sintaxis más limpia para el top
+          },
+          pressAnimationStyle, // <-- Aplica la escala aquí
         ]}
       >
-        <Pressable onPress={handleExpand}>{children1}</Pressable>
-      </View>
+        <Pressable
+          onPress={handleExpand}
+          onPressIn={handlePressIn} // Achica al tocar
+          onPressOut={handlePressOut} // Vuelve al soltar
+          delayLongPress={150}
+        >
+          {children1}
+        </Pressable>
+      </Animated.View>
 
       <Modal transparent visible={isExpanded} onRequestClose={collapse}>
         <View style={styles.modalOverlay}>
@@ -83,7 +100,11 @@ export default function ExpandableScreen({
                 {headerChildren || children1}
               </Animated.View>
             </Pressable>
-            <Animated.View entering={FadeIn.delay(200)} style={styles.body}>
+
+            <Animated.View
+              entering={FadeIn.delay(200)}
+              style={[styles.body, bodyAnimatedStyle]}
+            >
               {children2}
             </Animated.View>
           </Animated.View>

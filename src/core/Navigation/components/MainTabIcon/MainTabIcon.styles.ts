@@ -25,7 +25,6 @@ export const MainTabIconStyles = StyleSheet.create({
     height: 70,
     width: 70,
     backgroundColor: COLOR.BOTON_TAB_NAVEGACION_BIG,
-    top: -10,
     boxShadow: [
       {
         offsetX: 0,

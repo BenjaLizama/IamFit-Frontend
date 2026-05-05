@@ -4,13 +4,8 @@ import { StyleSheet } from "react-native";
 export const ExpandableScreenStyles = StyleSheet.create({
   container: {
     alignItems: "center",
-    marginVertical: 10,
   },
-  baseCard: {
-    backgroundColor: "transparent",
-    overflow: "hidden",
-    alignSelf: "center",
-  },
+  baseCard: {},
   expandedCard: {
     backgroundColor: "white",
     overflow: "hidden",
