@@ -25,7 +25,7 @@ export default function ExpandableScreen({
     headerLargeStyle,
     bodyAnimatedStyle,
     initialDims,
-    pressAnimationStyle, // <--- Viene del hook
+    pressAnimationStyle,
     collapse,
     expand,
     setInitialDims,
@@ -54,20 +54,21 @@ export default function ExpandableScreen({
           styles.baseCard,
           {
             borderRadius: initialRadius,
-            opacity: isVisible ? 1 : 0,
-            ...(top && { top }), // Sintaxis más limpia para el top
+            ...(top && { top }),
           },
-          pressAnimationStyle, // <-- Aplica la escala aquí
+          pressAnimationStyle,
         ]}
       >
-        <Pressable
-          onPress={handleExpand}
-          onPressIn={handlePressIn} // Achica al tocar
-          onPressOut={handlePressOut} // Vuelve al soltar
-          delayLongPress={150}
-        >
-          {children1}
-        </Pressable>
+        <View style={{ opacity: isVisible ? 1 : 0 }}>
+          <Pressable
+            onPress={handleExpand}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            delayLongPress={150}
+          >
+            {children1}
+          </Pressable>
+        </View>
       </Animated.View>
 
       <Modal transparent visible={isExpanded} onRequestClose={collapse}>
@@ -77,9 +78,11 @@ export default function ExpandableScreen({
             exiting={FadeOut.duration(300)}
             style={StyleSheet.absoluteFill}
           >
-            <Animated.View style={[styles.backdrop, backdropStyle]}>
-              <Pressable style={{ flex: 1 }} onPress={collapse} />
-            </Animated.View>
+            <View style={StyleSheet.absoluteFill}>
+              <Animated.View style={[styles.backdrop, backdropStyle]}>
+                <Pressable style={{ flex: 1 }} onPress={collapse} />
+              </Animated.View>
+            </View>
           </Animated.View>
 
           <Animated.View style={[styles.expandedCard, animatedStyle]}>
@@ -101,11 +104,10 @@ export default function ExpandableScreen({
               </Animated.View>
             </Pressable>
 
-            <Animated.View
-              entering={FadeIn.delay(200)}
-              style={[styles.body, bodyAnimatedStyle]}
-            >
-              {children2}
+            <Animated.View entering={FadeIn.delay(200)} style={styles.body}>
+              <Animated.View style={bodyAnimatedStyle}>
+                {children2}
+              </Animated.View>
             </Animated.View>
           </Animated.View>
         </View>
