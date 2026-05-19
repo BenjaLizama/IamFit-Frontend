@@ -19,4 +19,5 @@ export const COLOR = {
   // Extras
   SIN_COLOR: "transparent",
   BLANCO_TRANSPARENTE: "#ffffff15",
+  SUCCESS: "#0bb52b",
 };

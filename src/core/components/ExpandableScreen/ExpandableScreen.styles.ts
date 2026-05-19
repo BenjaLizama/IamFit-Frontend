@@ -2,9 +2,6 @@ import { COLOR } from "@/src/theme";
 import { StyleSheet } from "react-native";
 
 export const ExpandableScreenStyles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 12,
-  },
   baseCard: {},
   expandedCard: {
     backgroundColor: "white",
@@ -34,7 +31,6 @@ export const ExpandableScreenStyles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    padding: 20,
     backgroundColor: "white",
   },
 });

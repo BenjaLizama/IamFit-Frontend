@@ -1,9 +1,10 @@
 import CustomCarousel from "@/src/core/components/CustomCarousel/CustomCarousel";
 import CustomText from "@/src/core/components/CustomText";
 import ExpandableScreen from "@/src/core/components/ExpandableScreen/ExpandableScreen";
+import DailyGoalItem from "@/src/features/home/components/DailyGoalItem";
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
 import ProgressTaskCard from "@/src/features/home/components/ProgressTaskCard";
-import { UI } from "@/src/theme";
+import { COLOR, UI } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
 import WelcomeUser from "../../features/home/components/WelcomeUser";
@@ -40,12 +41,38 @@ export default function HomeScreen() {
         <DayCalendarCard month="Agosto" dayNumber={14} dayText="Viernes" />
         <DayCalendarCard month="Agosto" dayNumber={15} dayText="Sabado" />
       </CustomCarousel>
-      <ExpandableScreen
-        initialRadius={UI.large_radius}
-        children1={<ProgressTaskCard actualCalories={1615} goal={1900} />}
-        children2={<CustomText type="h1">Esto es una prueba</CustomText>}
-        headerChildren={<></>}
-      />
+      <View style={{ marginTop: 12 }}>
+        <ExpandableScreen
+          initialRadius={UI.large_radius}
+          children1={<ProgressTaskCard actualCalories={1615} goal={1900} />}
+          children2={<CustomText type="h1">Esto es una prueba</CustomText>}
+          headerChildren={<></>}
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: 12,
+        }}
+      >
+        <DailyGoalItem
+          color={COLOR.AZUL_PRIMARIO}
+          item={4}
+          text="Ejerecicios"
+        />
+        <DailyGoalItem
+          color={COLOR.TEXTO_PRINCIPAL}
+          item={`72g`}
+          text="Proteina"
+        />
+        <DailyGoalItem
+          color={COLOR.SUCCESS}
+          item={`8/8`}
+          text="Vasos de Agua"
+        />
+      </View>
+      <CustomText type="body_secondary">En progreso</CustomText>
     </View>
   );
 }
