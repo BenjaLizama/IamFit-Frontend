@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 
 export const ExpandableScreenStyles = StyleSheet.create({
   container: {
-    alignItems: "center",
+    paddingHorizontal: 12,
   },
   baseCard: {},
   expandedCard: {

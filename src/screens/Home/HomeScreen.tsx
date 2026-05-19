@@ -42,7 +42,7 @@ export default function HomeScreen() {
       </CustomCarousel>
       <ExpandableScreen
         initialRadius={UI.large_radius}
-        children1={<ProgressTaskCard />}
+        children1={<ProgressTaskCard actualCalories={1615} goal={1900} />}
         children2={<CustomText type="h1">Esto es una prueba</CustomText>}
         headerChildren={<></>}
       />

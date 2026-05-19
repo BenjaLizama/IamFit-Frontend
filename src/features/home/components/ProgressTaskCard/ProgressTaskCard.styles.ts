@@ -4,26 +4,18 @@ import { StyleSheet } from "react-native";
 export const ProgressTaskCardStyles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    width: 280,
     borderRadius: UI.large_radius,
-    paddingHorizontal: 20,
-    paddingVertical: 25,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
     backgroundColor: COLOR.AZUL_PRIMARIO,
-    justifyContent: "center",
+    justifyContent: "space-evenly",
   },
 
   first: {
-    width: 150,
-    gap: 15,
+    gap: 4,
   },
 
   second: {
-    justifyContent: "flex-end",
-  },
-
-  options: {
-    position: "absolute",
-    right: 15,
-    top: 15,
+    justifyContent: "center",
   },
 });
