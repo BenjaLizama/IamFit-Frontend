@@ -1,10 +1,10 @@
-import CustomCarousel from "@/src/core/components/CustomCarousel/CustomCarousel";
+import CustomCarousel from "@/src/core/components/CustomCarousel";
 import CustomText from "@/src/core/components/CustomText";
-import ExpandableScreen from "@/src/core/components/ExpandableScreen/ExpandableScreen";
 import DailyGoalItem from "@/src/features/home/components/DailyGoalItem";
+import DailyGoalProgressItem from "@/src/features/home/components/DailyGoalProgressItem/DailyGoalProgressItem";
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
 import ProgressTaskCard from "@/src/features/home/components/ProgressTaskCard";
-import { COLOR, UI } from "@/src/theme";
+import { COLOR } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
 import WelcomeUser from "../../features/home/components/WelcomeUser";
@@ -42,12 +42,7 @@ export default function HomeScreen() {
         <DayCalendarCard month="Agosto" dayNumber={15} dayText="Sabado" />
       </CustomCarousel>
       <View style={{ marginTop: 12 }}>
-        <ExpandableScreen
-          initialRadius={UI.large_radius}
-          children1={<ProgressTaskCard actualCalories={1615} goal={1900} />}
-          children2={<CustomText type="h1">Esto es una prueba</CustomText>}
-          headerChildren={<></>}
-        />
+        <ProgressTaskCard actualCalories={1615} goal={1900} />
       </View>
       <View
         style={{
@@ -72,7 +67,23 @@ export default function HomeScreen() {
           text="Vasos de Agua"
         />
       </View>
-      <CustomText type="body_secondary">En progreso</CustomText>
+      <View style={{ paddingVertical: 12 }}>
+        <CustomText type="body_secondary">En progreso</CustomText>
+      </View>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <DailyGoalProgressItem
+          goal="Abdominales"
+          subtitle="3/4 Series"
+          progress={75}
+          color={COLOR.AZUL_PRIMARIO}
+        />
+        <DailyGoalProgressItem
+          goal="Corre 2km"
+          subtitle="1.4/2 km"
+          progress={63}
+          color={COLOR.WARNING}
+        />
+      </View>
     </View>
   );
 }

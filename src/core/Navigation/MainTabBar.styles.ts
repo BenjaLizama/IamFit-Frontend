@@ -5,7 +5,7 @@ export const MainTabBarStyles = StyleSheet.create({
   container: {
     flexDirection: "row",
     backgroundColor: COLOR.AZUL_PRIMARIO,
-    width: 340,
+    width: "92%",
     height: 60,
     borderRadius: 44,
     paddingHorizontal: 16,

@@ -2,6 +2,7 @@ export const COLOR = {
   // Colores generales.
   FONDO: "#FFFFFF",
   FONDO_OPACO: "#0000000b",
+  FONDO_OPACO2: "#00000020",
   TEXTO_PRINCIPAL: "#292526",
   TEXTO_SECUNDARIO: "#a9a9a9",
   AZUL_PRIMARIO: "#0F67FE",
@@ -20,4 +21,5 @@ export const COLOR = {
   SIN_COLOR: "transparent",
   BLANCO_TRANSPARENTE: "#ffffff15",
   SUCCESS: "#0bb52b",
+  WARNING: "#ed8309",
 };
