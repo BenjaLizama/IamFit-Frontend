@@ -31,7 +31,7 @@ jobs:
           node-version: 20
 
       - name: 4. Instalar dependencias con pnpm
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-workspace
 
       - name: 5. Validar tipos de TypeScript
         run: pnpm exec tsc --noEmit --skipLibCheck
