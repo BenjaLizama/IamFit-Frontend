@@ -9,14 +9,20 @@ export default function CustomCarousel({
   children,
   initialIndex = 7,
 }: CustomCarouselProps & { initialIndex?: number }) {
-  const { scrollRef, INTERVAL } = useCustomCarousel({ initialIndex });
+  const { handleScroll, initialContentOffset, scrollRef, INTERVAL } =
+    useCustomCarousel({
+      initialIndex,
+    });
 
   return (
     <View style={styles.container}>
       <ScrollView
         horizontal
         ref={scrollRef}
+        contentOffset={initialContentOffset}
         contentContainerStyle={styles.contentContainer}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
         showsHorizontalScrollIndicator={false}
         decelerationRate="fast"
         snapToInterval={INTERVAL}
