@@ -3,7 +3,7 @@ import CustomButton from "@/src/core/components/CustomButton";
 import CustomFormInput from "@/src/core/components/CustomFormInput";
 import CustomText from "@/src/core/components/CustomText";
 import Wrapper from "@/src/core/components/Wrapper";
-import PrivacyPolicyScreen from "@/src/features/legal/screens/PrivacyPolicy";
+import PrivacyPolicyScreen from "@/src/screens/PrivacyPolicy";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
