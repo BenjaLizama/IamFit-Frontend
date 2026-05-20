@@ -1,5 +1,5 @@
 import AddLogo from "@/assets/images/Icons/add.svg";
-import StatisticsLogo from "@/assets/images/Icons/chart.svg";
+import FeedingLogo from "@/assets/images/Icons/chart.svg";
 import HomeLogo from "@/assets/images/Icons/home.svg";
 import PeopleLogo from "@/assets/images/Icons/people.svg";
 import ProfileLogo from "@/assets/images/Icons/profile.svg";
@@ -14,18 +14,21 @@ import MainTabIcon from "./components/MainTabIcon/MainTabIcon";
 export default function MainTabBar() {
   return (
     <View style={styles.container}>
-      <MainTabIcon selected={true}>
+      <MainTabIcon href="/(main)/home" accessibilityLabel="Ir a inicio">
         <HomeLogo width={24} height={24} fill={COLOR.FONDO} />
       </MainTabIcon>
-      <MainTabIcon selected={false}>
-        <StatisticsLogo width={24} height={24} fill={COLOR.FONDO} />
+      <MainTabIcon
+        href="/(main)/feeding"
+        accessibilityLabel="Ir a alimentación"
+      >
+        <FeedingLogo width={24} height={24} fill={COLOR.FONDO} />
       </MainTabIcon>
 
       <ExpandableScreen
         top={-10}
         initialRadius={100}
         children1={
-          <MainTabIcon selected={false} type="big">
+          <MainTabIcon type="big">
             <AddLogo width={30} height={30} color={COLOR.AZUL_PRIMARIO} />
           </MainTabIcon>
         }
@@ -47,10 +50,10 @@ export default function MainTabBar() {
         headerChildren={<CustomText type="h2">Habla con M.I.A</CustomText>}
       />
 
-      <MainTabIcon selected={false}>
+      <MainTabIcon href="/(main)/routine" accessibilityLabel="Ir a rutina">
         <PeopleLogo width={24} height={24} fill={COLOR.FONDO} />
       </MainTabIcon>
-      <MainTabIcon selected={false}>
+      <MainTabIcon href="/(main)/profile" accessibilityLabel="Ir a perfil">
         <ProfileLogo width={24} height={24} fill={COLOR.FONDO} />
       </MainTabIcon>
     </View>
