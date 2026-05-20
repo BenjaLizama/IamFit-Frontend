@@ -46,7 +46,7 @@ export default function LoginScreen() {
             <View style={styles.last_first}>
               <CustomButton
                 type="primary"
-                onPress={() => router.push("/(main)/home")}
+                onPress={() => router.replace("/(main)/home")}
               >
                 Acceder ahora
               </CustomButton>

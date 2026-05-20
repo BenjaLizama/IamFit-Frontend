@@ -10,7 +10,8 @@ const SIDE_SPACING = (SCREEN_WIDTH - ITEM_WIDTH) / 2;
 
 export const CustomCarouselStyles = StyleSheet.create({
   container: {
-    width: "100%",
+    alignSelf: "center",
+    width: SCREEN_WIDTH,
   },
   contentContainer: {
     flexDirection: "row",
