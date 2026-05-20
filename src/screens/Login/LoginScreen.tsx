@@ -1,4 +1,3 @@
-import { useBottomSheet } from "@/src/core/components/BottomSheet/useBottomSheet";
 import CustomButton from "@/src/core/components/CustomButton";
 import CustomFormInput from "@/src/core/components/CustomFormInput";
 import CustomText from "@/src/core/components/CustomText";
@@ -11,7 +10,6 @@ import { TextInput, View } from "react-native";
 import { LoginScreenStyles as styles } from "./LoginScreen.styles";
 
 export default function LoginScreen() {
-  const { sheetRef, openSheet } = useBottomSheet();
   const router = useRouter();
   const passwordInputRef = React.useRef<TextInput>(null);
 

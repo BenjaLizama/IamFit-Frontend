@@ -1,0 +1,40 @@
+name: Frontend CI (pnpm + Expo)
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - "develop/**"
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  verify-project:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout del código
+        uses: actions/checkout@v4
+
+      - name: 2. Instalar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: 3. Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: 4. Instalar dependencias con pnpm
+        run: pnpm install --frozen-lockfile
+
+      - name: 5. Validar tipos de TypeScript
+        run: pnpm exec tsc --noEmit --skipLibCheck
+
+      - name: 6. Validar Linter (ESLint)
+        run: pnpm exec eslint .
