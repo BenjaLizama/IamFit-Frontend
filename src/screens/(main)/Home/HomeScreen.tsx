@@ -7,7 +7,7 @@ import ProgressTaskCard from "@/src/features/home/components/ProgressTaskCard";
 import { COLOR } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
-import WelcomeUser from "../../features/home/components/WelcomeUser";
+import WelcomeUser from "@/src/features/home/components/WelcomeUser";
 import { HomeScreenStyles as styles } from "./HomeScreen.styles";
 
 export default function HomeScreen() {
