@@ -34,7 +34,7 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-workspace
 
       - name: 5. Validar tipos de TypeScript
-        run: pnpm exec tsc --noEmit --skipLibCheck
+        run: npx tsc --noEmit --skipLibCheck
 
       - name: 6. Validar Linter (ESLint)
-        run: pnpm exec eslint .
+        run: npx eslint .
