@@ -1,13 +1,14 @@
 import CustomCarousel from "@/src/core/components/CustomCarousel";
 import CustomText from "@/src/core/components/CustomText";
+import FilterSelector from "@/src/core/components/FilterSelector";
 import DailyGoalItem from "@/src/features/home/components/DailyGoalItem";
 import DailyGoalProgressItem from "@/src/features/home/components/DailyGoalProgressItem/DailyGoalProgressItem";
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
 import ProgressTaskCard from "@/src/features/home/components/ProgressTaskCard";
+import WelcomeUser from "@/src/features/home/components/WelcomeUser";
 import { COLOR } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
-import WelcomeUser from "@/src/features/home/components/WelcomeUser";
 import { HomeScreenStyles as styles } from "./HomeScreen.styles";
 
 export default function HomeScreen() {
@@ -83,6 +84,9 @@ export default function HomeScreen() {
           progress={63}
           color={COLOR.WARNING}
         />
+      </View>
+      <View>
+        <FilterSelector filterList={["Todos", "En progreso", "Completado"]} />
       </View>
     </View>
   );
