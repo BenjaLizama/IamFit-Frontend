@@ -46,20 +46,27 @@ export default function MainTabBar() {
   const touchIndicatorX = useSharedValue(TOUCH_INDICATOR_SIZE / 2);
   const touchIndicatorStretch = useSharedValue(0);
   const touchIndicatorSkew = useSharedValue(0);
+
   const currentIndex = MAIN_TABS.findIndex(
     (href) => pathname === normalizeHref(href),
   );
 
-  const touchIndicatorStyle = useAnimatedStyle(() => ({
-    opacity: touchIndicatorOpacity.value,
-    transform: [
-      { translateX: touchIndicatorX.value - TOUCH_INDICATOR_SIZE / 2 },
-      { scale: 0.9 + touchIndicatorOpacity.value * 0.1 },
-      { scaleX: 1 + touchIndicatorStretch.value },
-      { scaleY: 1 - touchIndicatorStretch.value * 0.24 },
-      { skewX: `${touchIndicatorSkew.value}deg` },
-    ],
-  }));
+  // CORRECCIÓN: La lógica se calcula DENTRO del hook del Worklet
+  const touchIndicatorStyle = useAnimatedStyle(() => {
+    "worklet"; // Opcional, pero ayuda a asegurar el contexto de ejecución
+    const skewString = `${touchIndicatorSkew.value}deg`;
+
+    return {
+      opacity: touchIndicatorOpacity.value,
+      transform: [
+        { translateX: touchIndicatorX.value - TOUCH_INDICATOR_SIZE / 2 },
+        { scale: 0.9 + touchIndicatorOpacity.value * 0.1 },
+        { scaleX: 1 + touchIndicatorStretch.value },
+        { scaleY: 1 - touchIndicatorStretch.value * 0.24 },
+        { skewX: skewString },
+      ],
+    };
+  });
 
   React.useEffect(() => {
     if (currentIndex !== -1) {
@@ -172,6 +179,7 @@ export default function MainTabBar() {
         onPanResponderRelease: hideTouchIndicator,
         onPanResponderTerminate: hideTouchIndicator,
       }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       barWidth,
       isExpandableOpen,
