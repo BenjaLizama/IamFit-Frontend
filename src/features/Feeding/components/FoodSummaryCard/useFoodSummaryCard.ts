@@ -2,7 +2,7 @@ import { COLOR } from "@/src/theme";
 import { UseFoodSummaryCardProps } from "./FoodSummaryCard.types";
 
 export const useFoodSummaryCard = ({ tipoComida }: UseFoodSummaryCardProps) => {
-  var typeFoodColor = COLOR.TEXTO_PRINCIPAL;
+  let typeFoodColor = COLOR.TEXTO_PRINCIPAL;
   if (tipoComida === "Desayuno") {
     typeFoodColor = COLOR.AZUL_PRIMARIO;
   }

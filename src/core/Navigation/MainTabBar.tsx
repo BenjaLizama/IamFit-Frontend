@@ -4,9 +4,9 @@ import HomeLogo from "@/assets/images/Icons/home.svg";
 import PeopleLogo from "@/assets/images/Icons/people.svg";
 import ProfileLogo from "@/assets/images/Icons/profile.svg";
 import { COLOR } from "@/src/theme";
+import * as Haptics from "expo-haptics";
 import type { Href } from "expo-router";
 import { usePathname, useRouter } from "expo-router";
-import * as Haptics from "expo-haptics";
 import React from "react";
 import type { LayoutChangeEvent } from "react-native";
 import { PanResponder, View } from "react-native";
@@ -125,14 +125,11 @@ export default function MainTabBar() {
       stiffness: 315,
       mass: 0.28,
     });
-    touchIndicatorSkew.value = withSpring(
-      getDropletSkew(locationX, barWidth),
-      {
-        damping: 14,
-        stiffness: 270,
-        mass: 0.3,
-      },
-    );
+    touchIndicatorSkew.value = withSpring(getDropletSkew(locationX, barWidth), {
+      damping: 14,
+      stiffness: 270,
+      mass: 0.3,
+    });
   };
 
   const hideTouchIndicator = () => {
@@ -175,7 +172,13 @@ export default function MainTabBar() {
         onPanResponderRelease: hideTouchIndicator,
         onPanResponderTerminate: hideTouchIndicator,
       }),
-    [barWidth, isExpandableOpen],
+    [
+      barWidth,
+      isExpandableOpen,
+      hideTouchIndicator,
+      selectTabFromTouch,
+      showTouchIndicator,
+    ],
   );
 
   return (
@@ -259,10 +262,6 @@ function normalizeHref(href: Href) {
   return stringHref.replace(/\/\([^)]+\)/g, "");
 }
 
-function clampTabIndex(index: number) {
-  return Math.min(Math.max(index, 0), MAIN_TABS.length - 1);
-}
-
 function clampNumber(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
@@ -296,8 +295,7 @@ function getMagnetizedIndicator(locationX: number, barWidth: number) {
     ROUTE_SLOT_INDEXES[routeIndex] * visualSlotWidth + visualSlotWidth / 2;
   const pullDistance = locationX - tabCenter;
   const dropletX = locationX - pullDistance * TOUCH_INDICATOR_STICKINESS;
-  const stretch =
-    Math.min(Math.abs(pullDistance) / visualSlotWidth, 1) * 0.26;
+  const stretch = Math.min(Math.abs(pullDistance) / visualSlotWidth, 1) * 0.26;
 
   return {
     stretch,
