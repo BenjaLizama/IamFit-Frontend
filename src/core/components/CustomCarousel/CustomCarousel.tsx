@@ -7,11 +7,13 @@ import { useCustomCarousel } from "./useCustomCarousel";
 
 export default function CustomCarousel({
   children,
-  initialIndex = 7,
-}: CustomCarouselProps & { initialIndex?: number }) {
+  initialIndex = 0,
+  mode = "default",
+}: CustomCarouselProps) {
   const { initialContentOffset, scrollRef, INTERVAL } = useCustomCarousel({
     initialIndex,
   });
+  const isCentered = mode === "centered";
 
   return (
     <View style={styles.container}>
@@ -19,12 +21,17 @@ export default function CustomCarousel({
         horizontal
         ref={scrollRef}
         contentOffset={initialContentOffset}
-        contentContainerStyle={styles.contentContainer}
+        contentContainerStyle={[
+          styles.contentContainer,
+          isCentered
+            ? styles.centeredContentContainer
+            : styles.defaultContentContainer,
+        ]}
         scrollEventThrottle={16}
         showsHorizontalScrollIndicator={false}
         decelerationRate="fast"
         snapToInterval={INTERVAL}
-        snapToAlignment="center"
+        snapToAlignment={isCentered ? "center" : "start"}
         disableIntervalMomentum={true}
         renderToHardwareTextureAndroid={true}
         snapToOffsets={Array.from(

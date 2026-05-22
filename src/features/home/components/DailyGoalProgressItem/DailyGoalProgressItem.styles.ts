@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 export const DailyGoalProgressItemPropsStyles = StyleSheet.create({
   container: {
     backgroundColor: COLOR.FONDO_OPACO,
-    paddingHorizontal: 12,
+    paddingHorizontal: UI.LATERAL_PADDING,
     paddingVertical: 8,
     gap: 5,
     width: "48%",

@@ -6,7 +6,7 @@ import DailyGoalProgressItem from "@/src/features/home/components/DailyGoalProgr
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
 import ProgressTaskCard from "@/src/features/home/components/ProgressTaskCard";
 import WelcomeUser from "@/src/features/home/components/WelcomeUser";
-import { COLOR } from "@/src/theme";
+import { COLOR, UI } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
 import { HomeScreenStyles as styles } from "./HomeScreen.styles";
@@ -15,7 +15,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <WelcomeUser name="Benjamín" />
-      <CustomCarousel>
+      <CustomCarousel mode="centered" initialIndex={7}>
         {/* --- UNA SEMANA ANTES --- */}
         <DayCalendarCard month="Agosto" dayNumber={1} dayText="Sabado" />
         <DayCalendarCard month="Agosto" dayNumber={2} dayText="Domingo" />
@@ -68,7 +68,7 @@ export default function HomeScreen() {
           text="Vasos de Agua"
         />
       </View>
-      <View style={{ paddingVertical: 12 }}>
+      <View style={{ paddingVertical: UI.LATERAL_PADDING }}>
         <CustomText type="body_secondary">En progreso</CustomText>
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
