@@ -22,4 +22,5 @@ export const COLOR = {
   BLANCO_TRANSPARENTE: "#ffffff15",
   SUCCESS: "#0bb52b",
   WARNING: "#ed8309",
+  MORADO: "#4d008b",
 };
