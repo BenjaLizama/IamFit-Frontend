@@ -1,6 +1,7 @@
 import CustomCarousel from "@/src/core/components/CustomCarousel";
 import CustomText from "@/src/core/components/CustomText";
 import FilterSelector from "@/src/core/components/FilterSelector";
+import { useActiveFilter } from "@/src/core/hooks/useActiveFilter";
 import DailyGoalItem from "@/src/features/home/components/DailyGoalItem";
 import DailyGoalProgressItem from "@/src/features/home/components/DailyGoalProgressItem/DailyGoalProgressItem";
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
@@ -12,6 +13,9 @@ import { View } from "react-native";
 import { HomeScreenStyles as styles } from "./HomeScreen.styles";
 
 export default function HomeScreen() {
+  const filters = ["Todos", "En progreso", "Completado"];
+  const { activeFilter, handleFilterChange } = useActiveFilter(filters[0]);
+
   return (
     <View style={styles.container}>
       <WelcomeUser name="Benjamín" />
@@ -86,7 +90,10 @@ export default function HomeScreen() {
         />
       </View>
       <View>
-        <FilterSelector filterList={["Todos", "En progreso", "Completado"]} />
+        <FilterSelector
+          onFilterChange={handleFilterChange}
+          filterList={["Todos", "En progreso", "Completado"]}
+        />
       </View>
     </View>
   );
