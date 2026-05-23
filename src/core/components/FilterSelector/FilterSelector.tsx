@@ -11,7 +11,7 @@ export default function FilterSelector({
   filterList,
   onFilterChange,
 }: FilterSelectorProps) {
-  const { selectedIndex, selectFilter, isFilterSelected } = useFilterSelector({
+  const { selectFilter, isFilterSelected } = useFilterSelector({
     filterList,
     initialActiveIndex: 0,
     onFilterChange,
