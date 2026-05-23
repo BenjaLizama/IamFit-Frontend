@@ -1,20 +1,25 @@
 import CustomCarousel from "@/src/core/components/CustomCarousel";
 import CustomText from "@/src/core/components/CustomText";
+import FilterSelector from "@/src/core/components/FilterSelector";
+import { useActiveFilter } from "@/src/core/hooks/useActiveFilter";
 import DailyGoalItem from "@/src/features/home/components/DailyGoalItem";
 import DailyGoalProgressItem from "@/src/features/home/components/DailyGoalProgressItem/DailyGoalProgressItem";
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
 import ProgressTaskCard from "@/src/features/home/components/ProgressTaskCard";
-import { COLOR } from "@/src/theme";
+import WelcomeUser from "@/src/features/home/components/WelcomeUser";
+import { COLOR, UI } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
-import WelcomeUser from "@/src/features/home/components/WelcomeUser";
 import { HomeScreenStyles as styles } from "./HomeScreen.styles";
 
 export default function HomeScreen() {
+  const filters = ["Todos", "En progreso", "Completado"];
+  const { activeFilter, handleFilterChange } = useActiveFilter(filters[0]);
+
   return (
     <View style={styles.container}>
       <WelcomeUser name="Benjamín" />
-      <CustomCarousel>
+      <CustomCarousel mode="centered" initialIndex={7}>
         {/* --- UNA SEMANA ANTES --- */}
         <DayCalendarCard month="Agosto" dayNumber={1} dayText="Sabado" />
         <DayCalendarCard month="Agosto" dayNumber={2} dayText="Domingo" />
@@ -67,7 +72,7 @@ export default function HomeScreen() {
           text="Vasos de Agua"
         />
       </View>
-      <View style={{ paddingVertical: 12 }}>
+      <View style={{ paddingVertical: UI.LATERAL_PADDING }}>
         <CustomText type="body_secondary">En progreso</CustomText>
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -82,6 +87,12 @@ export default function HomeScreen() {
           subtitle="1.4/2 km"
           progress={63}
           color={COLOR.WARNING}
+        />
+      </View>
+      <View>
+        <FilterSelector
+          onFilterChange={handleFilterChange}
+          filterList={["Todos", "En progreso", "Completado"]}
         />
       </View>
     </View>

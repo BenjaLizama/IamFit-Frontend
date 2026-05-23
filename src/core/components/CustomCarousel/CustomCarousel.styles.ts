@@ -1,3 +1,4 @@
+import { UI } from "@/src/theme";
 import { Dimensions, StyleSheet } from "react-native";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -17,6 +18,11 @@ export const CustomCarouselStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: GAP,
+  },
+  defaultContentContainer: {
+    paddingLeft: UI.LATERAL_PADDING,
+  },
+  centeredContentContainer: {
     paddingHorizontal: SIDE_SPACING,
   },
 });

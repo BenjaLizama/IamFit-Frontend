@@ -1,6 +1,6 @@
+import * as Haptics from "expo-haptics";
 import React, { useRef } from "react";
 import { Dimensions, Modal, Pressable, StyleSheet, View } from "react-native";
-import * as Haptics from "expo-haptics";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { ExpandableScreenStyles as styles } from "./ExpandableScreen.styles";
 import { ExpandableScreenProps } from "./ExpandableScreen.types";
