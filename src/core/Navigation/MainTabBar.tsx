@@ -3,6 +3,7 @@ import FeedingLogo from "@/assets/images/Icons/chart.svg";
 import HomeLogo from "@/assets/images/Icons/home.svg";
 import PeopleLogo from "@/assets/images/Icons/people.svg";
 import ProfileLogo from "@/assets/images/Icons/profile.svg";
+import MiaHeader from "@/src/features/(m.i.a)/layout/MiaHeader/MiaHeader";
 import { COLOR } from "@/src/theme";
 import * as Haptics from "expo-haptics";
 import type { Href } from "expo-router";
@@ -243,7 +244,7 @@ export default function MainTabBar() {
             <CustomText type="body">Tu chat aqui</CustomText>
           </>
         }
-        headerChildren={<CustomText type="h2">Habla con M.I.A</CustomText>}
+        headerChildren={<MiaHeader></MiaHeader>}
       />
 
       <MainTabIcon

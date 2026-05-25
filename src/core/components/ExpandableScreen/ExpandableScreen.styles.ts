@@ -1,4 +1,3 @@
-import { COLOR } from "@/src/theme";
 import { StyleSheet } from "react-native";
 
 export const ExpandableScreenStyles = StyleSheet.create({
@@ -22,9 +21,7 @@ export const ExpandableScreenStyles = StyleSheet.create({
   },
   header: {
     width: "100%",
-    backgroundColor: COLOR.AZUL_PRIMARIO,
     overflow: "hidden",
-    alignItems: "center",
   },
   centerContent: {
     justifyContent: "center",
