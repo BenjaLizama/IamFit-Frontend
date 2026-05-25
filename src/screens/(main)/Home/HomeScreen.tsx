@@ -1,5 +1,6 @@
 import CustomCarousel from "@/src/core/components/CustomCarousel";
 import CustomText from "@/src/core/components/CustomText";
+import FilterInformationBox from "@/src/core/components/FilterInformationBox/FilterInformationBox";
 import FilterSelector from "@/src/core/components/FilterSelector";
 import { useActiveFilter } from "@/src/core/hooks/useActiveFilter";
 import DailyGoalItem from "@/src/features/home/components/DailyGoalItem";
@@ -94,6 +95,17 @@ export default function HomeScreen() {
           onFilterChange={handleFilterChange}
           filterList={["Todos", "En progreso", "Completado"]}
         />
+      </View>
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 12,
+        }}
+      >
+        <FilterInformationBox color={COLOR.AZUL_PRIMARIO}>
+          Completado
+        </FilterInformationBox>
       </View>
     </View>
   );
