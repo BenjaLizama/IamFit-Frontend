@@ -30,5 +30,6 @@ export const ExpandableScreenStyles = StyleSheet.create({
   body: {
     flex: 1,
     backgroundColor: "white",
+    paddingHorizontal: 12,
   },
 });
