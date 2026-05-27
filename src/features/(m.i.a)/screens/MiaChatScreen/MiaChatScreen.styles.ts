@@ -13,11 +13,11 @@ export const MiaChatScreenStyles = StyleSheet.create({
   },
   messagesScroll: {
     flex: 1,
-    paddingBottom: 16,
+    paddingBottom: 24,
   },
   messagesContent: {
     flexGrow: 1,
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
     gap: 12,
     paddingBottom: 12,
   },

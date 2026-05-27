@@ -10,6 +10,7 @@ export const MessageUserBoxStyles = StyleSheet.create({
     borderRadius: UI.small_radius,
     maxWidth: "75%",
     alignSelf: "flex-end",
+    marginRight: 2,
   },
 
   extra: {
@@ -19,6 +20,6 @@ export const MessageUserBoxStyles = StyleSheet.create({
     height: 20,
     width: 20,
     zIndex: -1,
-    borderRadius: 5,
+    borderRadius: 3,
   },
 });

@@ -95,6 +95,22 @@ export default function MiaChatScreen({ name }: MiaChatScreenProps) {
             showsVerticalScrollIndicator={false}
           >
             <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
+            <MessageUserBox />
           </ScrollView>
         </MaskedView>
       </View>
