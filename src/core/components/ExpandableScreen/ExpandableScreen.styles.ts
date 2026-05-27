@@ -32,4 +32,13 @@ export const ExpandableScreenStyles = StyleSheet.create({
     backgroundColor: "white",
     paddingHorizontal: 12,
   },
+  bodyKeyboard: {
+    flex: 1,
+  },
+  bodyScroll: {
+    flex: 1,
+  },
+  bodyScrollContent: {
+    flexGrow: 1,
+  },
 });
