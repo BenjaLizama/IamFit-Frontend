@@ -15,11 +15,6 @@ export const InputSelectorStyles = StyleSheet.create({
     width: "100%",
     overflow: "hidden",
     borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
   },
 
   option: {
