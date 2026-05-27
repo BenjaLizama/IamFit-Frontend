@@ -1,57 +1,97 @@
-import AddLogo from "@/assets/images/Icons/add.svg";
-import StatisticsLogo from "@/assets/images/Icons/chart.svg";
+import AiLogo from "@/assets/images/Icons/ai-commentary.svg";
+import FeedingLogo from "@/assets/images/Icons/chart.svg";
 import HomeLogo from "@/assets/images/Icons/home.svg";
 import PeopleLogo from "@/assets/images/Icons/people.svg";
 import ProfileLogo from "@/assets/images/Icons/profile.svg";
+import ExpandableScreen from "@/src/core/components/ExpandableScreen";
+import MessageInputText from "@/src/features/(m.i.a)/components/MessageInputText";
+import MessageResponseText from "@/src/features/(m.i.a)/components/MessageResponseText";
+import MessageUserBox from "@/src/features/(m.i.a)/components/MessageUserBox";
+import MiaHeader from "@/src/features/(m.i.a)/layout/MiaHeader";
+import WelcomeUser from "@/src/features/home/components/WelcomeUser";
 import { COLOR } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
-import CustomText from "../components/CustomText";
-import ExpandableScreen from "../components/ExpandableScreen";
+import Animated from "react-native-reanimated";
 import { MainTabBarStyles as styles } from "./MainTabBar.styles";
 import MainTabIcon from "./components/MainTabIcon/MainTabIcon";
+import { useMainTabBar } from "./useMainTabBar";
 
 export default function MainTabBar() {
+  const {
+    barRef,
+    handleLayout,
+    isExpandableOpen,
+    panResponder,
+    setIsExpandableOpen,
+    touchIndicatorStyle,
+  } = useMainTabBar();
+  const touchIndicatorBaseStyle = styles.touchIndicator as unknown as object;
+
   return (
-    <View style={styles.container}>
-      <MainTabIcon selected={true}>
-        <HomeLogo width={24} height={24} fill={COLOR.FONDO} />
+    <View
+      ref={barRef}
+      onLayout={handleLayout}
+      style={styles.container}
+      {...panResponder.panHandlers}
+    >
+      <View pointerEvents="none" style={styles.touchIndicatorHost}>
+        <View style={styles.touchIndicatorMask}>
+          <Animated.View style={[touchIndicatorBaseStyle, touchIndicatorStyle]}>
+            <View style={styles.touchIndicatorHighlight} />
+            <View style={styles.touchIndicatorSpark} />
+          </Animated.View>
+        </View>
+      </View>
+
+      <MainTabIcon
+        accessibilityLabel="Ir a inicio"
+        disabled={isExpandableOpen}
+        href="/(main)/home"
+      >
+        <HomeLogo fill={COLOR.FONDO} height={24} width={24} />
       </MainTabIcon>
-      <MainTabIcon selected={false}>
-        <StatisticsLogo width={24} height={24} fill={COLOR.FONDO} />
+      <MainTabIcon
+        accessibilityLabel="Ir a alimentación"
+        disabled={isExpandableOpen}
+        href="/(main)/feeding"
+      >
+        <FeedingLogo fill={COLOR.FONDO} height={24} width={24} />
       </MainTabIcon>
 
       <ExpandableScreen
-        top={-10}
-        initialRadius={100}
         children1={
-          <MainTabIcon selected={false} type="big">
-            <AddLogo width={30} height={30} color={COLOR.AZUL_PRIMARIO} />
+          <MainTabIcon type="big">
+            <AiLogo color={COLOR.AZUL_PRIMARIO} height={30} width={30} />
           </MainTabIcon>
         }
         children2={
-          <>
-            <CustomText type="body">Tu chat aqui</CustomText>
-            <CustomText type="body">Tu chat aqui</CustomText>
-            <CustomText type="body">Tu chat aqui</CustomText>
-            <CustomText type="body">Tu chat aqui</CustomText>
-            <CustomText type="body">Tu chat aqui</CustomText>
-            <CustomText type="body">Tu chat aqui</CustomText>
-            <CustomText type="body">Tu chat aqui</CustomText>
-            <CustomText type="body">Tu chat aqui</CustomText>
-            <CustomText type="body">Tu chat aqui</CustomText>
-            <CustomText type="body">Tu chat aqui</CustomText>
-            <CustomText type="body">Tu chat aqui</CustomText>
-          </>
+          <View style={styles.expandableContainer}>
+            <WelcomeUser name="Benjamín" />
+            <MessageUserBox />
+            <MessageResponseText />
+            <MessageInputText />
+          </View>
         }
-        headerChildren={<CustomText type="h2">Habla con M.I.A</CustomText>}
+        headerChildren={<MiaHeader />}
+        initialRadius={100}
+        onExpandedChange={setIsExpandableOpen}
+        top={-10}
       />
 
-      <MainTabIcon selected={false}>
-        <PeopleLogo width={24} height={24} fill={COLOR.FONDO} />
+      <MainTabIcon
+        accessibilityLabel="Ir a rutina"
+        disabled={isExpandableOpen}
+        href="/(main)/routine"
+      >
+        <PeopleLogo fill={COLOR.FONDO} height={24} width={24} />
       </MainTabIcon>
-      <MainTabIcon selected={false}>
-        <ProfileLogo width={24} height={24} fill={COLOR.FONDO} />
+      <MainTabIcon
+        accessibilityLabel="Ir a perfil"
+        disabled={isExpandableOpen}
+        href="/(main)/profile"
+      >
+        <ProfileLogo fill={COLOR.FONDO} height={24} width={24} />
       </MainTabIcon>
     </View>
   );

@@ -1,3 +1,4 @@
+import * as Haptics from "expo-haptics";
 import React, { useRef } from "react";
 import { Dimensions, Modal, Pressable, StyleSheet, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -12,6 +13,7 @@ export default function ExpandableScreen({
   children2,
   headerChildren,
   initialRadius = 20,
+  onExpandedChange,
   top = 0,
 }: ExpandableScreenProps) {
   const cardRef = useRef<View>(null);
@@ -39,9 +41,18 @@ export default function ExpandableScreen({
   };
 
   const handleExpand = () => {
+    void Haptics.selectionAsync();
+    onExpandedChange?.(true);
+
     cardRef.current?.measureInWindow((x, y, width, height) => {
       expand(x, y, width, height);
     });
+  };
+
+  const handleCollapse = () => {
+    void Haptics.selectionAsync();
+    onExpandedChange?.(false);
+    collapse();
   };
 
   return (
@@ -71,7 +82,7 @@ export default function ExpandableScreen({
         </View>
       </Animated.View>
 
-      <Modal transparent visible={isExpanded} onRequestClose={collapse}>
+      <Modal transparent visible={isExpanded} onRequestClose={handleCollapse}>
         <View style={styles.modalOverlay}>
           <Animated.View
             entering={FadeIn.duration(300)}
@@ -80,14 +91,14 @@ export default function ExpandableScreen({
           >
             <View style={StyleSheet.absoluteFill}>
               <Animated.View style={[styles.backdrop, backdropStyle]}>
-                <Pressable style={{ flex: 1 }} onPress={collapse} />
+                <Pressable style={{ flex: 1 }} onPress={handleCollapse} />
               </Animated.View>
             </View>
           </Animated.View>
 
           <Animated.View style={[styles.expandedCard, animatedStyle]}>
             <Pressable
-              onPress={collapse}
+              onPress={handleCollapse}
               style={[styles.header, { height: initialDims.h || "auto" }]}
             >
               <Animated.View

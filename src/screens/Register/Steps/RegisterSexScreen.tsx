@@ -1,8 +1,8 @@
 import { useState } from "react";
-import InputSelector from "../components/InputSelector";
+import InputSelector from "../../../features/register/components/InputSelector";
 import RegisterStepScreen from "./RegisterStepScreen";
 
-const INITIAL_SEX = "MASCULINO";
+const INITIAL_SEX = "MALE";
 
 const SEX_OPTIONS = [
   { label: "Masculino", value: "MALE" },

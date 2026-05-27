@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { ScrollView } from "react-native";
 
 export const useCustomCarousel = ({
@@ -8,22 +8,18 @@ export const useCustomCarousel = ({
 }) => {
   const scrollRef = useRef<ScrollView>(null);
   const ITEM_WIDTH = 64;
-  const GAP = 13;
+  const GAP = 11;
   const INTERVAL = ITEM_WIDTH + GAP;
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (scrollRef.current) {
-        scrollRef.current.scrollTo({
-          x: initialIndex * INTERVAL,
-          animated: false,
-        });
-      }
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [initialIndex, INTERVAL]);
+  const initialContentOffset = useMemo(
+    () => ({
+      x: initialIndex * INTERVAL,
+      y: 0,
+    }),
+    [initialIndex, INTERVAL],
+  );
 
   return {
+    initialContentOffset,
     scrollRef,
     INTERVAL,
   };

@@ -1,4 +1,6 @@
 export const UI = {
+  LATERAL_PADDING: 12,
+
   // Espaciado
   spacing: {
     none: 0,
