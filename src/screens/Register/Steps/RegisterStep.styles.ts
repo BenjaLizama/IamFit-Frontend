@@ -82,4 +82,5 @@ export const RegisterStepStyles = StyleSheet.create({
     gap: UI.spacing.lg,
     width: "100%",
   },
+
 });
