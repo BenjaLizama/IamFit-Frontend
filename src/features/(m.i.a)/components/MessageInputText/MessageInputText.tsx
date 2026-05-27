@@ -11,6 +11,7 @@ export default function MessageInputText() {
       <View style={styles.inputContainer}>
         <Firework />
         <TextInput
+          selectionColor={COLOR.FONDO}
           placeholder="Escribe tu mensaje..."
           placeholderTextColor={COLOR.FILTER_INFORMATION_BOX}
           style={styles.input}
