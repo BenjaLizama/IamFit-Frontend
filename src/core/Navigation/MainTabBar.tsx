@@ -5,6 +5,7 @@ import PeopleLogo from "@/assets/images/Icons/people.svg";
 import ProfileLogo from "@/assets/images/Icons/profile.svg";
 import ExpandableScreen from "@/src/core/components/ExpandableScreen";
 import MessageInputText from "@/src/features/(m.i.a)/components/MessageInputText";
+import MessageResponseText from "@/src/features/(m.i.a)/components/MessageResponseText";
 import MessageUserBox from "@/src/features/(m.i.a)/components/MessageUserBox";
 import MiaHeader from "@/src/features/(m.i.a)/layout/MiaHeader";
 import WelcomeUser from "@/src/features/home/components/WelcomeUser";
@@ -68,6 +69,7 @@ export default function MainTabBar() {
           <View style={styles.expandableContainer}>
             <WelcomeUser name="Benjamín" />
             <MessageUserBox />
+            <MessageResponseText />
             <MessageInputText />
           </View>
         }
