@@ -1,36 +1,45 @@
 import CustomText from "@/src/core/components/CustomText";
 import { COLOR } from "@/src/theme";
 import { Image, View } from "react-native";
-import { DailyExcerciseCardStyles as styles } from "./DailyExerciseCard.styles";
-import { DailyExcerciseCardProps } from "./DailyExerciseCard.types";
+import { DailyExerciseCardStyles as styles } from "./DailyExerciseCard.styles";
+import { DailyExerciseCardProps } from "./DailyExerciseCard.types";
 
 export default function DailyExerciseCard({
-  excerciseName,
+  exerciseName,
   description,
   estimatedTimeMin,
   pathImage,
   intensity,
   rightElement,
-}: DailyExcerciseCardProps) {
+}: DailyExerciseCardProps) {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image style={styles.image} source={{ uri: pathImage }} />
       </View>
       <View style={styles.content}>
-        <CustomText type={"body"} size={15}>
-          {excerciseName}
+        <CustomText type="button_secondary" size={15} style={styles.titleText}>
+          {exerciseName}
         </CustomText>
-        <CustomText type={"body"} size={13} color={COLOR.TEXTO_SECUNDARIO}>
-          {description}
+
+        <CustomText
+          type="body"
+          size={12}
+          color={COLOR.TEXTO_SECUNDARIO}
+          style={styles.detailText}
+        >
+          {estimatedTimeMin
+            ? `${description} - ${estimatedTimeMin} min estimados`
+            : description}
         </CustomText>
-        {estimatedTimeMin && (
-          <CustomText type={"body"} size={12}>
-            {"tiempo estimado: " + String(estimatedTimeMin) + " minutos"}
-          </CustomText>
-        )}
+
         {intensity && (
-          <CustomText type={"body"} size={12}>
+          <CustomText
+            type="body"
+            size={12}
+            color={COLOR.TEXTO_SECUNDARIO}
+            style={styles.detailText}
+          >
             {intensity}
           </CustomText>
         )}

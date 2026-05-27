@@ -24,4 +24,5 @@ export const COLOR = {
   SUCCESS: "#0bb52b",
   WARNING: "#ed8309",
   MORADO: "#4d008b",
+  TEXTO_TENUE: "#6B6B6B",
 };
