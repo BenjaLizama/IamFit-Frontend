@@ -232,14 +232,8 @@ export default function MainTabBar() {
           </MainTabIcon>
         }
         children2={
-          <View
-            style={{
-              justifyContent: "space-between",
-              height: "99%",
-            }}
-          >
+          <View style={styles.expandableContainer}>
             <WelcomeUser name="Benjamín"></WelcomeUser>
-
             <MessageUserBox></MessageUserBox>
             <MessageInputText></MessageInputText>
           </View>
