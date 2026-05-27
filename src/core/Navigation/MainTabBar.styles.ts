@@ -65,4 +65,8 @@ export const MainTabBarStyles = StyleSheet.create({
     opacity: 0.86,
     transform: [{ rotate: "-20deg" }],
   },
+  expandableContainer: {
+    justifyContent: "space-between",
+    height: "99%",
+  },
 });
