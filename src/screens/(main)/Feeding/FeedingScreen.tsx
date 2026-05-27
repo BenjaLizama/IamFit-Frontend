@@ -18,7 +18,7 @@ export default function FeedingScreen() {
 
   return (
     <View style={{ paddingHorizontal: 12, gap: 12 }}>
-      <View style={{ paddingVertical: 12 }}>
+      <View style={{ marginTop: 24 }}>
         <FilterSelector
           filterList={filterList}
           onFilterChange={handleFilterChange}
