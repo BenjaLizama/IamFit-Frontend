@@ -7,7 +7,7 @@ import ExpandableScreen from "@/src/core/components/ExpandableScreen";
 import MessageInputText from "@/src/features/(m.i.a)/components/MessageInputText";
 import MessageUserBox from "@/src/features/(m.i.a)/components/MessageUserBox";
 import MiaHeader from "@/src/features/(m.i.a)/layout/MiaHeader";
-import WelcomeUser from "@/src/features/home/components/WelcomeUser";
+import WelcomeUser from "@/src/features/(m.i.a)/layout/WelcomeUser";
 import { COLOR } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
