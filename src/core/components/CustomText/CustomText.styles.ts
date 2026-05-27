@@ -48,25 +48,37 @@ export const CustomTextStyle = StyleSheet.create({
   },
 
   button_primary: {
-    marginBottom: 2,
+    ...Platform.select({
+      android: { marginBottom: 0 },
+      ios: { marginBottom: 2 },
+    }),
     fontFamily: FONT.PRINCIPAL_BOLD,
     fontSize: 16,
     color: COLOR.FONDO,
   },
   button_secondary: {
-    marginBottom: 2,
+    ...Platform.select({
+      android: { marginBottom: 0 },
+      ios: { marginBottom: 2 },
+    }),
     fontFamily: FONT.PRINCIPAL_BOLD,
     fontSize: 16,
     color: COLOR.TEXTO_PRINCIPAL,
   },
   button_destructive: {
-    marginBottom: 2,
+    ...Platform.select({
+      android: { marginBottom: 0 },
+      ios: { marginBottom: 2 },
+    }),
     fontFamily: FONT.PRINCIPAL_BOLD,
     fontSize: 16,
     color: COLOR.FONDO,
   },
   button_extra: {
-    marginBottom: 2,
+    ...Platform.select({
+      android: { marginBottom: 0 },
+      ios: { marginBottom: 2 },
+    }),
     fontFamily: FONT.PRINCIPAL_BOLD,
     fontSize: 14,
     color: COLOR.AZUL_PRIMARIO,

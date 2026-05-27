@@ -1,19 +1,20 @@
-import { BottomSheet, useBottomSheet } from "@/src/core/components/BottomSheet";
 import CustomButton from "@/src/core/components/CustomButton";
 import CustomFormInput from "@/src/core/components/CustomFormInput";
 import CustomText from "@/src/core/components/CustomText";
-import Wrapper from "@/src/core/components/Wrapper";
 import PrivacyPolicyScreen from "@/src/screens/PrivacyPolicy";
+import { COLOR } from "@/src/theme";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
   KeyboardAvoidingView,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
   TextInput,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { RegisterStepStyles as styles } from "./RegisterStep.styles";
 import { RegisterStepScreenProps } from "./RegisterStep.types";
 
@@ -34,10 +35,13 @@ export default function RegisterStepScreen({
     router.push(nextRoute);
   };
 
-  const { openSheet, sheetRef } = useBottomSheet();
+  const [isPolicyVisible, setIsPolicyVisible] = React.useState(false);
 
   return (
-    <Wrapper>
+    <SafeAreaView
+      edges={["top", "bottom", "left", "right"]}
+      style={{ flex: 1, backgroundColor: COLOR.FONDO }}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingView}
@@ -90,19 +94,49 @@ export default function RegisterStepScreen({
           </View>
           <CustomText type="body" style={{ textAlign: "center" }}>
             Al crear una cuenta, acepta nuestra{" "}
-            <CustomText type="body_interactive" onPress={openSheet}>
+            <CustomText
+              type="body_interactive"
+              onPress={() => setIsPolicyVisible(true)}
+            >
               Política de Privacidad
             </CustomText>{" "}
             y los{" "}
-            <CustomText type="body_interactive" onPress={openSheet}>
+            <CustomText
+              type="body_interactive"
+              onPress={() => setIsPolicyVisible(true)}
+            >
               Términos de Servicio.
             </CustomText>
           </CustomText>
         </ScrollView>
       </KeyboardAvoidingView>
-      <BottomSheet ref={sheetRef}>
-        <PrivacyPolicyScreen />
-      </BottomSheet>
-    </Wrapper>
+      <Modal
+        animationType="slide"
+        onRequestClose={() => setIsPolicyVisible(false)}
+        transparent={false}
+        visible={isPolicyVisible}
+      >
+        <SafeAreaView
+          edges={["top", "bottom", "left", "right"]}
+          style={{ flex: 1, backgroundColor: COLOR.FONDO }}
+        >
+          <View style={styles.topBar}>
+            <Pressable
+              onPress={() => setIsPolicyVisible(false)}
+              style={styles.backButton}
+            >
+              <CustomText type="body_interactive">Cerrar</CustomText>
+            </Pressable>
+          </View>
+          <ScrollView
+            contentContainerStyle={styles.contentContainer}
+            showsVerticalScrollIndicator={false}
+            style={styles.scrollView}
+          >
+            <PrivacyPolicyScreen />
+          </ScrollView>
+        </SafeAreaView>
+      </Modal>
+    </SafeAreaView>
   );
 }

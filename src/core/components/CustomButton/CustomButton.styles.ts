@@ -5,7 +5,6 @@ export const CustomButtonStyles = StyleSheet.create({
   button_common: {
     height: 58,
     width: 280,
-    boxSizing: "border-box",
     paddingTop: UI.padding_top,
     paddingBottom: UI.padding_bottom,
     paddingLeft: UI.padding_left,
