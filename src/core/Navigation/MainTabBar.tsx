@@ -3,8 +3,10 @@ import FeedingLogo from "@/assets/images/Icons/chart.svg";
 import HomeLogo from "@/assets/images/Icons/home.svg";
 import PeopleLogo from "@/assets/images/Icons/people.svg";
 import ProfileLogo from "@/assets/images/Icons/profile.svg";
+import MessageInputText from "@/src/features/(m.i.a)/components/MessageInputText";
+import MessageUserBox from "@/src/features/(m.i.a)/components/MessageUserBox";
 import MiaHeader from "@/src/features/(m.i.a)/layout/MiaHeader";
-import WelcomeUser from "@/src/features/(m.i.a)/layout/WelcomeUser";
+import WelcomeUser from "@/src/features/home/components/WelcomeUser";
 import { COLOR } from "@/src/theme";
 import * as Haptics from "expo-haptics";
 import type { Href } from "expo-router";
@@ -230,9 +232,17 @@ export default function MainTabBar() {
           </MainTabIcon>
         }
         children2={
-          <>
+          <View
+            style={{
+              justifyContent: "space-between",
+              height: "99%",
+            }}
+          >
             <WelcomeUser name="Benjamín"></WelcomeUser>
-          </>
+
+            <MessageUserBox></MessageUserBox>
+            <MessageInputText></MessageInputText>
+          </View>
         }
         headerChildren={<MiaHeader></MiaHeader>}
       />
