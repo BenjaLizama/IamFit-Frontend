@@ -3,6 +3,7 @@ import { useActiveFilter } from "@/src/core/hooks/useActiveFilter";
 import FoodSummaryCard from "@/src/features/Feeding/components/FoodSummaryCard";
 import React from "react";
 import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function FeedingScreen() {
   const filterList = [
@@ -17,7 +18,13 @@ export default function FeedingScreen() {
   const { handleFilterChange } = useActiveFilter();
 
   return (
-    <View style={{ paddingHorizontal: 12, gap: 12 }}>
+    <ScrollView
+      style={{
+        paddingHorizontal: 12,
+        gap: 12,
+        flex: 1,
+      }}
+    >
       <View style={{ marginTop: 24 }}>
         <FilterSelector
           filterList={filterList}
@@ -48,6 +55,6 @@ export default function FeedingScreen() {
         dato2={5}
         dato3={20}
       />
-    </View>
+    </ScrollView>
   );
 }

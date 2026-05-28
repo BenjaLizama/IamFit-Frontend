@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 
 export const MessageUserBoxStyles = StyleSheet.create({
   messageContainer: {
+    marginTop: 12,
     position: "relative",
     backgroundColor: COLOR.AZUL_PRIMARIO,
     paddingVertical: UI.spacing.sm,
@@ -10,16 +11,15 @@ export const MessageUserBoxStyles = StyleSheet.create({
     borderRadius: UI.small_radius,
     maxWidth: "75%",
     alignSelf: "flex-end",
-    marginRight: 2,
   },
 
   extra: {
-    right: 0,
+    right: 0.1,
     position: "absolute",
     backgroundColor: COLOR.AZUL_PRIMARIO,
     height: 20,
     width: 20,
     zIndex: -1,
-    borderRadius: 3,
+    borderRadius: 5,
   },
 });

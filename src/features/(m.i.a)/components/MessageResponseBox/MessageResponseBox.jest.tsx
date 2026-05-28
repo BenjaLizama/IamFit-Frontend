@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-describe("MessageResponse", () => {
+describe("MessageResponseBox", () => {
   it("test environment is working", () => {
     expect(true).toBe(true);
   });

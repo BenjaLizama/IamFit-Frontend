@@ -27,4 +27,13 @@ export const MessageInputTextStyles = StyleSheet.create({
     fontFamily: FONT.PRINCIPAL_REGULAR,
     color: COLOR.TEXTO_BOTON_PRIMARIO,
   },
+
+  hiddenContent: {
+    position: "absolute",
+    backgroundColor: COLOR.FONDO,
+    width: "200%",
+    height: 50,
+    bottom: -20,
+    zIndex: -1,
+  },
 });

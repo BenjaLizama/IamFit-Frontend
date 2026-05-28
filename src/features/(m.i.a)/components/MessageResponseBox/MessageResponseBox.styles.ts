@@ -1,8 +1,9 @@
 import { COLOR, UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
 
-export const MessageResponseTextStyles = StyleSheet.create({
+export const MessageResponseBoxStyles = StyleSheet.create({
   messageContainer: {
+    marginTop: 12,
     position: "relative",
     backgroundColor: COLOR.GRIS,
     paddingVertical: UI.spacing.sm,
