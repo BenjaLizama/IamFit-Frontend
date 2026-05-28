@@ -62,7 +62,7 @@ export default function MainTabBar() {
             <AiLogo color={COLOR.AZUL_PRIMARIO} height={30} width={30} />
           </MainTabIcon>
         }
-        children2={<MiaChatScreen name="Benjamín" />}
+        children2={<MiaChatScreen />}
         headerChildren={<MiaHeader />}
         initialRadius={100}
         onExpandedChange={setIsExpandableOpen}
