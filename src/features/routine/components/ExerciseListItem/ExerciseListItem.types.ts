@@ -3,6 +3,7 @@ import React from "react";
 interface BaseExercise {
   name: string;
   rightItem?: React.ReactNode;
+  checked?: boolean;
 }
 
 export interface WeightExercise extends BaseExercise {
