@@ -1,13 +1,14 @@
 import CustomButton from "@/src/core/components/CustomButton";
 import CustomFormInput from "@/src/core/components/CustomFormInput";
 import CustomText from "@/src/core/components/CustomText";
+import { BottomSheet } from "@/src/core/components/BottomSheet";
+import { useBottomSheet } from "@/src/core/components/BottomSheet/useBottomSheet";
 import PrivacyPolicyScreen from "@/src/screens/PrivacyPolicy";
 import { COLOR } from "@/src/theme";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
   KeyboardAvoidingView,
-  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -30,12 +31,12 @@ export default function RegisterStepScreen({
 }: RegisterStepScreenProps) {
   const router = useRouter();
   const inputRef = React.useRef<TextInput>(null);
+  const { sheetRef, openSheet } = useBottomSheet();
 
   const goNext = () => {
     router.push(nextRoute);
   };
 
-  const [isPolicyVisible, setIsPolicyVisible] = React.useState(false);
 
   return (
     <SafeAreaView
@@ -96,47 +97,24 @@ export default function RegisterStepScreen({
             Al crear una cuenta, acepta nuestra{" "}
             <CustomText
               type="body_interactive"
-              onPress={() => setIsPolicyVisible(true)}
+              onPress={openSheet}
             >
               Política de Privacidad
             </CustomText>{" "}
             y los{" "}
             <CustomText
               type="body_interactive"
-              onPress={() => setIsPolicyVisible(true)}
+              onPress={openSheet}
             >
               Términos de Servicio.
             </CustomText>
           </CustomText>
         </ScrollView>
       </KeyboardAvoidingView>
-      <Modal
-        animationType="slide"
-        onRequestClose={() => setIsPolicyVisible(false)}
-        transparent={false}
-        visible={isPolicyVisible}
-      >
-        <SafeAreaView
-          edges={["top", "bottom", "left", "right"]}
-          style={{ flex: 1, backgroundColor: COLOR.FONDO }}
-        >
-          <View style={styles.topBar}>
-            <Pressable
-              onPress={() => setIsPolicyVisible(false)}
-              style={styles.backButton}
-            >
-              <CustomText type="body_interactive">Cerrar</CustomText>
-            </Pressable>
-          </View>
-          <ScrollView
-            contentContainerStyle={styles.contentContainer}
-            showsVerticalScrollIndicator={false}
-            style={styles.scrollView}
-          >
-            <PrivacyPolicyScreen />
-          </ScrollView>
-        </SafeAreaView>
-      </Modal>
+
+      <BottomSheet ref={sheetRef}>
+        <PrivacyPolicyScreen />
+      </BottomSheet>
     </SafeAreaView>
   );
 }

@@ -5,4 +5,6 @@ export interface ExpandableScreenProps {
   initialRadius?: number;
   onExpandedChange?: (isExpanded: boolean) => void;
   top?: number;
+  variant?: "default" | "chat";
+  keyboardVerticalOffset?: number;
 }

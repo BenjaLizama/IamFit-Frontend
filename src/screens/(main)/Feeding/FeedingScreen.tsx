@@ -1,10 +1,29 @@
+import FilterSelector from "@/src/core/components/FilterSelector";
+import { useActiveFilter } from "@/src/core/hooks/useActiveFilter";
 import FoodSummaryCard from "@/src/features/Feeding/components/FoodSummaryCard";
 import React from "react";
 import { View } from "react-native";
 
 export default function FeedingScreen() {
+  const filterList = [
+    "Lunes",
+    "Martes",
+    "Miercoles",
+    "Jueves",
+    "Viernes",
+    "Sabado",
+    "Domingo",
+  ];
+  const { handleFilterChange } = useActiveFilter();
+
   return (
     <View style={{ paddingHorizontal: 12, gap: 12 }}>
+      <View style={{ marginTop: 24 }}>
+        <FilterSelector
+          filterList={filterList}
+          onFilterChange={handleFilterChange}
+        />
+      </View>
       <FoodSummaryCard
         tipoComida="Desayuno"
         calorias={350}

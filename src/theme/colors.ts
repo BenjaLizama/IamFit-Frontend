@@ -25,4 +25,5 @@ export const COLOR = {
   WARNING: "#ed8309",
   MORADO: "#4d008b",
   GRIS: "#dedede",
+  TEXTO_TENUE: "#6B6B6B",
 };

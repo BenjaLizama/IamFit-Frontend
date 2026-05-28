@@ -20,7 +20,7 @@ export const CustomCarouselStyles = StyleSheet.create({
     gap: GAP,
   },
   defaultContentContainer: {
-    paddingLeft: UI.LATERAL_PADDING,
+    paddingHorizontal: UI.LATERAL_PADDING,
   },
   centeredContentContainer: {
     paddingHorizontal: SIDE_SPACING,

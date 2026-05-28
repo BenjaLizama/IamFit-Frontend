@@ -4,11 +4,8 @@ import HomeLogo from "@/assets/images/Icons/home.svg";
 import PeopleLogo from "@/assets/images/Icons/people.svg";
 import ProfileLogo from "@/assets/images/Icons/profile.svg";
 import ExpandableScreen from "@/src/core/components/ExpandableScreen";
-import MessageInputText from "@/src/features/(m.i.a)/components/MessageInputText";
-import MessageResponseText from "@/src/features/(m.i.a)/components/MessageResponseText";
-import MessageUserBox from "@/src/features/(m.i.a)/components/MessageUserBox";
 import MiaHeader from "@/src/features/(m.i.a)/layout/MiaHeader";
-import WelcomeUser from "@/src/features/home/components/WelcomeUser";
+import MiaChatScreen from "@/src/features/(m.i.a)/screens/MiaChatScreen";
 import { COLOR } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
@@ -65,18 +62,13 @@ export default function MainTabBar() {
             <AiLogo color={COLOR.AZUL_PRIMARIO} height={30} width={30} />
           </MainTabIcon>
         }
-        children2={
-          <View style={styles.expandableContainer}>
-            <WelcomeUser name="Benjamín" />
-            <MessageUserBox />
-            <MessageResponseText />
-            <MessageInputText />
-          </View>
-        }
+        children2={<MiaChatScreen name="Benjamín" />}
         headerChildren={<MiaHeader />}
         initialRadius={100}
         onExpandedChange={setIsExpandableOpen}
         top={-10}
+        variant="chat"
+        keyboardVerticalOffset={125}
       />
 
       <MainTabIcon

@@ -1,6 +1,6 @@
-export interface DailyExcerciseCardProps {
+export interface DailyExerciseCardProps {
   pathImage: string;
-  excerciseName: string;
+  exerciseName: string;
   description: string;
   estimatedTimeMin?: number;
   intensity?: string;
