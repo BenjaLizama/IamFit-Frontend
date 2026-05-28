@@ -1,3 +1,4 @@
+import CustomCheckbox from "@/src/core/components/CustomCheckbox";
 import CustomText from "@/src/core/components/CustomText";
 import ExpandableScreen from "@/src/core/components/ExpandableScreen";
 import FilterInformationBox from "@/src/core/components/FilterInformationBox";
@@ -34,6 +35,18 @@ const misEjercicios = [
 ];
 
 export default function RoutineScreen() {
+  const [checkedExerciseIds, setCheckedExerciseIds] = React.useState<string[]>(
+    [],
+  );
+
+  const toggleExercise = (exerciseId: string) => {
+    setCheckedExerciseIds((currentIds) =>
+      currentIds.includes(exerciseId)
+        ? currentIds.filter((currentId) => currentId !== exerciseId)
+        : [...currentIds, exerciseId],
+    );
+  };
+
   return (
     <View>
       <DailyExerciseCard
@@ -68,9 +81,24 @@ export default function RoutineScreen() {
           <View>
             <CustomText type="h1">Ejercicios</CustomText>
 
-            {misEjercicios.map((ejercicio) => (
-              <ExerciseListItem key={ejercicio.id} {...ejercicio} />
-            ))}
+            {misEjercicios.map((ejercicio) => {
+              const isChecked = checkedExerciseIds.includes(ejercicio.id);
+
+              return (
+                <ExerciseListItem
+                  key={ejercicio.id}
+                  {...ejercicio}
+                  checked={isChecked}
+                  rightItem={
+                    <CustomCheckbox
+                      checked={isChecked}
+                      onPress={() => toggleExercise(ejercicio.id)}
+                      size={18}
+                    ></CustomCheckbox>
+                  }
+                />
+              );
+            })}
           </View>
         }
       ></ExpandableScreen>
