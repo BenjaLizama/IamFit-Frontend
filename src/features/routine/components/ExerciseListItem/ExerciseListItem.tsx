@@ -9,7 +9,7 @@ export default function ExerciseListItem(props: ExerciseListItemProps) {
   const { name, rightItem, kind } = props;
 
   return (
-    <View style={style.container}>
+    <View style={[style.container, props.checked && style.checkedContainer]}>
       <View style={style.content}>
         <CustomText type="button_secondary" size={15}>
           {name}
