@@ -6,6 +6,7 @@ import ExerciseListItem from "@/src/features/routine/components/ExerciseListItem
 import { COLOR } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const misEjercicios = [
   {
@@ -35,7 +36,7 @@ const misEjercicios = [
 
 export default function RoutineScreen() {
   return (
-    <View>
+    <ScrollView>
       <DailyExerciseCard
         exerciseName="Pecho + Triceps"
         description="6 ejercicios"
@@ -74,6 +75,6 @@ export default function RoutineScreen() {
           </View>
         }
       ></ExpandableScreen>
-    </View>
+    </ScrollView>
   );
 }
