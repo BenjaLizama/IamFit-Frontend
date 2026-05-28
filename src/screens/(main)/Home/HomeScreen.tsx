@@ -8,13 +8,12 @@ import WelcomeUser from "@/src/features/home/components/WelcomeUser";
 import { COLOR, UI } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { HomeScreenStyles as styles } from "./HomeScreen.styles";
 
 export default function HomeScreen() {
-  const filters = ["Todos", "En progreso", "Completado"];
-
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <WelcomeUser name="Benjamín" />
       <CustomCarousel mode="centered" initialIndex={7}>
         {/* --- UNA SEMANA ANTES --- */}
@@ -86,6 +85,6 @@ export default function HomeScreen() {
           color={COLOR.WARNING}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 }

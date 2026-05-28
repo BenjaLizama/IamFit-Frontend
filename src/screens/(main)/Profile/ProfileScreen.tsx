@@ -1,10 +1,11 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function ProfileScreen() {
   return (
-    <View>
+    <ScrollView>
       <Text>ProfileScreen</Text>
-    </View>
+    </ScrollView>
   );
 }
