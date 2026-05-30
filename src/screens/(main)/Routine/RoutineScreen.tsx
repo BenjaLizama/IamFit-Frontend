@@ -1,10 +1,11 @@
+import CustomButton from "@/src/core/components/CustomButton";
 import CustomCheckbox from "@/src/core/components/CustomCheckbox";
 import CustomText from "@/src/core/components/CustomText";
 import ExpandableScreen from "@/src/core/components/ExpandableScreen";
 import FilterInformationBox from "@/src/core/components/FilterInformationBox";
 import DailyExerciseCard from "@/src/features/routine/components/DailyExerciseCard";
 import ExerciseListItem from "@/src/features/routine/components/ExerciseListItem";
-import { COLOR } from "@/src/theme";
+import { COLOR, UI } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -49,7 +50,12 @@ export default function RoutineScreen() {
   };
 
   return (
-    <ScrollView>
+    <ScrollView
+      contentContainerStyle={{
+        paddingBottom: UI.spacing.xl,
+        paddingHorizontal: UI.LATERAL_PADDING,
+      }}
+    >
       <DailyExerciseCard
         exerciseName="Pecho + Triceps"
         description="6 ejercicios"
@@ -57,7 +63,7 @@ export default function RoutineScreen() {
         pathImage="https://i.scdn.co/image/ab67616d0000b2732f44fa0694228be2e5b8887b"
         rightElement={
           <FilterInformationBox color={COLOR.MORADO}>
-            Manana
+            Mañana
           </FilterInformationBox>
         }
       />
@@ -80,26 +86,36 @@ export default function RoutineScreen() {
         }
         children2={
           <View>
-            <CustomText type="h1">Ejercicios</CustomText>
+            <View>
+              <CustomText type="h1">Ejercicios</CustomText>
 
-            {misEjercicios.map((ejercicio) => {
-              const isChecked = checkedExerciseIds.includes(ejercicio.id);
+              {misEjercicios.map((ejercicio) => {
+                const isChecked = checkedExerciseIds.includes(ejercicio.id);
 
-              return (
-                <ExerciseListItem
-                  key={ejercicio.id}
-                  {...ejercicio}
-                  checked={isChecked}
-                  rightItem={
-                    <CustomCheckbox
-                      checked={isChecked}
-                      onPress={() => toggleExercise(ejercicio.id)}
-                      size={18}
-                    ></CustomCheckbox>
-                  }
-                />
-              );
-            })}
+                return (
+                  <ExerciseListItem
+                    key={ejercicio.id}
+                    {...ejercicio}
+                    checked={isChecked}
+                    rightItem={
+                      <CustomCheckbox
+                        checked={isChecked}
+                        onPress={() => toggleExercise(ejercicio.id)}
+                        size={18}
+                      ></CustomCheckbox>
+                    }
+                  />
+                );
+              })}
+            </View>
+            <View style={{ marginTop: UI.spacing.lg }}>
+              <CustomButton
+                onPress={() => console.log("Seleccionar rutina para editar")}
+                type="primary"
+              >
+                Seleccionar rutina para editar
+              </CustomButton>
+            </View>
           </View>
         }
       ></ExpandableScreen>
