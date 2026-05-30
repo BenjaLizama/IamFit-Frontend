@@ -3,6 +3,7 @@ import ExpandableScreen from "@/src/core/components/ExpandableScreen";
 import FilterInformationBox from "@/src/core/components/FilterInformationBox";
 import DailyExerciseCard from "@/src/features/routine/components/DailyExerciseCard";
 import ExerciseListItem from "@/src/features/routine/components/ExerciseListItem";
+import RoutineSummaryCard from "@/src/features/routine/components/RoutineSummaryCard";
 import { COLOR } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
@@ -67,11 +68,22 @@ export default function RoutineScreen() {
         }
         children2={
           <View>
-            <CustomText type="h1">Ejercicios</CustomText>
+            <View>
+              <RoutineSummaryCard
+                equipment="no"
+                estimatedTime={10}
+                exerciseCount={7}
+                level="alto po hermano"
+                nextSessionLabel="mañana oe"
+              ></RoutineSummaryCard>
+            </View>
+            <View>
+              <CustomText type="body">Ejercicios</CustomText>
 
-            {misEjercicios.map((ejercicio) => (
-              <ExerciseListItem key={ejercicio.id} {...ejercicio} />
-            ))}
+              {misEjercicios.map((ejercicio) => (
+                <ExerciseListItem key={ejercicio.id} {...ejercicio} />
+              ))}
+            </View>
           </View>
         }
       ></ExpandableScreen>
