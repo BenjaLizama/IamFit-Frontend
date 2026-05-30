@@ -18,7 +18,7 @@ export default function LoginScreen() {
       <AuthFormTemplate
         section1={
           <View style={styles.first}>
-            <IamfitIcon size={90} />
+            <IamfitIcon />
             <CustomText type="h1">Accede a tu{"\n"}cuenta</CustomText>
           </View>
         }

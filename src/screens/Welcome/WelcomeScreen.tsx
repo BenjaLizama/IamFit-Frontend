@@ -17,7 +17,7 @@ export default function WelcomeScreen() {
         }}
       >
         <View></View>
-        <IamfitIcon size={113} />
+        <IamfitIcon />
         <View style={{ marginBottom: hp(70) }}>
           <CustomText type="h2" color={COLOR.AZUL_PRIMARIO}>
             IAMFIT
