@@ -5,6 +5,7 @@ import React from "react";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import MessageResponseBox from "../../components/MessageResponseBox";
+import { hp, wp } from "@/src/core/utils";
 
 const CHAT_DATA = [
   {
@@ -49,7 +50,7 @@ export default function MiaChatScreen() {
         inverted={true}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{
-          paddingTop: 80,
+          paddingTop: hp(80),
         }}
         renderItem={({ item }) =>
           item.type === "user" ? (
@@ -62,9 +63,9 @@ export default function MiaChatScreen() {
       <View
         style={{
           position: "absolute",
-          bottom: 12,
-          left: 0,
-          right: 0,
+          bottom: hp(12),
+          left: wp(0),
+          right: wp(0),
           zIndex: 10,
         }}
       >

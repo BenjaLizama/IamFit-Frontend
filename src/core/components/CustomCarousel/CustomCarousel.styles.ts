@@ -1,9 +1,9 @@
-import { UI } from "@/src/theme";
+import { wp } from "@/src/core/utils";
 import { Dimensions, StyleSheet } from "react-native";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const ITEM_WIDTH = 64;
-const GAP = 11;
+const ITEM_WIDTH = wp(64);
+const GAP = wp(11);
 
 // La fórmula exacta para centrar considerando el gap interno:
 // (Ancho pantalla / 2) - (Ancho item / 2)
@@ -20,7 +20,7 @@ export const CustomCarouselStyles = StyleSheet.create({
     gap: GAP,
   },
   defaultContentContainer: {
-    paddingHorizontal: UI.LATERAL_PADDING,
+    paddingHorizontal: wp(12),
   },
   centeredContentContainer: {
     paddingHorizontal: SIDE_SPACING,

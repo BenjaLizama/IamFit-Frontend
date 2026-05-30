@@ -1,3 +1,4 @@
+import { hp } from "@/src/core/utils";
 import { COLOR } from "@/src/theme";
 import { StyleSheet } from "react-native";
 
@@ -17,12 +18,14 @@ export const IamfitIconStyles = StyleSheet.create({
 
     // El fondo si o si necesita un color de fondo
     backgroundColor: COLOR.FONDO,
-    borderRadius: 30,
+    borderRadius: hp(25),
   },
 
   icon: {
+    height: hp(95),
+    width: hp(95),
     borderColor: COLOR.AZUL_PRIMARIO,
     borderWidth: 4,
-    borderRadius: 30,
+    borderRadius: hp(25),
   },
 });

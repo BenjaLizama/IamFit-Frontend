@@ -1,3 +1,4 @@
+import { hp } from "@/src/core/utils";
 import { COLOR, UI } from "@/src/theme";
 import { FONT } from "@/src/theme/fonts";
 import { Platform, StyleSheet } from "react-native";
@@ -35,15 +36,15 @@ export const CustomTextStyle = StyleSheet.create({
 
   h1: {
     fontFamily: FONT.PRINCIPAL_BOLD,
-    fontSize: 32,
-    lineHeight: 38,
+    fontSize: hp(32),
+    lineHeight: hp(38),
     textAlign: "center",
     color: COLOR.TEXTO_PRINCIPAL,
   },
 
   h2: {
     fontFamily: FONT.PRINCIPAL_BOLD,
-    fontSize: 24,
+    fontSize: hp(24),
     color: COLOR.TEXTO_PRINCIPAL,
   },
 
@@ -53,7 +54,7 @@ export const CustomTextStyle = StyleSheet.create({
       ios: { marginBottom: 2 },
     }),
     fontFamily: FONT.PRINCIPAL_BOLD,
-    fontSize: 16,
+    fontSize: hp(16),
     color: COLOR.FONDO,
   },
   button_secondary: {
@@ -62,7 +63,7 @@ export const CustomTextStyle = StyleSheet.create({
       ios: { marginBottom: 2 },
     }),
     fontFamily: FONT.PRINCIPAL_BOLD,
-    fontSize: 16,
+    fontSize: hp(16),
     color: COLOR.TEXTO_PRINCIPAL,
   },
   button_destructive: {
@@ -71,7 +72,7 @@ export const CustomTextStyle = StyleSheet.create({
       ios: { marginBottom: 2 },
     }),
     fontFamily: FONT.PRINCIPAL_BOLD,
-    fontSize: 16,
+    fontSize: hp(16),
     color: COLOR.FONDO,
   },
   button_extra: {
@@ -80,7 +81,7 @@ export const CustomTextStyle = StyleSheet.create({
       ios: { marginBottom: 2 },
     }),
     fontFamily: FONT.PRINCIPAL_BOLD,
-    fontSize: 14,
+    fontSize: hp(14),
     color: COLOR.AZUL_PRIMARIO,
   },
 });

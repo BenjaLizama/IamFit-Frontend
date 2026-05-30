@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { DayCalendarCardStyles as styles } from "./DayCalendarCard.styles";
 import { DayCalendarCardProps } from "./DayCalendarCard.types";
 import { useDayCalendarCard } from "./useDayCalendarCard";
+import { hp } from "@/src/core/utils";
 
 export default function DayCalendarCard({
   month,
@@ -20,13 +21,13 @@ export default function DayCalendarCard({
 
   return (
     <View style={[styles.container, type ? styles[type] : null]}>
-      <CustomText type={textType} size={12}>
+      <CustomText type={textType} size={hp(12)}>
         {formatMonth}
       </CustomText>
-      <CustomText type={textType} size={24}>
+      <CustomText type={textType} size={hp(24)}>
         {dayNumber}
       </CustomText>
-      <CustomText type={textType} size={12}>
+      <CustomText type={textType} size={hp(12)}>
         {fomatDay}
       </CustomText>
     </View>

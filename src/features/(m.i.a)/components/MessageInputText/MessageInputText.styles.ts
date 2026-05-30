@@ -1,3 +1,4 @@
+import { hp, wp } from "@/src/core/utils";
 import { COLOR, FONT, UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
 
@@ -8,7 +9,7 @@ export const MessageInputTextStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    padding: 10,
+    padding: wp(10),
     borderRadius: UI.large_radius,
   },
 
@@ -17,13 +18,13 @@ export const MessageInputTextStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    gap: 5,
+    gap: wp(5),
   },
 
   input: {
     width: "80%",
-    paddingHorizontal: 15,
-    paddingVertical: 8,
+    paddingHorizontal: wp(15),
+    paddingVertical: hp(8),
     fontFamily: FONT.PRINCIPAL_REGULAR,
     color: COLOR.TEXTO_BOTON_PRIMARIO,
   },
@@ -32,8 +33,8 @@ export const MessageInputTextStyles = StyleSheet.create({
     position: "absolute",
     backgroundColor: COLOR.FONDO,
     width: "200%",
-    height: 50,
-    bottom: -20,
+    height: hp(50),
+    bottom: hp(-20),
     zIndex: -1,
   },
 });

@@ -5,7 +5,12 @@ import ExpandableScreen from "@/src/core/components/ExpandableScreen";
 import FilterInformationBox from "@/src/core/components/FilterInformationBox";
 import DailyExerciseCard from "@/src/features/routine/components/DailyExerciseCard";
 import ExerciseListItem from "@/src/features/routine/components/ExerciseListItem";
+<<<<<<< HEAD
 import { COLOR, UI } from "@/src/theme";
+=======
+import RoutineSummaryCard from "@/src/features/routine/components/RoutineSummaryCard";
+import { COLOR } from "@/src/theme";
+>>>>>>> df41489d8fb76de05402632f924f7da808a1ec01
 import React from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -87,11 +92,25 @@ export default function RoutineScreen() {
         children2={
           <View>
             <View>
+<<<<<<< HEAD
               <CustomText type="h1">Ejercicios</CustomText>
+=======
+              <RoutineSummaryCard
+                equipment="no"
+                estimatedTime={10}
+                exerciseCount={7}
+                level="alto po hermano"
+                nextSessionLabel="mañana oe"
+              ></RoutineSummaryCard>
+            </View>
+            <View>
+              <CustomText type="body">Ejercicios</CustomText>
+>>>>>>> df41489d8fb76de05402632f924f7da808a1ec01
 
               {misEjercicios.map((ejercicio) => {
                 const isChecked = checkedExerciseIds.includes(ejercicio.id);
 
+<<<<<<< HEAD
                 return (
                   <ExerciseListItem
                     key={ejercicio.id}
@@ -116,9 +135,27 @@ export default function RoutineScreen() {
                 Seleccionar rutina para editar
               </CustomButton>
             </View>
+=======
+              return (
+                <ExerciseListItem
+                  key={ejercicio.id}
+                  {...ejercicio}
+                  checked={isChecked}
+                  rightItem={
+                    <CustomCheckbox
+                      checked={isChecked}
+                      onPress={() => toggleExercise(ejercicio.id)}
+                      size={18}
+                    />
+                  }
+                />
+              );
+            })}
+>>>>>>> df41489d8fb76de05402632f924f7da808a1ec01
           </View>
-        }
-      ></ExpandableScreen>
+        </View>
+      }
+    />
     </ScrollView>
   );
 }
