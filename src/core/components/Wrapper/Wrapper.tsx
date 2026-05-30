@@ -15,8 +15,8 @@ export default function Wrapper({ children }: WrapperProps) {
         paddingRight: insets.right,
         paddingLeft: insets.left,
         backgroundColor: COLOR.FONDO,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: "stretch",
+        justifyContent: "flex-start",
         flex: 1,
       }}
     >

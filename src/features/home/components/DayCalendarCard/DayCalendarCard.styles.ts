@@ -1,14 +1,15 @@
 import { COLOR, UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
+import { hp, wp } from "@/src/core/utils";
 
 export const DayCalendarCardStyles = StyleSheet.create({
   container: {
-    height: 84,
-    width: 64,
+    height: hp(84),
+    width: wp(64),
     borderRadius: UI.meddium_radius,
     justifyContent: "center",
     alignItems: "center",
-    gap: 2,
+    gap: wp(2),
     backgroundColor: COLOR.FONDO_OPACO,
   },
 

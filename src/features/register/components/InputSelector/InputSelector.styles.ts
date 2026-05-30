@@ -1,11 +1,12 @@
-import { COLOR } from "@/src/theme";
+import { hp, wp } from "@/src/core/utils";
+import { COLOR, UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
 
-export const INPUT_SELECTOR_OPTION_HEIGHT = 60;
+export const INPUT_SELECTOR_OPTION_HEIGHT = hp(60);
 
 export const InputSelectorStyles = StyleSheet.create({
   accessibilityWrapper: {
-    height: 250,
+    height: hp(250),
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
@@ -14,14 +15,14 @@ export const InputSelectorStyles = StyleSheet.create({
   container: {
     width: "100%",
     overflow: "hidden",
-    borderRadius: 12,
+    borderRadius: UI.small_radius,
   },
 
   option: {
     height: INPUT_SELECTOR_OPTION_HEIGHT,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: wp(20),
   },
 
   optionDisabled: {
@@ -29,19 +30,19 @@ export const InputSelectorStyles = StyleSheet.create({
   },
 
   label: {
-    fontSize: 48,
+    fontSize: hp(48),
     color: COLOR.AZUL_PRIMARIO,
     textAlign: "center",
   },
 
   labelSelected: {
     fontWeight: "bold",
-    fontSize: 48,
+    fontSize: hp(48),
     color: COLOR.AZUL_PRIMARIO,
   },
 
   labelNeighbor: {
-    fontSize: 16,
+    fontSize: hp(16),
     color: COLOR.AZUL_SECUNDARIO,
     opacity: 0.7,
   },
@@ -51,8 +52,8 @@ export const InputSelectorStyles = StyleSheet.create({
   },
 
   helperText: {
-    fontSize: 12,
+    fontSize: hp(12),
     color: "#666",
-    marginTop: 2,
+    marginTop: hp(2),
   },
 });

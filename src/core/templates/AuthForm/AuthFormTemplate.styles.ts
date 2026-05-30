@@ -1,5 +1,6 @@
 import { UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
+import { hp, wp } from "@/src/core/utils";
 
 export const AuthFormTemplateStyles = StyleSheet.create({
   keyboardAvoidingView: {
@@ -24,7 +25,7 @@ export const AuthFormTemplateStyles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
-    minHeight: 0,
+    minHeight: hp(0),
     width: "100%",
     overflow: "hidden",
     alignItems: "center",
@@ -35,7 +36,7 @@ export const AuthFormTemplateStyles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
-    minHeight: 0,
+    minHeight: hp(0),
     width: "100%",
     overflow: "hidden",
     alignItems: "center",
@@ -46,7 +47,7 @@ export const AuthFormTemplateStyles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
-    minHeight: 0,
+    minHeight: hp(0),
     width: "100%",
     overflow: "hidden",
     alignItems: "center",

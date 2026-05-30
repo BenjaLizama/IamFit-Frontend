@@ -1,3 +1,4 @@
+import { wp } from "@/src/core/utils";
 import { useMemo, useRef } from "react";
 import { ScrollView } from "react-native";
 
@@ -7,8 +8,8 @@ export const useCustomCarousel = ({
   initialIndex?: number;
 }) => {
   const scrollRef = useRef<ScrollView>(null);
-  const ITEM_WIDTH = 64;
-  const GAP = 11;
+  const ITEM_WIDTH = wp(64);
+  const GAP = wp(11);
   const INTERVAL = ITEM_WIDTH + GAP;
   const initialContentOffset = useMemo(
     () => ({

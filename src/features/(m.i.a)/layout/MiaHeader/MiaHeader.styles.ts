@@ -1,5 +1,6 @@
 import { COLOR, UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
+import { hp, wp } from "@/src/core/utils";
 
 export const MiaHeaderStyles = StyleSheet.create({
   container: {
@@ -13,8 +14,8 @@ export const MiaHeaderStyles = StyleSheet.create({
   },
 
   iaLogoContainer: {
-    paddingHorizontal: 8,
-    paddingVertical: 8,
+    paddingHorizontal: wp(8),
+    paddingVertical: hp(8),
     borderRadius: UI.small_radius,
     backgroundColor: COLOR.FONDO_OPACO2,
   },

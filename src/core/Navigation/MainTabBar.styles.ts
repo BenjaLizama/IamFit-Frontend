@@ -1,16 +1,20 @@
+import { hp, wp } from "@/src/core/utils";
 import { COLOR } from "@/src/theme";
 import { StyleSheet } from "react-native";
 
 export const MainTabBarStyles = StyleSheet.create({
   container: {
     position: "relative",
+    alignSelf: "center",
     flexDirection: "row",
     backgroundColor: COLOR.AZUL_PRIMARIO,
-    width: "92%",
-    height: 60,
-    borderRadius: 44,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    width: "100%",
+    maxWidth: wp(350),
+    height: hp(60),
+    borderRadius: hp(42),
+    paddingHorizontal: wp(16),
+    paddingVertical: hp(10),
+    marginBottom: hp(12),
     justifyContent: "space-between",
     alignItems: "center",
   },
@@ -35,9 +39,9 @@ export const MainTabBarStyles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    height: 59,
-    width: 59,
-    borderRadius: 100,
+    height: hp(54),
+    width: wp(54),
+    borderRadius: 500,
     backgroundColor: "#FFFFFF32",
     borderColor: "#FFFFFF78",
     borderWidth: 1,

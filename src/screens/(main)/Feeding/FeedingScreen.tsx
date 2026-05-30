@@ -1,5 +1,6 @@
 import FilterSelector from "@/src/core/components/FilterSelector";
 import { useActiveFilter } from "@/src/core/hooks/useActiveFilter";
+import { hp, wp } from "@/src/core/utils";
 import FoodSummaryCard from "@/src/features/Feeding/components/FoodSummaryCard";
 import React from "react";
 import { View } from "react-native";
@@ -20,12 +21,12 @@ export default function FeedingScreen() {
   return (
     <ScrollView
       style={{
-        paddingHorizontal: 12,
-        gap: 12,
+        paddingHorizontal: wp(12),
+        gap: wp(12),
         flex: 1,
       }}
     >
-      <View style={{ marginTop: 24 }}>
+      <View style={{ marginTop: hp(24) }}>
         <FilterSelector
           filterList={filterList}
           onFilterChange={handleFilterChange}
