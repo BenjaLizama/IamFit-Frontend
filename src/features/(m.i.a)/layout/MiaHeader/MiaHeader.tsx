@@ -5,6 +5,7 @@ import { COLOR } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
 import { MiaHeaderStyles as styles } from "./MiaHeader.styles";
+import { hp } from "@/src/core/utils";
 
 export default function MiaHeader() {
   return (
@@ -15,13 +16,13 @@ export default function MiaHeader() {
 
       <View style={styles.textContainer}>
         <View style={styles.miaText}>
-          <CustomText type="button_secondary" color={COLOR.FONDO} size={18}>
+          <CustomText type="button_secondary" color={COLOR.FONDO} size={hp(18)}>
             M.I.A
           </CustomText>
           <Firework />
         </View>
 
-        <CustomText type="body" color={COLOR.FONDO} size={14}>
+        <CustomText type="body" color={COLOR.FONDO} size={hp(14)}>
           IAMFIT
         </CustomText>
       </View>

@@ -1,12 +1,13 @@
 import { COLOR, UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
+import { hp, wp } from "@/src/core/utils";
 
 export const FoodSummaryCardStyles = StyleSheet.create({
   container: {
     backgroundColor: COLOR.FONDO_OPACO,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingVertical: hp(15),
+    paddingHorizontal: wp(20),
     borderRadius: UI.large_radius,
-    gap: 5,
+    gap: wp(5),
   },
 });

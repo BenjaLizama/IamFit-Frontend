@@ -1,5 +1,5 @@
 import CustomText from "@/src/core/components/CustomText";
-import formatToLocalNumber from "@/src/core/utils";
+import formatToLocalNumber, { hp } from "@/src/core/utils";
 import React from "react";
 import { View } from "react-native";
 import CircleProgress from "../CircleProgress";
@@ -18,22 +18,22 @@ export default function ProgressTaskCard({
       <View style={styles.second}>
         <CircleProgress
           percentage={progressPercentage}
-          size={75}
-          strokeWidth={10}
+          size={hp(75)}
+          strokeWidth={hp(10)}
         />
       </View>
       <View style={styles.first}>
-        <CustomText type="button_primary" size={14}>
+        <CustomText type="button_primary" size={hp(14)}>
           ¡Tu progreso de hoy!
         </CustomText>
-        <CustomText type="button_primary" size={24}>
+        <CustomText type="button_primary" size={hp(24)}>
           {formatToLocalNumber(actualCalories)} kcal
         </CustomText>
         <View>
-          <CustomText type="button_primary" size={14}>
+          <CustomText type="button_primary" size={hp(14)}>
             Meta: {formatToLocalNumber(goal)} kcal
           </CustomText>
-          <CustomText type="button_primary" size={14}>
+          <CustomText type="button_primary" size={hp(14)}>
             Faltan: {formatToLocalNumber(goal - actualCalories)} kcal
           </CustomText>
         </View>

@@ -1,5 +1,6 @@
 import { COLOR, UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
+import { hp, wp } from "@/src/core/utils";
 
 export const DailyExerciseCardStyles = StyleSheet.create({
   container: {
@@ -7,7 +8,7 @@ export const DailyExerciseCardStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLOR.FONDO_OPACO,
     borderRadius: UI.meddium_radius,
-    minHeight: 96,
+    minHeight: hp(96),
     paddingHorizontal: UI.spacing.md,
     paddingVertical: UI.spacing.md,
     marginTop: UI.spacing.sm,
@@ -22,18 +23,18 @@ export const DailyExerciseCardStyles = StyleSheet.create({
   },
   image: {
     borderRadius: UI.small_radius,
-    width: 58,
-    height: 58,
+    width: wp(58),
+    height: hp(58),
   },
   content: {
     flex: 1,
     gap: UI.spacing.xxs,
   },
   titleText: {
-    lineHeight: 18,
+    lineHeight: hp(18),
   },
   detailText: {
-    lineHeight: 15,
+    lineHeight: hp(15),
   },
   dayContainer: {
     alignItems: "flex-end",

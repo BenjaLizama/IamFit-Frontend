@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { hp, wp } from "@/src/core/utils";
 
 export const ExpandableScreenStyles = StyleSheet.create({
   container: {},
@@ -30,7 +31,7 @@ export const ExpandableScreenStyles = StyleSheet.create({
   body: {
     flex: 1,
     backgroundColor: "white",
-    paddingHorizontal: 12,
+    paddingHorizontal: wp(12),
   },
   bodyKeyboard: {
     flex: 1,
