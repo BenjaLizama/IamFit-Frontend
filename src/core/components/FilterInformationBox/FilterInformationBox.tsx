@@ -4,6 +4,7 @@ import { View } from "react-native";
 import CustomText from "../CustomText";
 import { FilterInformationBoxStyles as styles } from "./FilterInformationBox.styles";
 import { FilterInformationBoxProps } from "./FilterInformationBox.types";
+import { hp } from "@/src/core/utils";
 
 export default function FilterInformationBox({
   children,
@@ -13,7 +14,7 @@ export default function FilterInformationBox({
     <View style={[styles.container, { backgroundColor: color }]}>
       <CustomText
         type="button_secondary"
-        size={12}
+        size={hp(12)}
         color={COLOR.FILTER_INFORMATION_BOX}
       >
         {children}

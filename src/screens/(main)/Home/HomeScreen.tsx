@@ -1,5 +1,6 @@
 import CustomCarousel from "@/src/core/components/CustomCarousel";
 import CustomText from "@/src/core/components/CustomText";
+import { hp } from "@/src/core/utils";
 import DailyGoalItem from "@/src/features/home/components/DailyGoalItem";
 import DailyGoalProgressItem from "@/src/features/home/components/DailyGoalProgressItem/DailyGoalProgressItem";
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
@@ -42,14 +43,14 @@ export default function HomeScreen() {
         <DayCalendarCard month="Agosto" dayNumber={14} dayText="Viernes" />
         <DayCalendarCard month="Agosto" dayNumber={15} dayText="Sabado" />
       </CustomCarousel>
-      <View style={{ marginTop: 12 }}>
+      <View style={{ marginTop: hp(12) }}>
         <ProgressTaskCard actualCalories={1615} goal={1900} />
       </View>
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          marginTop: 12,
+          marginTop: hp(12),
         }}
       >
         <DailyGoalItem

@@ -12,6 +12,9 @@ export const ExerciseListItemStyles = StyleSheet.create({
     borderBottomColor: COLOR.FONDO_OPACO2,
     borderBottomWidth: 1,
   },
+  checkedContainer: {
+    opacity: 0.6,
+  },
   content: {
     flex: 1,
     gap: UI.spacing.xxs,

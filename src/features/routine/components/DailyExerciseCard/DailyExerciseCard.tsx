@@ -3,6 +3,7 @@ import { COLOR } from "@/src/theme";
 import { Image, View } from "react-native";
 import { DailyExerciseCardStyles as styles } from "./DailyExerciseCard.styles";
 import { DailyExerciseCardProps } from "./DailyExerciseCard.types";
+import { hp } from "@/src/core/utils";
 
 export default function DailyExerciseCard({
   exerciseName,
@@ -18,13 +19,13 @@ export default function DailyExerciseCard({
         <Image style={styles.image} source={{ uri: pathImage }} />
       </View>
       <View style={styles.content}>
-        <CustomText type="button_secondary" size={15} style={styles.titleText}>
+        <CustomText type="button_secondary" size={hp(15)} style={styles.titleText}>
           {exerciseName}
         </CustomText>
 
         <CustomText
           type="body"
-          size={12}
+          size={hp(12)}
           color={COLOR.TEXTO_SECUNDARIO}
           style={styles.detailText}
         >
@@ -36,7 +37,7 @@ export default function DailyExerciseCard({
         {intensity && (
           <CustomText
             type="body"
-            size={12}
+            size={hp(12)}
             color={COLOR.TEXTO_SECUNDARIO}
             style={styles.detailText}
           >

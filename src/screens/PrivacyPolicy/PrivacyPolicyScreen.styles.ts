@@ -1,35 +1,36 @@
 import { COLOR } from "@/src/theme";
 import { StyleSheet } from "react-native";
+import { hp, wp } from "@/src/core/utils";
 
 export const PrivacyPolicyScreenStyles = StyleSheet.create({
   container: {},
 
   title: {
-    marginBottom: 18,
+    marginBottom: hp(18),
     alignItems: "center",
   },
 
   lastUpdateSubtitle: {
-    marginBottom: 18,
+    marginBottom: hp(18),
     alignItems: "center",
   },
 
   first: {
-    marginBottom: 22,
+    marginBottom: hp(22),
   },
 
   itemContainer: {
     flexDirection: "row",
-    marginTop: 5,
-    marginLeft: 10,
+    marginTop: hp(5),
+    marginLeft: wp(10),
   },
 
   element: {
-    marginBottom: 22,
+    marginBottom: hp(22),
   },
 
   hr: {
-    height: 2,
+    height: hp(2),
     alignSelf: "center",
     color: COLOR.AZUL_SECUNDARIO,
   },
