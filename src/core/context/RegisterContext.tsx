@@ -2,13 +2,13 @@ import React, { createContext, useContext, useState } from "react";
 
 // 1. EL MOLDE DE LOS DATOS: Aquí declaras todo lo que vas a guardar
 export interface RegisterData {
-  age?: number;
-  height?: number;
-  weight?: number;
-  sex?: "MALE" | "FEMALE";
-  nickname?: string;
-  email?: string;
-  password?: string;
+  age: number;
+  height: number;
+  weight: number;
+  sex: "MALE" | "FEMALE";
+  nickname: string;
+  email: string;
+  password: string;
 }
 
 // Los métodos que el contexto expondrá a las pantallas
