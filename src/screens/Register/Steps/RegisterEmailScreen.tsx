@@ -1,4 +1,5 @@
 import { useRegisterInput } from "@/src/core/hooks/useRegisterInput";
+import { isValidEmail } from "@/src/core/utils/validations";
 import React from "react";
 import RegisterStepScreen from "./RegisterStepScreen";
 
@@ -22,6 +23,7 @@ export default function RegisterEmailScreen() {
       progress={75}
       stepLabel="Paso 6 de 8"
       title={"Tu correo\nelectrónico"}
+      disabled={!isValidEmail(value)}
     />
   );
 }

@@ -11,4 +11,5 @@ export interface RegisterStepScreenProps {
   progress?: number;
   buttonLabel?: string;
   onButtonPress?: () => void;
+  disabled: boolean;
 }

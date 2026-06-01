@@ -3,7 +3,7 @@ import CustomFormInput from "@/src/core/components/CustomFormInput";
 import CustomText from "@/src/core/components/CustomText";
 import { COLOR } from "@/src/theme";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useCallback } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -16,29 +16,34 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { RegisterStepStyles as styles } from "./RegisterStep.styles";
 import { RegisterStepScreenProps } from "./RegisterStep.types";
 
+// Eliminamos la interfaz externa 'ExtendedRegisterStepScreenProps' para no pelear con el compilador.
+// En su lugar, usamos la combinación directamente en la declaración de la función.
 export default function RegisterStepScreen({
   title,
   stepLabel,
   helperText,
   inputProps,
-  inputComponent, // Se conserva por compatibilidad, pero priorizaremos inputProps
+  inputComponent,
   nextRoute,
   progress = 0,
   buttonLabel = "Continuar",
   onButtonPress,
   onPrivacyPolicyPress,
-}: RegisterStepScreenProps & { onPrivacyPolicyPress?: () => void }) {
+  disabled = false, // 👈 TypeScript ahora lo asimila sin problemas aquí
+}: RegisterStepScreenProps & {
+  onPrivacyPolicyPress?: () => void;
+  disabled?: boolean;
+}) {
   const router = useRouter();
   const inputRef = React.useRef<TextInput>(null);
 
-  // Simplificamos la acción: ya no requiere useMemo ya que las funciones nativas son estables
-  const goNext = () => {
+  const goNext = useCallback(() => {
     if (typeof onButtonPress === "function") {
       onButtonPress();
     } else {
       router.push(nextRoute as any);
     }
-  };
+  }, [onButtonPress, nextRoute, router]);
 
   return (
     <SafeAreaView
@@ -88,14 +93,18 @@ export default function RegisterStepScreen({
                 onSubmitEditing={goNext}
                 returnKeyType="done"
                 submitBehavior="submit"
-                {...inputProps} // Aquí se esparcen de manera segura value, onChangeText, secureTextEntry, etc.
+                {...inputProps}
               />
             )}
           </View>
 
-          {/* Botón de Acción Principal */}
+          {/* Botón de Acción Principal Controlado */}
           <View style={styles.actions}>
-            <CustomButton type="primary" onPress={goNext}>
+            <CustomButton
+              type="primary"
+              onPress={goNext}
+              disabled={disabled} // 👈 Conectado limpiamente
+            >
               {buttonLabel}
             </CustomButton>
           </View>
