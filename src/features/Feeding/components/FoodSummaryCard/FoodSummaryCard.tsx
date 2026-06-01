@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { FoodSummaryCardStyles as styles } from "./FoodSummaryCard.styles";
 import { FoodSummaryCardProps } from "./FoodSummaryCard.types";
 import { useFoodSummaryCard } from "./useFoodSummaryCard";
+import { hp } from "@/src/core/utils";
 
 export default function FoodSummaryCard({
   tipoComida,
@@ -23,7 +24,7 @@ export default function FoodSummaryCard({
         >{`${tipoComida} - ${calorias} kcal`}</CustomText>
       </View>
       <View>
-        <CustomText size={18} type="body">
+        <CustomText size={hp(18)} type="body">
           {descripcion}
         </CustomText>
       </View>

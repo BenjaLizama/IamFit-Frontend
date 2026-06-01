@@ -1,3 +1,4 @@
+import { RegisterProvider } from "@/src/core/context/RegisterContext";
 import { FONTS_TO_LOAD } from "@/src/theme";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -5,6 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function RootLayout() {
   const [fontsLoaded, fontsError] = useFonts(FONTS_TO_LOAD);
@@ -24,14 +26,18 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      {/* StatusBar */}
-      <StatusBar barStyle={"dark-content"} />
+      <RegisterProvider>
+        <SafeAreaProvider>
+          {/* StatusBar */}
+          <StatusBar barStyle={"dark-content"} />
 
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(main)" />
-      </Stack>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(main)" />
+          </Stack>
+        </SafeAreaProvider>
+      </RegisterProvider>
     </GestureHandlerRootView>
   );
 }

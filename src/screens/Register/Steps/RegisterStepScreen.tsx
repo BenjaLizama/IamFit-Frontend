@@ -1,11 +1,9 @@
-import { BottomSheet, useBottomSheet } from "@/src/core/components/BottomSheet";
 import CustomButton from "@/src/core/components/CustomButton";
 import CustomFormInput from "@/src/core/components/CustomFormInput";
 import CustomText from "@/src/core/components/CustomText";
-import Wrapper from "@/src/core/components/Wrapper";
-import PrivacyPolicyScreen from "@/src/screens/PrivacyPolicy";
+import { COLOR } from "@/src/theme";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useCallback } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -14,9 +12,12 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { RegisterStepStyles as styles } from "./RegisterStep.styles";
 import { RegisterStepScreenProps } from "./RegisterStep.types";
 
+// Eliminamos la interfaz externa 'ExtendedRegisterStepScreenProps' para no pelear con el compilador.
+// En su lugar, usamos la combinación directamente en la declaración de la función.
 export default function RegisterStepScreen({
   title,
   stepLabel,
@@ -26,18 +27,29 @@ export default function RegisterStepScreen({
   nextRoute,
   progress = 0,
   buttonLabel = "Continuar",
-}: RegisterStepScreenProps) {
+  onButtonPress,
+  onPrivacyPolicyPress,
+  disabled = false, // 👈 TypeScript ahora lo asimila sin problemas aquí
+}: RegisterStepScreenProps & {
+  onPrivacyPolicyPress?: () => void;
+  disabled?: boolean;
+}) {
   const router = useRouter();
   const inputRef = React.useRef<TextInput>(null);
 
-  const goNext = () => {
-    router.push(nextRoute);
-  };
-
-  const { openSheet, sheetRef } = useBottomSheet();
+  const goNext = useCallback(() => {
+    if (typeof onButtonPress === "function") {
+      onButtonPress();
+    } else {
+      router.push(nextRoute as any);
+    }
+  }, [onButtonPress, nextRoute, router]);
 
   return (
-    <Wrapper>
+    <SafeAreaView
+      edges={["top", "bottom", "left", "right"]}
+      style={{ flex: 1, backgroundColor: COLOR.FONDO }}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingView}
@@ -50,6 +62,7 @@ export default function RegisterStepScreen({
           showsVerticalScrollIndicator={false}
           style={styles.scrollView}
         >
+          {/* Barra Superior de Progreso */}
           <View style={styles.topBar}>
             <Pressable onPress={() => router.back()} style={styles.backButton}>
               <CustomText type="body_interactive">Volver</CustomText>
@@ -62,6 +75,7 @@ export default function RegisterStepScreen({
             <CustomText type="body_secondary">{stepLabel}</CustomText>
           </View>
 
+          {/* Área de Preguntas e Instrucciones */}
           <View style={styles.questionArea}>
             <CustomText type="h1">{title}</CustomText>
             {helperText ? (
@@ -69,6 +83,7 @@ export default function RegisterStepScreen({
             ) : null}
           </View>
 
+          {/* Área Dinámica de Inputs */}
           <View style={styles.inputArea}>
             {inputComponent ? (
               inputComponent
@@ -76,33 +91,40 @@ export default function RegisterStepScreen({
               <CustomFormInput
                 ref={inputRef}
                 onSubmitEditing={goNext}
-                returnKeyType="next"
+                returnKeyType="done"
                 submitBehavior="submit"
                 {...inputProps}
               />
             )}
           </View>
 
+          {/* Botón de Acción Principal Controlado */}
           <View style={styles.actions}>
-            <CustomButton onPress={goNext} type="primary">
+            <CustomButton
+              type="primary"
+              onPress={goNext}
+              disabled={disabled} // 👈 Conectado limpiamente
+            >
               {buttonLabel}
             </CustomButton>
           </View>
-          <CustomText type="body" style={{ textAlign: "center" }}>
+
+          {/* Textos Legales Inferiores */}
+          <CustomText
+            type="body"
+            style={{ textAlign: "center", marginTop: 20 }}
+          >
             Al crear una cuenta, acepta nuestra{" "}
-            <CustomText type="body_interactive" onPress={openSheet}>
+            <CustomText type="body_interactive" onPress={onPrivacyPolicyPress}>
               Política de Privacidad
             </CustomText>{" "}
             y los{" "}
-            <CustomText type="body_interactive" onPress={openSheet}>
+            <CustomText type="body_interactive" onPress={onPrivacyPolicyPress}>
               Términos de Servicio.
             </CustomText>
           </CustomText>
         </ScrollView>
       </KeyboardAvoidingView>
-      <BottomSheet ref={sheetRef}>
-        <PrivacyPolicyScreen />
-      </BottomSheet>
-    </Wrapper>
+    </SafeAreaView>
   );
 }

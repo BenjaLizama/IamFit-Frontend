@@ -1,37 +1,36 @@
+import { hp } from "@/src/core/utils";
 import { COLOR } from "@/src/theme";
 import { StyleSheet } from "react-native";
 
 export const MainTabIconStyles = StyleSheet.create({
   container: {
     position: "relative",
-    height: 48,
-    width: 48,
+    height: hp(48),
+    width: hp(48),
     backgroundColor: COLOR.BLANCO_TRANSPARENTE,
-    borderRadius: 100,
+    borderRadius: hp(90),
     justifyContent: "center",
     alignItems: "center",
   },
 
   selected: {
     position: "absolute",
-    height: 3,
-    width: 3,
-    borderRadius: 100,
+    height: hp(3),
+    width: hp(3),
+    borderRadius: hp(100),
     backgroundColor: COLOR.FONDO,
-    bottom: 5,
+    bottom: hp(5),
   },
 
   big: {
-    height: 70,
-    width: 70,
+    height: hp(70),
+    width: hp(70),
     backgroundColor: COLOR.BOTON_TAB_NAVEGACION_BIG,
-    boxShadow: [
-      {
-        offsetX: 0,
-        offsetY: 4,
-        blurRadius: 5,
-        color: "#0000003a",
-      },
-    ],
+    borderRadius: hp(35),
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.22,
+    shadowRadius: 5,
+    elevation: 5,
   },
 });

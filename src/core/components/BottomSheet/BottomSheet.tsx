@@ -1,3 +1,4 @@
+import { hp, wp } from "@/src/core/utils";
 import GorhomBottomSheet, {
   BottomSheetScrollView,
   useBottomSheetSpringConfigs,
@@ -29,7 +30,11 @@ export const BottomSheet = forwardRef<GorhomBottomSheet, BottomSheetProps>(
         animationConfigs={animationConfigs}
       >
         <BottomSheetScrollView
-          contentContainerStyle={{ padding: 24, paddingBottom: 60 }}
+          contentContainerStyle={{
+            paddingHorizontal: wp(24),
+            paddingTop: hp(24),
+            paddingBottom: hp(60),
+          }}
           showsVerticalScrollIndicator={false}
         >
           {children}

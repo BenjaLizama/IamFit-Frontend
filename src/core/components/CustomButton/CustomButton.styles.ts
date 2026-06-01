@@ -1,11 +1,11 @@
 import { COLOR, UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
+import { hp, wp } from "@/src/core/utils";
 
 export const CustomButtonStyles = StyleSheet.create({
   button_common: {
-    height: 58,
-    width: 280,
-    boxSizing: "border-box",
+    height: hp(58),
+    width: wp(280),
     paddingTop: UI.padding_top,
     paddingBottom: UI.padding_bottom,
     paddingLeft: UI.padding_left,
@@ -34,8 +34,8 @@ export const CustomButtonStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLOR.FONDO,
     borderRadius: UI.button_radius,
-    paddingHorizontal: 10,
-    paddingVertical: 15,
+    paddingHorizontal: wp(10),
+    paddingVertical: hp(15),
   },
 
   loading_primary: { backgroundColor: COLOR.AZUL_PRIMARIO },

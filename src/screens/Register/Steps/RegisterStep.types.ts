@@ -10,4 +10,6 @@ export interface RegisterStepScreenProps {
   nextRoute: Href;
   progress?: number;
   buttonLabel?: string;
+  onButtonPress?: () => void;
+  disabled: boolean;
 }

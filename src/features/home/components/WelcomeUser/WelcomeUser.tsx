@@ -10,7 +10,7 @@ export default function WelcomeUser({ name }: WelcomeUserProps) {
 
   return (
     <View style={styles.container}>
-      <CustomText type="h2">
+      <CustomText type="h2" style={{ textAlign: "left" }}>
         {`Buenas tardes, ${formatedName}, aqui esta tu resumen diario.`}
       </CustomText>
     </View>

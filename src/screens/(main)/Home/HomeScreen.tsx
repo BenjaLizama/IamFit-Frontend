@@ -1,8 +1,6 @@
 import CustomCarousel from "@/src/core/components/CustomCarousel";
 import CustomText from "@/src/core/components/CustomText";
-import FilterInformationBox from "@/src/core/components/FilterInformationBox/FilterInformationBox";
-import FilterSelector from "@/src/core/components/FilterSelector";
-import { useActiveFilter } from "@/src/core/hooks/useActiveFilter";
+import { hp } from "@/src/core/utils";
 import DailyGoalItem from "@/src/features/home/components/DailyGoalItem";
 import DailyGoalProgressItem from "@/src/features/home/components/DailyGoalProgressItem/DailyGoalProgressItem";
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
@@ -11,14 +9,12 @@ import WelcomeUser from "@/src/features/home/components/WelcomeUser";
 import { COLOR, UI } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { HomeScreenStyles as styles } from "./HomeScreen.styles";
 
 export default function HomeScreen() {
-  const filters = ["Todos", "En progreso", "Completado"];
-  const { activeFilter, handleFilterChange } = useActiveFilter(filters[0]);
-
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <WelcomeUser name="Benjamín" />
       <CustomCarousel mode="centered" initialIndex={7}>
         {/* --- UNA SEMANA ANTES --- */}
@@ -47,14 +43,14 @@ export default function HomeScreen() {
         <DayCalendarCard month="Agosto" dayNumber={14} dayText="Viernes" />
         <DayCalendarCard month="Agosto" dayNumber={15} dayText="Sabado" />
       </CustomCarousel>
-      <View style={{ marginTop: 12 }}>
+      <View style={{ marginTop: hp(12) }}>
         <ProgressTaskCard actualCalories={1615} goal={1900} />
       </View>
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          marginTop: 12,
+          marginTop: hp(12),
         }}
       >
         <DailyGoalItem
@@ -90,23 +86,6 @@ export default function HomeScreen() {
           color={COLOR.WARNING}
         />
       </View>
-      <View>
-        <FilterSelector
-          onFilterChange={handleFilterChange}
-          filterList={["Todos", "En progreso", "Completado"]}
-        />
-      </View>
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 12,
-        }}
-      >
-        <FilterInformationBox color={COLOR.AZUL_PRIMARIO}>
-          Completado
-        </FilterInformationBox>
-      </View>
-    </View>
+    </ScrollView>
   );
 }

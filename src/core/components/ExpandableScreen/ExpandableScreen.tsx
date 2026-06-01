@@ -1,6 +1,16 @@
 import * as Haptics from "expo-haptics";
-import React, { useRef } from "react";
-import { Dimensions, Modal, Pressable, StyleSheet, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Dimensions,
+  Keyboard,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { ExpandableScreenStyles as styles } from "./ExpandableScreen.styles";
 import { ExpandableScreenProps } from "./ExpandableScreen.types";
@@ -15,8 +25,11 @@ export default function ExpandableScreen({
   initialRadius = 20,
   onExpandedChange,
   top = 0,
+  variant = "default",
+  keyboardVerticalOffset,
 }: ExpandableScreenProps) {
   const cardRef = useRef<View>(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   const {
     isVisible,
@@ -43,6 +56,7 @@ export default function ExpandableScreen({
   const handleExpand = () => {
     void Haptics.selectionAsync();
     onExpandedChange?.(true);
+    setKeyboardHeight(0);
 
     cardRef.current?.measureInWindow((x, y, width, height) => {
       expand(x, y, width, height);
@@ -52,8 +66,33 @@ export default function ExpandableScreen({
   const handleCollapse = () => {
     void Haptics.selectionAsync();
     onExpandedChange?.(false);
+    setKeyboardHeight(0);
     collapse();
   };
+
+  const effectiveKeyboardVerticalOffset =
+    keyboardVerticalOffset ?? (variant === "chat" ? initialDims.h || 0 : 0);
+
+  useEffect(() => {
+    if (!isExpanded) return;
+    setKeyboardHeight(0);
+
+    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+
+    const showSub = Keyboard.addListener(showEvent, (event) => {
+      setKeyboardHeight(event.endCoordinates?.height ?? 0);
+    });
+
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, [isExpanded]);
 
   return (
     <View style={styles.container}>
@@ -116,9 +155,35 @@ export default function ExpandableScreen({
             </Pressable>
 
             <Animated.View entering={FadeIn.delay(200)} style={styles.body}>
-              <Animated.View style={bodyAnimatedStyle}>
-                {children2}
-              </Animated.View>
+              <KeyboardAvoidingView
+                behavior={
+                  Platform.OS === "ios"
+                    ? "padding"
+                    : variant === "chat"
+                      ? "position"
+                      : "height"
+                }
+                style={styles.bodyKeyboard}
+                keyboardVerticalOffset={effectiveKeyboardVerticalOffset}
+              >
+                {variant === "chat" ? (
+                  <Animated.View style={[styles.bodyKeyboard, bodyAnimatedStyle]}>
+                    {children2}
+                  </Animated.View>
+                ) : (
+                  <ScrollView
+                    style={styles.bodyScroll}
+                    contentContainerStyle={styles.bodyScrollContent}
+                    keyboardShouldPersistTaps="handled"
+                    automaticallyAdjustKeyboardInsets
+                    showsVerticalScrollIndicator={false}
+                  >
+                    <Animated.View style={bodyAnimatedStyle}>
+                      {children2}
+                    </Animated.View>
+                  </ScrollView>
+                )}
+              </KeyboardAvoidingView>
             </Animated.View>
           </Animated.View>
         </View>

@@ -1,13 +1,14 @@
 import { COLOR, UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
+import { hp, wp } from "@/src/core/utils";
 
 export const FilterSelectorStyles = StyleSheet.create({
   container: {
     borderWidth: 2,
     borderColor: COLOR.FONDO_OPACO2,
     borderRadius: UI.extra_large_radius,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: wp(8),
+    paddingVertical: hp(2),
   },
 
   selectedContainer: {

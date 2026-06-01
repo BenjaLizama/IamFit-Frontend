@@ -3,6 +3,7 @@ import React from "react";
 import { View } from "react-native";
 import { DailyGoalItemStyles as styles } from "./DailyGoalItem.styles";
 import { DailyGoalItemProps } from "./DailyGoalItem.type";
+import { hp } from "@/src/core/utils";
 
 export default function DailyGoalItem({
   item,
@@ -11,12 +12,12 @@ export default function DailyGoalItem({
 }: DailyGoalItemProps) {
   return (
     <View style={styles.container}>
-      <CustomText type="button_primary" color={color} size={24}>
+      <CustomText type="button_primary" color={color} size={hp(24)}>
         {item}
       </CustomText>
       <CustomText
         type="body_secondary"
-        size={14}
+        size={hp(14)}
         style={{ textAlign: "center" }}
       >
         {text}

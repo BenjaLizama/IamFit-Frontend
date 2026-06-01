@@ -1,3 +1,4 @@
+import { hp } from "@/src/core/utils";
 import { COLOR, UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
 
@@ -33,15 +34,15 @@ export const RegisterStepStyles = StyleSheet.create({
 
   progressTrack: {
     width: "100%",
-    height: 8,
-    borderRadius: 999,
+    height: hp(8),
+    borderRadius: UI.extra_large_radius,
     backgroundColor: "#E9EEF6",
     overflow: "hidden",
   },
 
   progressFill: {
     height: "100%",
-    borderRadius: 999,
+    borderRadius: UI.extra_large_radius,
     backgroundColor: COLOR.AZUL_PRIMARIO,
   },
 
