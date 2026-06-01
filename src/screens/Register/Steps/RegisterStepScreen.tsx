@@ -1,12 +1,9 @@
 import CustomButton from "@/src/core/components/CustomButton";
 import CustomFormInput from "@/src/core/components/CustomFormInput";
 import CustomText from "@/src/core/components/CustomText";
-import { BottomSheet } from "@/src/core/components/BottomSheet";
-import { useBottomSheet } from "@/src/core/components/BottomSheet/useBottomSheet";
-import PrivacyPolicyScreen from "@/src/screens/PrivacyPolicy";
 import { COLOR } from "@/src/theme";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useMemo } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -28,15 +25,29 @@ export default function RegisterStepScreen({
   nextRoute,
   progress = 0,
   buttonLabel = "Continuar",
-}: RegisterStepScreenProps) {
+  onButtonPress,
+  onPrivacyPolicyPress,
+}: RegisterStepScreenProps & { onPrivacyPolicyPress?: () => void }) {
   const router = useRouter();
   const inputRef = React.useRef<TextInput>(null);
-  const { sheetRef, openSheet } = useBottomSheet();
 
-  const goNext = () => {
-    router.push(nextRoute);
-  };
+  // Memoizar el inputComponent para evitar rerenders inconsistentes
+  const memoizedInputComponent = useMemo(
+    () => inputComponent,
+    [inputComponent],
+  );
 
+  // Función de navegación directa sin efectos colaterales en los hooks
+  const goNext = useMemo(
+    () => () => {
+      if (typeof onButtonPress === "function") {
+        onButtonPress();
+      } else {
+        router.push(nextRoute as any);
+      }
+    },
+    [onButtonPress, nextRoute, router],
+  );
 
   return (
     <SafeAreaView
@@ -55,6 +66,7 @@ export default function RegisterStepScreen({
           showsVerticalScrollIndicator={false}
           style={styles.scrollView}
         >
+          {/* Barra Superior de Progreso */}
           <View style={styles.topBar}>
             <Pressable onPress={() => router.back()} style={styles.backButton}>
               <CustomText type="body_interactive">Volver</CustomText>
@@ -67,6 +79,7 @@ export default function RegisterStepScreen({
             <CustomText type="body_secondary">{stepLabel}</CustomText>
           </View>
 
+          {/* Área de Preguntas e Instrucciones */}
           <View style={styles.questionArea}>
             <CustomText type="h1">{title}</CustomText>
             {helperText ? (
@@ -74,10 +87,11 @@ export default function RegisterStepScreen({
             ) : null}
           </View>
 
+          {/* Área Dinámica de Inputs */}
           <View style={styles.inputArea}>
-            {inputComponent ? (
-              inputComponent
-            ) : (
+            {memoizedInputComponent}
+
+            {memoizedInputComponent === undefined && (
               <CustomFormInput
                 ref={inputRef}
                 onSubmitEditing={goNext}
@@ -88,33 +102,29 @@ export default function RegisterStepScreen({
             )}
           </View>
 
+          {/* Botón de Acción Principal */}
           <View style={styles.actions}>
-            <CustomButton onPress={goNext} type="primary">
+            <CustomButton type="primary" onPress={goNext}>
               {buttonLabel}
             </CustomButton>
           </View>
-          <CustomText type="body" style={{ textAlign: "center" }}>
+
+          {/* Textos Legales Inferiores */}
+          <CustomText
+            type="body"
+            style={{ textAlign: "center", marginTop: 20 }}
+          >
             Al crear una cuenta, acepta nuestra{" "}
-            <CustomText
-              type="body_interactive"
-              onPress={openSheet}
-            >
+            <CustomText type="body_interactive" onPress={onPrivacyPolicyPress}>
               Política de Privacidad
             </CustomText>{" "}
             y los{" "}
-            <CustomText
-              type="body_interactive"
-              onPress={openSheet}
-            >
+            <CustomText type="body_interactive" onPress={onPrivacyPolicyPress}>
               Términos de Servicio.
             </CustomText>
           </CustomText>
         </ScrollView>
       </KeyboardAvoidingView>
-
-      <BottomSheet ref={sheetRef}>
-        <PrivacyPolicyScreen />
-      </BottomSheet>
     </SafeAreaView>
   );
 }

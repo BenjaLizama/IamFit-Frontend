@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { ActivityIndicator, Animated, Pressable } from "react-native";
 import CustomText from "../CustomText";
 import { CustomButtonStyles as styles } from "./CustomButton.styles";
@@ -13,7 +13,11 @@ export default function CustomButton({
   widht,
   onPress,
 }: CustomButtonProps) {
+  // Consumimos el hook animado
   const { LOADED_COLORS, scaleValue, onPressIn, onPressOut } = ShrinkButton();
+
+  // Memorizamos el estilo dinámico del ancho para evitar recalculaciones pesadas de layout en cada renderizado de letra
+  const widthStyle = useMemo(() => (widht ? { width: widht } : null), [widht]);
 
   return (
     <Animated.View style={[{ transform: [{ scale: scaleValue }] }]}>
@@ -24,7 +28,7 @@ export default function CustomButton({
         onPressOut={onPressOut}
         style={[
           styles[type],
-          widht ? { width: widht } : null,
+          widthStyle,
           type !== "extra" && styles.button_common,
           (disabled || isLoading) && styles.disabled,
         ]}

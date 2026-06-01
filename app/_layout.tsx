@@ -1,3 +1,4 @@
+import { RegisterProvider } from "@/src/core/context/RegisterContext";
 import { FONTS_TO_LOAD } from "@/src/theme";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -25,16 +26,18 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        {/* StatusBar */}
-        <StatusBar barStyle={"dark-content"} />
+      <RegisterProvider>
+        <SafeAreaProvider>
+          {/* StatusBar */}
+          <StatusBar barStyle={"dark-content"} />
 
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(main)" />
-        </Stack>
-      </SafeAreaProvider>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(main)" />
+          </Stack>
+        </SafeAreaProvider>
+      </RegisterProvider>
     </GestureHandlerRootView>
   );
 }
