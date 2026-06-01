@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useRegisterForm } from "@/src/core/context/RegisterContext";
+import React from "react";
 import InputSelector from "../../../features/register/components/InputSelector";
 import RegisterStepScreen from "./RegisterStepScreen";
 
@@ -10,22 +11,30 @@ const SEX_OPTIONS = [
 ];
 
 export default function RegisterSexScreen() {
-  const [selectedSex, setSelectedSex] = useState(INITIAL_SEX);
+  const { formData, updateData } = useRegisterForm();
+
+  const handleSexChange = (val: string) => {
+    updateData({ sex: val as "MALE" | "FEMALE" });
+  };
+
+  const currentSexValue = formData.sex || INITIAL_SEX;
 
   return (
     <RegisterStepScreen
-      inputComponent={
-        <InputSelector
-          maxVisibleOptions={3}
-          onChange={setSelectedSex}
-          options={SEX_OPTIONS}
-          value={selectedSex}
-        />
-      }
       nextRoute="/register/nickname"
       progress={50}
       stepLabel="Paso 4 de 8"
       title={"Selecciona tu\nsexo"}
+      disabled={false}
+      inputComponent={
+        <InputSelector
+          key={currentSexValue}
+          maxVisibleOptions={2}
+          onChange={handleSexChange}
+          options={SEX_OPTIONS}
+          value={currentSexValue}
+        />
+      }
     />
   );
 }
