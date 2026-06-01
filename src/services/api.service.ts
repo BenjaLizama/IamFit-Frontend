@@ -1,4 +1,4 @@
-export const BACKEND_IP = "192.168.1.35";
+export const BACKEND_IP = " 192.168.1.5";
 
 export const handleResponse = async (response: Response) => {
   if (!response.ok) {
