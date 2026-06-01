@@ -2,20 +2,20 @@ import { COLOR } from "@/src/theme";
 import { useCallback, useMemo, useRef } from "react";
 import { Animated } from "react-native";
 
-export const ShrinkButton = () => {
-  // 1. Memorizamos el objeto de colores para que no se recree en cada render
+// Cambiamos el nombre a convención estándar de React Hooks
+export const useShrinkButton = () => {
   const LOADED_COLORS: Record<string, string> = useMemo(
     () => ({
       primary: COLOR.FONDO,
       secondary: COLOR.TEXTO_PRINCIPAL,
       destructive: COLOR.FONDO,
+      extra: COLOR.TEXTO_PRINCIPAL, // Agregado "extra" por si acaso para evitar que sea undefined
     }),
     [],
   );
 
   const scaleValue = useRef(new Animated.Value(1)).current;
 
-  // 2. CONGELAMOS onPressIn con useCallback
   const onPressIn = useCallback(() => {
     Animated.spring(scaleValue, {
       toValue: 0.95,
@@ -23,7 +23,6 @@ export const ShrinkButton = () => {
     }).start();
   }, [scaleValue]);
 
-  // 3. CONGELAMOS onPressOut con useCallback
   const onPressOut = useCallback(() => {
     Animated.spring(scaleValue, {
       toValue: 1,

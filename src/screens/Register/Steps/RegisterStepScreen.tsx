@@ -3,7 +3,7 @@ import CustomFormInput from "@/src/core/components/CustomFormInput";
 import CustomText from "@/src/core/components/CustomText";
 import { COLOR } from "@/src/theme";
 import { useRouter } from "expo-router";
-import React, { useMemo } from "react";
+import React from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -21,7 +21,7 @@ export default function RegisterStepScreen({
   stepLabel,
   helperText,
   inputProps,
-  inputComponent,
+  inputComponent, // Se conserva por compatibilidad, pero priorizaremos inputProps
   nextRoute,
   progress = 0,
   buttonLabel = "Continuar",
@@ -31,23 +31,14 @@ export default function RegisterStepScreen({
   const router = useRouter();
   const inputRef = React.useRef<TextInput>(null);
 
-  // Memoizar el inputComponent para evitar rerenders inconsistentes
-  const memoizedInputComponent = useMemo(
-    () => inputComponent,
-    [inputComponent],
-  );
-
-  // Función de navegación directa sin efectos colaterales en los hooks
-  const goNext = useMemo(
-    () => () => {
-      if (typeof onButtonPress === "function") {
-        onButtonPress();
-      } else {
-        router.push(nextRoute as any);
-      }
-    },
-    [onButtonPress, nextRoute, router],
-  );
+  // Simplificamos la acción: ya no requiere useMemo ya que las funciones nativas son estables
+  const goNext = () => {
+    if (typeof onButtonPress === "function") {
+      onButtonPress();
+    } else {
+      router.push(nextRoute as any);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -89,15 +80,15 @@ export default function RegisterStepScreen({
 
           {/* Área Dinámica de Inputs */}
           <View style={styles.inputArea}>
-            {memoizedInputComponent}
-
-            {memoizedInputComponent === undefined && (
+            {inputComponent ? (
+              inputComponent
+            ) : (
               <CustomFormInput
                 ref={inputRef}
                 onSubmitEditing={goNext}
-                returnKeyType="next"
+                returnKeyType="done"
                 submitBehavior="submit"
-                {...inputProps}
+                {...inputProps} // Aquí se esparcen de manera segura value, onChangeText, secureTextEntry, etc.
               />
             )}
           </View>

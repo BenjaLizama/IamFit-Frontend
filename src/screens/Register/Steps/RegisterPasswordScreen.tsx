@@ -1,4 +1,3 @@
-import CustomFormInput from "@/src/core/components/CustomFormInput"; // Importamos tu input
 import { useRegisterForm } from "@/src/core/context/RegisterContext";
 import { useRegisterInput } from "@/src/core/hooks/useRegisterInput";
 import React from "react";
@@ -13,7 +12,7 @@ export default function RegisterPasswordScreen() {
   const { formData } = useRegisterForm();
 
   const handleFinalSubmit = () => {
-    console.log("🚀 Enviando datos a la API:", formData);
+    console.log("🚀 Enviando datos a la API:", formData.nickname);
     handleContinue();
   };
 
@@ -25,16 +24,13 @@ export default function RegisterPasswordScreen() {
       progress={87.5}
       stepLabel="Paso 7 de 8"
       title={"Crea una\ncontraseña"}
-      /* 🎯 INYECTAMOS EL COMPONENTE COMPLETO DESDE AQUÍ */
-      inputComponent={
-        <CustomFormInput
-          placeholder="Contraseña"
-          returnKeyType="done"
-          secureTextEntry={true}
-          value={value}
-          onChangeText={onChangeText}
-        />
-      }
+      inputProps={{
+        placeholder: "Contraseña",
+        returnKeyType: "done",
+        secureTextEntry: true,
+        value: value,
+        onChangeText: onChangeText,
+      }}
     />
   );
 }
