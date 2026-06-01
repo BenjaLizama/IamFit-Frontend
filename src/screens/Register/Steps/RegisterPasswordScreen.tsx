@@ -1,6 +1,8 @@
 import { useRegisterForm } from "@/src/core/context/RegisterContext";
 import { useRegisterInput } from "@/src/core/hooks/useRegisterInput";
 import { isValidPassword } from "@/src/core/utils/validations";
+import { RegisterRequest } from "@/src/services/auth/auth.dtos";
+import { register } from "@/src/services/auth/auth.service";
 import React from "react";
 import RegisterStepScreen from "./RegisterStepScreen";
 
@@ -13,6 +15,26 @@ export default function RegisterPasswordScreen() {
   const { formData } = useRegisterForm();
 
   const handleFinalSubmit = () => {
+    const data: RegisterRequest = {
+      register: {
+        email: formData.email,
+        password: formData.password,
+      },
+      UserProfile: {
+        age: formData.age,
+        height: formData.height,
+        weight: formData.weight,
+        nickname: formData.nickname,
+        sex: formData.sex,
+      },
+      session: {
+        deviceId: "App IamFit",
+        deviceName: "App IamFit",
+      },
+    };
+
+    console.log(register(data));
+
     console.log(
       "🚀 Enviando datos a la API:",
       `Edad: ${formData.age} | Correo: ${formData.email} | Altura: ${formData.height}cm | Apodo: ${formData.nickname}  | Contraseña: ${formData.password} | Sexo: ${formData.sex} | Peso: ${formData.weight}kg.`,

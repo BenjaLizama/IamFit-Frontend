@@ -8,7 +8,7 @@ export interface RegisterRequest {
     age: number;
     weight: number;
     height: number;
-    sexo: "MALE" | "FEMALE";
+    sex: "MALE" | "FEMALE";
   };
   session: {
     deviceId: string;
