@@ -111,7 +111,7 @@ export default function FeedingScreenAddFood() {
         <>
           <View style={styles.selectedFoodSection}>
             <View style={styles.selectedFoodHeader}>
-              <CustomText type="h3">{selectedFood.name}</CustomText>
+              <CustomText type="h2">{selectedFood.name}</CustomText>
               <Pressable onPress={() => setSelectedFood(null)}>
                 <CustomText type="body_interactive">Cambiar</CustomText>
               </Pressable>
@@ -163,7 +163,7 @@ export default function FeedingScreenAddFood() {
 
                 <View style={styles.portionResult}>
                   <CustomText type="body_secondary">=</CustomText>
-                  <CustomText type="h3">{caloriesCalculated} kcal</CustomText>
+                  <CustomText type="h2">{caloriesCalculated} kcal</CustomText>
                 </View>
               </View>
             </View>

@@ -1,12 +1,15 @@
+import CustomButton from "@/src/core/components/CustomButton";
 import FilterSelector from "@/src/core/components/FilterSelector";
 import { useActiveFilter } from "@/src/core/hooks/useActiveFilter";
 import { hp, wp } from "@/src/core/utils";
 import FoodSummaryCard from "@/src/features/Feeding/components/FoodSummaryCard";
+import { useRouter } from "expo-router";
 import React from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function FeedingScreen() {
+  const router = useRouter();
   const filterList = [
     "Lunes",
     "Martes",
@@ -56,6 +59,14 @@ export default function FeedingScreen() {
         dato2={5}
         dato3={20}
       />
+      <CustomButton
+        type="primary"
+        onPress={() => {
+          router.push("/feeding_addfood" as const);
+        }}
+      >
+        Agregar comida
+      </CustomButton>
     </ScrollView>
   );
 }
