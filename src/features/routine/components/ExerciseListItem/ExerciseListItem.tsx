@@ -1,16 +1,20 @@
 import CustomText from "@/src/core/components/CustomText";
+import { hp } from "@/src/core/utils";
 import { COLOR } from "@/src/theme";
 import React from "react";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { ExerciseListItemStyles as style } from "./ExerciseListItem.styles";
 import { ExerciseListItemProps } from "./ExerciseListItem.types";
-import { hp } from "@/src/core/utils";
 
 export default function ExerciseListItem(props: ExerciseListItemProps) {
-  const { name, rightItem, kind } = props;
+  const { name, kind, checked, onAction, rightItem } = props;
 
   return (
-    <View style={[style.container, props.checked && style.checkedContainer]}>
+    <TouchableOpacity
+      onPress={onAction}
+      activeOpacity={0.7}
+      style={[style.container, checked && style.checkedContainer]}
+    >
       <View style={style.content}>
         <CustomText type="button_secondary" size={hp(15)}>
           {name}
@@ -27,7 +31,11 @@ export default function ExerciseListItem(props: ExerciseListItemProps) {
         )}
       </View>
 
-      {rightItem && <View style={style.rightItemContainer}>{rightItem}</View>}
-    </View>
+      {rightItem && (
+        <View pointerEvents="none" style={style.rightItemContainer}>
+          {rightItem}
+        </View>
+      )}
+    </TouchableOpacity>
   );
 }

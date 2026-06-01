@@ -1,8 +1,10 @@
 export interface DailyExerciseCardProps {
-  pathImage: string;
+  pathImage?: string;
   exerciseName: string;
   description: string;
   estimatedTimeMin?: number;
   intensity?: string;
   rightElement?: React.ReactNode;
+  leftElement?: React.ReactNode;
+  imageVariant?: "default" | "blue" | "red" | "purple";
 }
