@@ -4,7 +4,7 @@ import HomeLogo from "@/assets/images/Icons/home.svg";
 import PeopleLogo from "@/assets/images/Icons/people.svg";
 import ProfileLogo from "@/assets/images/Icons/profile.svg";
 import MiaHeader from "@/src/features/(m.i.a)/layout/MiaHeader";
-import WelcomeUser from "@/src/features/(m.i.a)/layout/WelcomeUser";
+import AddFoodScreen from "@/src/features/(m.i.a)/screens/AddFood/AddFoodScreen";
 import { COLOR } from "@/src/theme";
 import * as Haptics from "expo-haptics";
 import type { Href } from "expo-router";
@@ -229,11 +229,7 @@ export default function MainTabBar() {
             <AiLogo width={30} height={30} color={COLOR.AZUL_PRIMARIO} />
           </MainTabIcon>
         }
-        children2={
-          <>
-            <WelcomeUser name="Benjamín"></WelcomeUser>
-          </>
-        }
+        children2={<AddFoodScreen></AddFoodScreen>}
         headerChildren={<MiaHeader></MiaHeader>}
       />
 
