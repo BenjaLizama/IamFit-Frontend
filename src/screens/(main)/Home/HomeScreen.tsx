@@ -6,6 +6,7 @@ import DailyGoalProgressItem from "@/src/features/home/components/DailyGoalProgr
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
 import ProgressTaskCard from "@/src/features/home/components/ProgressTaskCard";
 import WelcomeUser from "@/src/features/home/components/WelcomeUser";
+import { getExcerciseDailyResume } from "@/src/services/exercises/exercises.service";
 import {
   getDailyCalorieSummary,
   getDailyProteinFood,
@@ -21,6 +22,7 @@ import { HomeScreenStyles as styles } from "./HomeScreen.styles";
 export default function HomeScreen() {
   const [calories, setCalories] = useState(0);
   const [protein, setProtein] = useState(0);
+  const [exercises, setExercises] = useState(0);
   const [loading, setLoading] = useState(true);
   const [nickname, setNickname] = useState<string | null>("");
 
@@ -72,6 +74,22 @@ export default function HomeScreen() {
     cargarProteina();
   }, []);
 
+  useEffect(() => {
+    const cargarEjercicios = async () => {
+      try {
+        const token = await getAccessToken();
+        const ejerciciosTotales = await getExcerciseDailyResume(token);
+        setExercises(ejerciciosTotales);
+      } catch (error) {
+        console.error("Error cargando ejercicios de la API:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarEjercicios();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
       <WelcomeUser name={nickname} />
@@ -116,7 +134,7 @@ export default function HomeScreen() {
       >
         <DailyGoalItem
           color={COLOR.AZUL_PRIMARIO}
-          item={4}
+          item={exercises}
           text="Ejerecicios"
         />
         <DailyGoalItem
