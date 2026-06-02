@@ -7,4 +7,6 @@ export interface ExpandableScreenProps {
   top?: number;
   variant?: "default" | "chat";
   keyboardVerticalOffset?: number;
+  showHeader?: boolean;
+  pressScale?: number;
 }

@@ -27,17 +27,19 @@ export default function ExpandableScreen({
   top = 0,
   variant = "default",
   keyboardVerticalOffset,
+  showHeader = true,
+  pressScale = 0.96,
 }: ExpandableScreenProps) {
   const cardRef = useRef<View>(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   const {
-    isVisible,
     isExpanded,
     animatedStyle,
     backdropStyle,
     headerSmallStyle,
     headerLargeStyle,
+    transitionContentStyle,
     bodyAnimatedStyle,
     initialDims,
     pressAnimationStyle,
@@ -46,7 +48,12 @@ export default function ExpandableScreen({
     setInitialDims,
     handlePressIn,
     handlePressOut,
-  } = useExpandableScreen({ SCREEN_WIDTH, SCREEN_HEIGHT, initialRadius });
+  } = useExpandableScreen({
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT,
+    initialRadius,
+    pressScale,
+  });
 
   const onBaseLayout = (event: any) => {
     const { width, height } = event.nativeEvent.layout;
@@ -77,8 +84,10 @@ export default function ExpandableScreen({
     if (!isExpanded) return;
     setKeyboardHeight(0);
 
-    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
-    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+    const showEvent =
+      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent =
+      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
 
     const showSub = Keyboard.addListener(showEvent, (event) => {
       setKeyboardHeight(event.endCoordinates?.height ?? 0);
@@ -109,7 +118,7 @@ export default function ExpandableScreen({
           pressAnimationStyle,
         ]}
       >
-        <View style={{ opacity: isVisible ? 1 : 0 }}>
+        <View style={styles.baseContent}>
           <Pressable
             onPress={handleExpand}
             onPressIn={handlePressIn}
@@ -136,23 +145,26 @@ export default function ExpandableScreen({
           </Animated.View>
 
           <Animated.View style={[styles.expandedCard, animatedStyle]}>
-            <Pressable
-              onPress={handleCollapse}
-              style={[styles.header, { height: initialDims.h || "auto" }]}
-            >
-              <Animated.View
-                style={[
-                  StyleSheet.absoluteFill,
-                  styles.centerContent,
-                  headerSmallStyle,
-                ]}
+            {showHeader && (
+              <Pressable
+                onPress={handleCollapse}
+                style={[styles.header, { height: initialDims.h || "auto" }]}
               >
-                {children1}
-              </Animated.View>
-              <Animated.View style={headerLargeStyle}>
-                {headerChildren || children1}
-              </Animated.View>
-            </Pressable>
+                <Animated.View
+                  style={[
+                    StyleSheet.absoluteFill,
+                    styles.headerSmallContent,
+                    styles.centerContent,
+                    headerSmallStyle,
+                  ]}
+                >
+                  {children1}
+                </Animated.View>
+                <Animated.View style={headerLargeStyle}>
+                  {headerChildren || children1}
+                </Animated.View>
+              </Pressable>
+            )}
 
             <Animated.View entering={FadeIn.delay(200)} style={styles.body}>
               <KeyboardAvoidingView
@@ -167,7 +179,9 @@ export default function ExpandableScreen({
                 keyboardVerticalOffset={effectiveKeyboardVerticalOffset}
               >
                 {variant === "chat" ? (
-                  <Animated.View style={[styles.bodyKeyboard, bodyAnimatedStyle]}>
+                  <Animated.View
+                    style={[styles.bodyKeyboard, bodyAnimatedStyle]}
+                  >
                     {children2}
                   </Animated.View>
                 ) : (
@@ -185,6 +199,20 @@ export default function ExpandableScreen({
                 )}
               </KeyboardAvoidingView>
             </Animated.View>
+
+            {!showHeader && (
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  StyleSheet.absoluteFill,
+                  styles.headerSmallContent,
+                  styles.transitionContent,
+                  transitionContentStyle,
+                ]}
+              >
+                {children1}
+              </Animated.View>
+            )}
           </Animated.View>
         </View>
       </Modal>

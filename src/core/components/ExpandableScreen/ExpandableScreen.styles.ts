@@ -4,6 +4,9 @@ import { hp, wp } from "@/src/core/utils";
 export const ExpandableScreenStyles = StyleSheet.create({
   container: {},
   baseCard: {},
+  baseContent: {
+    opacity: 1,
+  },
   expandedCard: {
     backgroundColor: "white",
     overflow: "hidden",
@@ -22,7 +25,13 @@ export const ExpandableScreenStyles = StyleSheet.create({
   },
   header: {
     width: "100%",
+  },
+  headerSmallContent: {
     overflow: "hidden",
+  },
+  transitionContent: {
+    elevation: 2,
+    zIndex: 2,
   },
   centerContent: {
     justifyContent: "center",

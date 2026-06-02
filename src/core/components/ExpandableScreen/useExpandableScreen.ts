@@ -13,12 +13,14 @@ interface useExpandableScreenProps {
   SCREEN_HEIGHT: number;
   SCREEN_WIDTH: number;
   initialRadius: number;
+  pressScale: number;
 }
 
 export const useExpandableScreen = ({
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   initialRadius,
+  pressScale: pressedScale,
 }: useExpandableScreenProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -62,7 +64,7 @@ export const useExpandableScreen = ({
   }));
 
   const handlePressIn = () => {
-    pressScale.value = withSpring(0.96, {
+    pressScale.value = withSpring(pressedScale, {
       damping: 10,
       stiffness: 200,
       mass: 0.6,
@@ -121,6 +123,16 @@ export const useExpandableScreen = ({
     ),
   }));
 
+  const transitionContentStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      progress.value,
+      [0, 0.65],
+      [1, 0],
+      Extrapolation.CLAMP,
+    ),
+    transform: [{ scale: interpolate(progress.value, [0, 0.65], [1, 0.98]) }],
+  }));
+
   return {
     isVisible,
     isExpanded,
@@ -129,6 +141,7 @@ export const useExpandableScreen = ({
     backdropStyle,
     headerSmallStyle,
     headerLargeStyle,
+    transitionContentStyle,
     initialDims,
     pressAnimationStyle,
     expand,

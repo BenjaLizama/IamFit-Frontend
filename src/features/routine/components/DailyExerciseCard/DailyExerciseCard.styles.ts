@@ -20,6 +20,19 @@ export const DailyExerciseCardStyles = StyleSheet.create({
     borderRadius: UI.small_radius,
     backgroundColor: COLOR.BOTON_TAB_NAVEGACION_BIG,
     overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    width: wp(58),
+    height: hp(58),
+  },
+  imageContainerBlue: {
+    backgroundColor: "#EEF5FF",
+  },
+  imageContainerRed: {
+    backgroundColor: "#FFF1F1",
+  },
+  imageContainerPurple: {
+    backgroundColor: "#F6F1FF",
   },
   image: {
     borderRadius: UI.small_radius,
