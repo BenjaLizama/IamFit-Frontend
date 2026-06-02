@@ -42,8 +42,13 @@ export default function LoginScreen() {
       });
 
       await clearNickname();
-      loadUserInfo(response.accessToken);
+
+      await loadUserInfo(response.accessToken);
+
       await saveTokens(response.accessToken, response.refreshToken);
+
+      console.log("Tokens guardados con éxito. Redirigiendo...");
+
       router.replace("/(main)/home");
     } catch (loginError) {
       console.error("No se pudo iniciar sesión", loginError);
