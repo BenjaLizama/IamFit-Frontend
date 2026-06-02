@@ -1,4 +1,4 @@
-export const BACKEND_IP = "192.168.1.246";
+export const BACKEND_IP = "192.168.100.13";
 
 export const API = {
   auth: `http://${BACKEND_IP}:8080`,

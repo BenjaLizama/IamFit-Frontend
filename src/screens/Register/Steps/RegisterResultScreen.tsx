@@ -2,7 +2,7 @@ import SuccessIcon from "@/assets/images/Icons/tick-circle.svg";
 import CustomButton from "@/src/core/components/CustomButton";
 import CustomText from "@/src/core/components/CustomText";
 import Wrapper from "@/src/core/components/Wrapper";
-import { useRegisterForm } from "@/src/core/context/RegisterContext"; // <-- AÑADIDO
+import { useRegisterForm } from "@/src/core/context/RegisterContext";
 import { COLOR } from "@/src/theme";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -11,10 +11,10 @@ import { RegisterStepStyles as styles } from "./RegisterStep.styles";
 
 export default function RegisterResultScreen() {
   const router = useRouter();
-  const { resetForm } = useRegisterForm(); // <-- AÑADIDO
+  const { resetForm } = useRegisterForm();
 
   const handleFinish = () => {
-    resetForm(); // <-- Limpia la memoria del formulario global
+    resetForm();
     router.replace("/login");
   };
 

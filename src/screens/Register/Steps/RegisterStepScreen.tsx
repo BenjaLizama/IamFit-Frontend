@@ -29,7 +29,8 @@ export default function RegisterStepScreen({
   buttonLabel = "Continuar",
   onButtonPress,
   onPrivacyPolicyPress,
-  disabled = false, // 👈 TypeScript ahora lo asimila sin problemas aquí
+  disabled = false,
+  loading,
 }: RegisterStepScreenProps & {
   onPrivacyPolicyPress?: () => void;
   disabled?: boolean;
@@ -104,6 +105,7 @@ export default function RegisterStepScreen({
               type="primary"
               onPress={goNext}
               disabled={disabled} // 👈 Conectado limpiamente
+              isLoading={loading}
             >
               {buttonLabel}
             </CustomButton>
