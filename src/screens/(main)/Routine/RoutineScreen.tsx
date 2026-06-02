@@ -176,7 +176,10 @@ export default function RoutineScreen() {
 
   const mapBackendRoutineToScreenRoutine = (routine: BackendRoutine) => {
     return {
-      id: routine.id,
+      // 💡 SI routine.id es null, le asigna un string único temporal basado en el nombre o un timestamp
+      id:
+        routine.id ??
+        `temp-ia-${routine.name.replace(/\s+/g, "-").toLowerCase()}`,
       name: routine.name,
       description: `${routine.exercises.length} ejercicios`,
       dayLabel: "Hoy",
@@ -191,7 +194,7 @@ export default function RoutineScreen() {
         estimatedTime: routine.estimatedDurationMinutes,
       },
       exercises: routine.exercises.map((exercise) => ({
-        id: exercise.id,
+        id: exercise.id ?? `temp-ex-${exercise.orderIndex}`, // Evita nulls también en ejercicios
         kind: "weight" as const,
         name: exercise.exerciseName,
         series: exercise.sets,
