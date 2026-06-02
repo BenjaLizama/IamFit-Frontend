@@ -40,3 +40,15 @@ export interface FoodLogCaloriesResponse {
   totalProtein: Double;
   userId: string;
 }
+
+export interface FoodInfo {
+  calories: number;
+  carbohydrates: number;
+  fat: number;
+  fiber: number;
+  foodName: string;
+  id: string;
+  mealType: string;
+  protein: number;
+  quantity: number;
+}

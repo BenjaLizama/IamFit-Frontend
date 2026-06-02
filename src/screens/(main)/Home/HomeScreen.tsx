@@ -6,7 +6,10 @@ import DailyGoalProgressItem from "@/src/features/home/components/DailyGoalProgr
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
 import ProgressTaskCard from "@/src/features/home/components/ProgressTaskCard";
 import WelcomeUser from "@/src/features/home/components/WelcomeUser";
-import { getDailyCalorieSummary } from "@/src/services/feeding/feeding.service";
+import {
+  getDailyCalorieSummary,
+  getDailyProteinFood,
+} from "@/src/services/feeding/feeding.service";
 import { getAccessToken } from "@/src/services/session/token.storage";
 import { COLOR, UI } from "@/src/theme";
 import React, { useEffect, useState } from "react";
@@ -16,6 +19,7 @@ import { HomeScreenStyles as styles } from "./HomeScreen.styles";
 
 export default function HomeScreen() {
   const [calories, setCalories] = useState(0);
+  const [protein, setProtein] = useState(0);
   const [loading, setLoading] = useState(true);
   const nickname = "Nickname";
 
@@ -33,6 +37,22 @@ export default function HomeScreen() {
     };
 
     cargarCalorias();
+  }, []);
+
+  useEffect(() => {
+    const cargarProteina = async () => {
+      try {
+        const token = await getAccessToken();
+        const myProtein = await getDailyProteinFood(token);
+        setProtein(myProtein);
+      } catch (error) {
+        console.error("Error cargando proteina de la API:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarProteina();
   }, []);
 
   return (
@@ -68,11 +88,13 @@ export default function HomeScreen() {
       <View style={{ marginTop: hp(12) }}>
         <ProgressTaskCard actualCalories={Math.round(calories)} goal={1900} />
       </View>
+      <View style={{ paddingVertical: UI.LATERAL_PADDING }}>
+        <CustomText type="body_secondary">Resumen del día</CustomText>
+      </View>
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          marginTop: hp(12),
         }}
       >
         <DailyGoalItem
@@ -82,7 +104,7 @@ export default function HomeScreen() {
         />
         <DailyGoalItem
           color={COLOR.TEXTO_PRINCIPAL}
-          item={`72g`}
+          item={`${protein}g`}
           text="Proteina"
         />
         <DailyGoalItem
