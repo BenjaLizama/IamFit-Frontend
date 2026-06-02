@@ -6,7 +6,7 @@ import { register } from "@/src/services/auth/auth.service";
 import { getDeviceSession } from "@/src/services/session/device.storage";
 import { saveTokens } from "@/src/services/session/token.storage";
 import { saveNickname } from "@/src/services/session/user.storage";
-import React from "react";
+import React, { useState } from "react";
 import RegisterStepScreen from "./RegisterStepScreen";
 
 export default function RegisterPasswordScreen() {
@@ -14,6 +14,8 @@ export default function RegisterPasswordScreen() {
     "password",
     "/register/result",
   );
+
+  const [loading, setLoading] = useState(false);
 
   const { formData } = useRegisterForm();
 
@@ -42,6 +44,7 @@ export default function RegisterPasswordScreen() {
     );
 
     try {
+      setLoading(true);
       // Esperamos la respuesta real de Spring Boot en tu Ubuntu
       const respuestaBackend = await register(data);
 
@@ -65,11 +68,14 @@ export default function RegisterPasswordScreen() {
     } catch (error: any) {
       // Si el backend en Docker falla, el error saltará aquí y el usuario no cambiará de pantalla a ciegas
       console.error("❌ Error al registrar en el componente:", error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <RegisterStepScreen
+      loading={loading}
       buttonLabel="Crear cuenta"
       onButtonPress={handleFinalSubmit}
       nextRoute="/register/result"
