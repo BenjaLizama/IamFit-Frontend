@@ -5,6 +5,8 @@ import IamfitIcon from "@/src/core/components/IamfitIcon";
 import Wrapper from "@/src/core/components/Wrapper";
 import AuthFormTemplate from "@/src/core/templates/AuthForm/AuthFormTemplate";
 import { login } from "@/src/services/auth/auth.service";
+import { getDeviceSession } from "@/src/services/session/device.storage";
+import { clearTokens, saveTokens } from "@/src/services/session/token.storage";
 import { useRouter } from "expo-router";
 import React from "react";
 import { TextInput, View } from "react-native";
@@ -21,26 +23,26 @@ export default function LoginScreen() {
     const password = passwordValueRef.current;
 
     if (!email || !password) {
-      console.warn("Ingresa tu correo y contrasena");
+      console.warn("Ingresa tu correo y contraseña");
       return;
     }
 
     try {
-      await login({
+      await clearTokens();
+      const session = await getDeviceSession();
+      const response = await login({
         login: {
           identifier: email,
           password,
           provider: "LOCAL",
         },
-        session: {
-          deviceId: "iamfit-mobile-device",
-          deviceName: "Mobile Device",
-        },
+        session,
       });
 
+      await saveTokens(response.accessToken, response.refreshToken);
       router.replace("/(main)/home");
     } catch (loginError) {
-      console.error("No se pudo iniciar sesion", loginError);
+      console.error("No se pudo iniciar sesión", loginError);
     }
   };
 
@@ -63,7 +65,7 @@ export default function LoginScreen() {
                 emailValueRef.current = value;
               }}
               onSubmitEditing={() => passwordInputRef.current?.focus()}
-              placeholder="Correo electronico"
+              placeholder="Correo electrónico"
               returnKeyType="next"
               submitBehavior="submit"
             />
@@ -86,7 +88,7 @@ export default function LoginScreen() {
               <CustomButton onPress={handleLogin} type="primary">
                 Acceder ahora
               </CustomButton>
-              <CustomText type="body">Olvide mi contrasena</CustomText>
+              <CustomText type="body">Olvide mi contraseña</CustomText>
             </View>
             <CustomText type="body">
               No tienes una cuenta?

@@ -1,9 +1,9 @@
-import { BACKEND_IP, handleResponse } from "../api.service";
-import { LoginRequest, RegisterRequest } from "./auth.dtos";
+import { API, handleResponse } from "../api.service";
+import { AuthResponse, LoginRequest, RegisterRequest } from "./auth.dtos";
 
-const AUTH_URL = `http://${BACKEND_IP}:8080/api/v1/auth`; // Esta es solo para api de auth... se debe crear uno extra para session
+const AUTH_URL = `${API.auth}/api/v1/auth`; // Esta es solo para api de auth... se debe crear uno extra para session
 
-export const register = async (data: RegisterRequest) => {
+export const register = async (data: RegisterRequest): Promise<AuthResponse> => {
   const response = await fetch(`${AUTH_URL}/register`, {
     method: "POST",
     headers: {
@@ -16,7 +16,7 @@ export const register = async (data: RegisterRequest) => {
   return handleResponse(response);
 };
 
-export const login = async (data: LoginRequest) => {
+export const login = async (data: LoginRequest): Promise<AuthResponse> => {
   const response = await fetch(`${AUTH_URL}/login`, {
     method: "POST",
     headers: {

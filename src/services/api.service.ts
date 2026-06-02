@@ -1,4 +1,12 @@
-export const BACKEND_IP = " 192.168.1.5";
+export const BACKEND_IP = "192.168.1.5";
+
+export const API = {
+  auth: `http://${BACKEND_IP}:8080`,
+  usuarios: `http://${BACKEND_IP}:8081`,
+  ai: `http://${BACKEND_IP}:8082`,
+  alimentacion: `http://${BACKEND_IP}:8083`,
+  ejercicios: `http://${BACKEND_IP}:8084`,
+};
 
 export const handleResponse = async (response: Response) => {
   if (!response.ok) {

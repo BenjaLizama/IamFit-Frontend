@@ -9,6 +9,7 @@ export interface RegisterRequest {
     weight: number;
     height: number;
     sex: "MALE" | "FEMALE";
+    sexo: "MALE" | "FEMALE";
   };
   session: {
     deviceId: string;
@@ -26,4 +27,9 @@ export interface LoginRequest {
     deviceId: string;
     deviceName: string;
   };
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
 }
