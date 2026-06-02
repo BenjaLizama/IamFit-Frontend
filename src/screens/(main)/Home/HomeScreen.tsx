@@ -6,16 +6,38 @@ import DailyGoalProgressItem from "@/src/features/home/components/DailyGoalProgr
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
 import ProgressTaskCard from "@/src/features/home/components/ProgressTaskCard";
 import WelcomeUser from "@/src/features/home/components/WelcomeUser";
+import { getDailyCalorieSummary } from "@/src/services/feeding/feeding.service";
+import { getAccessToken } from "@/src/services/session/token.storage";
 import { COLOR, UI } from "@/src/theme";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { HomeScreenStyles as styles } from "./HomeScreen.styles";
 
 export default function HomeScreen() {
+  const [calories, setCalories] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const nickname = "Nickname";
+
+  useEffect(() => {
+    const cargarCalorias = async () => {
+      try {
+        const token = await getAccessToken();
+        const myCalories = await getDailyCalorieSummary(token);
+        setCalories(myCalories);
+      } catch (error) {
+        console.error("Error cargando calorias de la API:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarCalorias();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
-      <WelcomeUser name="Benjamín" />
+      <WelcomeUser name={nickname} />
       <CustomCarousel mode="centered" initialIndex={7}>
         {/* --- UNA SEMANA ANTES --- */}
         <DayCalendarCard month="Agosto" dayNumber={1} dayText="Sabado" />
@@ -44,7 +66,7 @@ export default function HomeScreen() {
         <DayCalendarCard month="Agosto" dayNumber={15} dayText="Sabado" />
       </CustomCarousel>
       <View style={{ marginTop: hp(12) }}>
-        <ProgressTaskCard actualCalories={1615} goal={1900} />
+        <ProgressTaskCard actualCalories={Math.round(calories)} goal={1900} />
       </View>
       <View
         style={{
