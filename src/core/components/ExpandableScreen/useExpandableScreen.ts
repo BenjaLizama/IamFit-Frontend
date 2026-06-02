@@ -74,7 +74,7 @@ export const useExpandableScreen = ({
   };
 
   const animatedStyle = useAnimatedStyle(() => {
-    const finalTop = (SCREEN_HEIGHT - targetHeight) / 2;
+    const finalTop = Math.max((SCREEN_HEIGHT - targetHeight) / 2, 12);
     const finalLeft = (SCREEN_WIDTH - targetWidth) / 2;
     return {
       opacity: interpolate(progress.value, [0, 1], [1, 1], Extrapolation.CLAMP),

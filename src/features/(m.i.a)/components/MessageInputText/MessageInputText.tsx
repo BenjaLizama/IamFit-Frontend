@@ -32,6 +32,7 @@ export default function MessageInputText({
         <Firework />
         <TextInput
           editable={!disabled}
+          multiline
           onChangeText={setMessage}
           onSubmitEditing={handleSend}
           placeholder="Escribe tu mensaje..."
@@ -39,6 +40,7 @@ export default function MessageInputText({
           returnKeyType="send"
           selectionColor={COLOR.FONDO}
           style={styles.input}
+          textAlignVertical="center"
           value={message}
         />
         <Pressable disabled={disabled} onPress={handleSend}>

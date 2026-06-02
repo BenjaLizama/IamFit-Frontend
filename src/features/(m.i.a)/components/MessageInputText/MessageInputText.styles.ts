@@ -19,10 +19,13 @@ export const MessageInputTextStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: wp(5),
+    flex: 1,
   },
 
   input: {
-    width: "80%",
+    flex: 1,
+    maxHeight: hp(88),
+    minHeight: hp(36),
     paddingHorizontal: wp(15),
     paddingVertical: hp(8),
     fontFamily: FONT.PRINCIPAL_REGULAR,

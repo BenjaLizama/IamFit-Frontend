@@ -1,8 +1,7 @@
 import * as Haptics from "expo-haptics";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
   Dimensions,
-  Keyboard,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -29,7 +28,6 @@ export default function ExpandableScreen({
   keyboardVerticalOffset,
 }: ExpandableScreenProps) {
   const cardRef = useRef<View>(null);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   const {
     isVisible,
@@ -56,7 +54,6 @@ export default function ExpandableScreen({
   const handleExpand = () => {
     void Haptics.selectionAsync();
     onExpandedChange?.(true);
-    setKeyboardHeight(0);
 
     cardRef.current?.measureInWindow((x, y, width, height) => {
       expand(x, y, width, height);
@@ -66,33 +63,10 @@ export default function ExpandableScreen({
   const handleCollapse = () => {
     void Haptics.selectionAsync();
     onExpandedChange?.(false);
-    setKeyboardHeight(0);
     collapse();
   };
 
-  const effectiveKeyboardVerticalOffset =
-    keyboardVerticalOffset ?? (variant === "chat" ? initialDims.h || 0 : 0);
-
-  useEffect(() => {
-    if (!isExpanded) return;
-    setKeyboardHeight(0);
-
-    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
-    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
-
-    const showSub = Keyboard.addListener(showEvent, (event) => {
-      setKeyboardHeight(event.endCoordinates?.height ?? 0);
-    });
-
-    const hideSub = Keyboard.addListener(hideEvent, () => {
-      setKeyboardHeight(0);
-    });
-
-    return () => {
-      showSub.remove();
-      hideSub.remove();
-    };
-  }, [isExpanded]);
+  const effectiveKeyboardVerticalOffset = keyboardVerticalOffset ?? 0;
 
   return (
     <View style={styles.container}>
@@ -157,10 +131,10 @@ export default function ExpandableScreen({
             <Animated.View entering={FadeIn.delay(200)} style={styles.body}>
               <KeyboardAvoidingView
                 behavior={
-                  Platform.OS === "ios"
-                    ? "padding"
-                    : variant === "chat"
-                      ? "position"
+                  variant === "chat"
+                    ? undefined
+                    : Platform.OS === "ios"
+                      ? "padding"
                       : "height"
                 }
                 style={styles.bodyKeyboard}
