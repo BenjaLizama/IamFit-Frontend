@@ -5,6 +5,7 @@ import { RegisterRequest } from "@/src/services/auth/auth.dtos";
 import { register } from "@/src/services/auth/auth.service";
 import { getDeviceSession } from "@/src/services/session/device.storage";
 import { saveTokens } from "@/src/services/session/token.storage";
+import { saveNickname } from "@/src/services/session/user.storage";
 import React from "react";
 import RegisterStepScreen from "./RegisterStepScreen";
 
@@ -49,6 +50,10 @@ export default function RegisterPasswordScreen() {
         "🎉 ¡Registro Exitoso! Respuesta del servidor:",
         respuestaBackend,
       );
+
+      // Guardamos el nickname de forma temporal
+      saveNickname(formData.nickname);
+
       console.log("Token recibido:", respuestaBackend.accessToken);
       await saveTokens(
         respuestaBackend.accessToken,

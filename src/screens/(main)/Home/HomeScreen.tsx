@@ -11,6 +11,7 @@ import {
   getDailyProteinFood,
 } from "@/src/services/feeding/feeding.service";
 import { getAccessToken } from "@/src/services/session/token.storage";
+import { getNickname } from "@/src/services/session/user.storage";
 import { COLOR, UI } from "@/src/theme";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
@@ -21,7 +22,23 @@ export default function HomeScreen() {
   const [calories, setCalories] = useState(0);
   const [protein, setProtein] = useState(0);
   const [loading, setLoading] = useState(true);
-  const nickname = "Nickname";
+  const [nickname, setNickname] = useState<string | null>("");
+
+  // Cargar datos del usuario
+  useEffect(() => {
+    const chargeUserData = async () => {
+      try {
+        const nickname = await getNickname();
+        setNickname(nickname);
+      } catch (error) {
+        console.error("Error cargando Nickname:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    chargeUserData();
+  }, []);
 
   useEffect(() => {
     const cargarCalorias = async () => {
