@@ -3,7 +3,9 @@ import { AuthResponse, LoginRequest, RegisterRequest } from "./auth.dtos";
 
 const AUTH_URL = `${API.auth}/api/v1/auth`; // Esta es solo para api de auth... se debe crear uno extra para session
 
-export const register = async (data: RegisterRequest): Promise<AuthResponse> => {
+export const register = async (
+  data: RegisterRequest,
+): Promise<AuthResponse> => {
   const response = await fetch(`${AUTH_URL}/register`, {
     method: "POST",
     headers: {

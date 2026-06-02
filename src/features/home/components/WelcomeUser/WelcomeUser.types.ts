@@ -1,3 +1,3 @@
 export interface WelcomeUserProps {
-  name?: string;
+  name?: string | null;
 }

@@ -4,6 +4,7 @@ interface BaseExercise {
   name: string;
   rightItem?: React.ReactNode;
   checked?: boolean;
+  onAction?: () => void;
 }
 
 export interface WeightExercise extends BaseExercise {

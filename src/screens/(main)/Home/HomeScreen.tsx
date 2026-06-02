@@ -6,16 +6,93 @@ import DailyGoalProgressItem from "@/src/features/home/components/DailyGoalProgr
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
 import ProgressTaskCard from "@/src/features/home/components/ProgressTaskCard";
 import WelcomeUser from "@/src/features/home/components/WelcomeUser";
+import { getExcerciseDailyResume } from "@/src/services/exercises/exercises.service";
+import {
+  getDailyCalorieSummary,
+  getDailyProteinFood,
+} from "@/src/services/feeding/feeding.service";
+import { getAccessToken } from "@/src/services/session/token.storage";
+import { getNickname } from "@/src/services/session/user.storage";
 import { COLOR, UI } from "@/src/theme";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { HomeScreenStyles as styles } from "./HomeScreen.styles";
 
 export default function HomeScreen() {
+  const [calories, setCalories] = useState(0);
+  const [protein, setProtein] = useState(0);
+  const [exercises, setExercises] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [nickname, setNickname] = useState<string | null>("");
+
+  // Cargar datos del usuario
+  useEffect(() => {
+    const chargeUserData = async () => {
+      try {
+        const nickname = await getNickname();
+        setNickname(nickname);
+      } catch (error) {
+        console.error("Error cargando Nickname:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    chargeUserData();
+  }, []);
+
+  useEffect(() => {
+    const cargarCalorias = async () => {
+      try {
+        const token = await getAccessToken();
+        const myCalories = await getDailyCalorieSummary(token);
+        setCalories(myCalories);
+      } catch (error) {
+        console.error("Error cargando calorias de la API:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarCalorias();
+  }, []);
+
+  useEffect(() => {
+    const cargarProteina = async () => {
+      try {
+        const token = await getAccessToken();
+        const myProtein = await getDailyProteinFood(token);
+        setProtein(myProtein);
+      } catch (error) {
+        console.error("Error cargando proteina de la API:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarProteina();
+  }, []);
+
+  useEffect(() => {
+    const cargarEjercicios = async () => {
+      try {
+        const token = await getAccessToken();
+        const ejerciciosTotales = await getExcerciseDailyResume(token);
+        setExercises(ejerciciosTotales);
+      } catch (error) {
+        console.error("Error cargando ejercicios de la API:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarEjercicios();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
-      <WelcomeUser name="Benjamín" />
+      <WelcomeUser name={nickname} />
       <CustomCarousel mode="centered" initialIndex={7}>
         {/* --- UNA SEMANA ANTES --- */}
         <DayCalendarCard month="Agosto" dayNumber={1} dayText="Sabado" />
@@ -44,23 +121,25 @@ export default function HomeScreen() {
         <DayCalendarCard month="Agosto" dayNumber={15} dayText="Sabado" />
       </CustomCarousel>
       <View style={{ marginTop: hp(12) }}>
-        <ProgressTaskCard actualCalories={1615} goal={1900} />
+        <ProgressTaskCard actualCalories={Math.round(calories)} goal={1900} />
+      </View>
+      <View style={{ paddingVertical: UI.LATERAL_PADDING }}>
+        <CustomText type="body_secondary">Resumen del día</CustomText>
       </View>
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          marginTop: hp(12),
         }}
       >
         <DailyGoalItem
           color={COLOR.AZUL_PRIMARIO}
-          item={4}
+          item={exercises}
           text="Ejerecicios"
         />
         <DailyGoalItem
           color={COLOR.TEXTO_PRINCIPAL}
-          item={`72g`}
+          item={`${protein}g`}
           text="Proteina"
         />
         <DailyGoalItem

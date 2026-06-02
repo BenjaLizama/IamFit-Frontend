@@ -45,7 +45,7 @@ export default function CircleProgress({
       </Svg>
 
       <View style={{ position: "absolute" }}>
-        <CustomText type="button_primary">{percentage}%</CustomText>
+        <CustomText type="button_primary">{Math.round(percentage)}%</CustomText>
       </View>
     </View>
   );

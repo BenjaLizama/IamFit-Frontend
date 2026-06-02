@@ -1,6 +1,6 @@
+import { hp } from "@/src/core/utils";
 import { UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
-import { hp, wp } from "@/src/core/utils";
 
 export const AuthFormTemplateStyles = StyleSheet.create({
   keyboardAvoidingView: {
