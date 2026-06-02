@@ -7,6 +7,8 @@ import AuthFormTemplate from "@/src/core/templates/AuthForm/AuthFormTemplate";
 import { login } from "@/src/services/auth/auth.service";
 import { getDeviceSession } from "@/src/services/session/device.storage";
 import { clearTokens, saveTokens } from "@/src/services/session/token.storage";
+import { clearNickname } from "@/src/services/session/user.storage";
+import { loadUserInfo } from "@/src/services/user-profile/user-profile.service";
 import { useRouter } from "expo-router";
 import React from "react";
 import { TextInput, View } from "react-native";
@@ -39,7 +41,14 @@ export default function LoginScreen() {
         session,
       });
 
+      await clearNickname();
+
+      await loadUserInfo(response.accessToken);
+
       await saveTokens(response.accessToken, response.refreshToken);
+
+      console.log("Tokens guardados con éxito. Redirigiendo...");
+
       router.replace("/(main)/home");
     } catch (loginError) {
       console.error("No se pudo iniciar sesión", loginError);
