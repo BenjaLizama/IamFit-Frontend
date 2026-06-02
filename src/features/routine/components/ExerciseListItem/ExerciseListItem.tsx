@@ -22,7 +22,9 @@ export default function ExerciseListItem(props: ExerciseListItemProps) {
 
         {kind === "weight" ? (
           <CustomText type="body" size={hp(13)} color={COLOR.TEXTO_TENUE}>
-            {`${props.series} x ${props.reps} reps - ${props.weight} kg`}
+            {`${props.series} x ${props.reps} reps${
+              props.weight !== null ? ` - ${props.weight} kg` : ""
+            }`}
           </CustomText>
         ) : (
           <CustomText type="body" size={hp(13)} color={COLOR.TEXTO_TENUE}>

@@ -1,8 +1,30 @@
+export type RoutineDifficulty = "PRINCIPIANTE" | "INTERMEDIO" | "AVANZADO";
+
+export type MuscleGroup =
+  | "PECHO"
+  | "ESPALDA"
+  | "HOMBROS"
+  | "BICEPS"
+  | "TRICEPS"
+  | "PIERNAS"
+  | "GLUTEOS"
+  | "CORE"
+  | "CARDIO"
+  | "CUERPO_COMPLETO";
+
+export type RoutineEquipment =
+  | "BARRA"
+  | "MANCUERNAS"
+  | "CUERDA"
+  | "CINTA"
+  | "MAQUINAS"
+  | "NINGUNO";
+
 export interface RoutineExercise {
-  id: string;
-  exerciseId: string;
+  id: string | null;
+  exerciseId: string | null;
   exerciseName: string;
-  muscleGroup: string;
+  muscleGroup: MuscleGroup;
   notes: string;
   orderIndex: number;
   reps: number;
@@ -12,15 +34,16 @@ export interface RoutineExercise {
 }
 
 export interface Routine {
-  id: string;
+  id: string | null;
   name: string;
   description: string;
-  difficultyLevel: "PRINCIPIANTE" | "INTERMEDIO" | "AVANZADO";
+  difficultyLevel: RoutineDifficulty;
   estimatedDurationMinutes: number;
   aiGenerated: boolean;
-  createdAt: string;
+  createdAt: string | null;
   exercises: RoutineExercise[];
 }
+
 export interface Exercise {
   id: string;
   name: string;
@@ -28,6 +51,30 @@ export interface Exercise {
   description?: string;
 }
 
+export interface GenerateRoutineRequest {
+  difficulty: RoutineDifficulty;
+  muscleGroups: MuscleGroup[];
+  availableEquipment: RoutineEquipment[];
+  durationMinutes: number;
+  limitations: string;
+}
+
+export interface GenerateRoutineResponse {
+  message: string;
+  routines: Routine[];
+  sessionId: string;
+}
+
+export interface SelectGeneratedRoutineRequest {
+  sessionId: string;
+  selectedIndex: number;
+  customName: string;
+}
+
 export type GetRoutinesResponse = Routine[];
 
 export type GetRoutineResponse = Routine;
+
+export type GetExercisesResponse = Exercise[];
+
+export type SelectGeneratedRoutineResponse = Routine;

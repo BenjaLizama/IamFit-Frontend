@@ -11,7 +11,7 @@ export interface WeightExercise extends BaseExercise {
   kind: "weight";
   series: number;
   reps: number;
-  weight: number;
+  weight: number | null;
 }
 
 export interface CardioExercise extends BaseExercise {
