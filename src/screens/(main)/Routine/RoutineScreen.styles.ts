@@ -1,5 +1,5 @@
 import { hp } from "@/src/core/utils";
-import { COLOR, UI } from "@/src/theme";
+import { UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
 
 export const RoutineScreenStyles = StyleSheet.create({
@@ -27,10 +27,6 @@ export const RoutineScreenStyles = StyleSheet.create({
   },
   aiButton: {
     alignItems: "center",
-    borderColor: COLOR.FONDO_OPACO2,
-    borderRadius: UI.meddium_radius,
-    borderStyle: "dashed",
-    borderWidth: 2,
     flexDirection: "row",
     gap: UI.spacing.sm,
     justifyContent: "center",
