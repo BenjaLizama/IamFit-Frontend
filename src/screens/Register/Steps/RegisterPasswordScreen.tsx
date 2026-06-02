@@ -3,6 +3,8 @@ import { useRegisterInput } from "@/src/core/hooks/useRegisterInput";
 import { isValidPassword } from "@/src/core/utils/validations";
 import { RegisterRequest } from "@/src/services/auth/auth.dtos";
 import { register } from "@/src/services/auth/auth.service";
+import { getDeviceSession } from "@/src/services/session/device.storage";
+import { saveTokens } from "@/src/services/session/token.storage";
 import React from "react";
 import RegisterStepScreen from "./RegisterStepScreen";
 
@@ -16,6 +18,7 @@ export default function RegisterPasswordScreen() {
 
   // CORREGIDO: Una sola función asíncrona limpia
   const handleFinalSubmit = async () => {
+    const session = await getDeviceSession();
     const data: RegisterRequest = {
       register: {
         email: formData.email,
@@ -27,11 +30,9 @@ export default function RegisterPasswordScreen() {
         weight: formData.weight,
         nickname: formData.nickname,
         sex: formData.sex,
+        sexo: formData.sex,
       },
-      session: {
-        deviceId: "App IamFit",
-        deviceName: "App IamFit",
-      },
+      session,
     };
 
     console.log(
@@ -49,6 +50,10 @@ export default function RegisterPasswordScreen() {
         respuestaBackend,
       );
       console.log("Token recibido:", respuestaBackend.accessToken);
+      await saveTokens(
+        respuestaBackend.accessToken,
+        respuestaBackend.refreshToken,
+      );
 
       // Si todo sale bien, recién ahí avanzamos de pantalla
       handleContinue();
