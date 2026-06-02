@@ -1,15 +1,8 @@
-import CustomButton from "@/src/core/components/CustomButton";
-import CustomCheckbox from "@/src/core/components/CustomCheckbox";
 import CustomText from "@/src/core/components/CustomText";
-import ExpandableScreen from "@/src/core/components/ExpandableScreen";
-import FilterInformationBox from "@/src/core/components/FilterInformationBox";
 import FilterSelector from "@/src/core/components/FilterSelector";
 import { useActiveFilter } from "@/src/core/hooks/useActiveFilter";
-import DailyExerciseCard from "@/src/features/routine/components/DailyExerciseCard";
-import ExerciseListItem from "@/src/features/routine/components/ExerciseListItem";
-import RoutineSummaryCard from "@/src/features/routine/components/RoutineSummaryCard";
+import RoutineExpandableCard from "@/src/features/routine/components/RoutineExpandableCard";
 import { MOCK_ROUTINES } from "@/src/features/routine/data/RoutineMock";
-import { Routine } from "@/src/features/routine/types/RoutineScreen.types";
 import { COLOR } from "@/src/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
@@ -47,7 +40,7 @@ export default function RoutineScreen() {
       </View>
       <View style={style.routineList}>
         {MOCK_ROUTINES.map((routine) => (
-          <ExpandableRoutineItem
+          <RoutineExpandableCard
             key={routine.id}
             routine={routine}
             checkedExerciseIds={checkedExerciseIds}
@@ -69,82 +62,5 @@ export default function RoutineScreen() {
         </CustomText>
       </View>
     </ScrollView>
-  );
-}
-
-interface ExpandableRoutineItemProps {
-  routine: Routine;
-  checkedExerciseIds: string[];
-  onToggleExercise: (exerciseId: string) => void;
-}
-
-function ExpandableRoutineItem({
-  routine,
-  checkedExerciseIds,
-  onToggleExercise,
-}: ExpandableRoutineItemProps) {
-  return (
-    <ExpandableScreen
-      initialRadius={10}
-      headerChildren={
-        <View style={style.detailTitleRow}>
-          <CustomCheckbox checked={routine.checked} size={16} />
-          <CustomText type="button_secondary" style={style.detailTitle}>
-            {routine.name}
-          </CustomText>
-        </View>
-      }
-      children1={
-        <DailyExerciseCard
-          exerciseName={routine.name}
-          description={routine.description}
-          estimatedTimeMin={routine.summary.estimatedTime}
-          imageVariant={routine.imageVariant}
-          intensity={routine.intensity}
-          leftElement={<CustomCheckbox checked={routine.checked} size={18} />}
-          rightElement={
-            <FilterInformationBox color={routine.dayColor}>
-              {routine.checked ? `Ok ${routine.dayLabel}` : routine.dayLabel}
-            </FilterInformationBox>
-          }
-        />
-      }
-      children2={
-        <View>
-          <View style={style.detailHeader}>
-            <RoutineSummaryCard {...routine.summary} />
-          </View>
-          <View style={style.detailContainer}>
-            <CustomText type="button_secondary" style={style.sectionTitle}>
-              Ejercicios
-            </CustomText>
-
-            <View style={style.exerciseList}>
-              {routine.exercises.map((exercise) => {
-                const isChecked = checkedExerciseIds.includes(
-                  `${routine.id}-${exercise.id}`,
-                );
-
-                return (
-                  <ExerciseListItem
-                    key={exercise.id}
-                    {...exercise}
-                    checked={isChecked}
-                    onAction={() => onToggleExercise(exercise.id)}
-                    rightItem={<CustomCheckbox checked={isChecked} size={14} />}
-                  />
-                );
-              })}
-            </View>
-
-            <View style={style.actionRow}>
-              <CustomButton type="primary" widht={style.startButton.width}>
-                Iniciar rutina
-              </CustomButton>
-            </View>
-          </View>
-        </View>
-      }
-    />
   );
 }
