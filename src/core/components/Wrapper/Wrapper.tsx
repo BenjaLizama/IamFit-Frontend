@@ -1,11 +1,11 @@
 import { COLOR } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
-import { UseWrapper } from "./useWrapper";
+import { useWrapper } from "./useWrapper";
 import { WrapperProps } from "./Wrapper.types";
 
 export default function Wrapper({ children }: WrapperProps) {
-  const { insets } = UseWrapper();
+  const { insets } = useWrapper();
 
   return (
     <View

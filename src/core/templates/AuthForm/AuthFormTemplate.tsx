@@ -47,9 +47,7 @@ export default function AuthFormTemplate({
       style={styles.keyboardAvoidingView}
     >
       <ScrollView
-        // --- AQUÍ ESTÁ LA SOLUCIÓN ---
-        scrollEnabled={false} // Bloquea el scroll manual del usuario
-        // -----------------------------
+        scrollEnabled
         automaticallyAdjustKeyboardInsets
         contentContainerStyle={styles.contentContainer}
         keyboardShouldPersistTaps="handled"
