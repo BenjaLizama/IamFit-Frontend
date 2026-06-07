@@ -14,7 +14,7 @@ export const MainTabBarStyles = StyleSheet.create({
     borderRadius: hp(42),
     paddingHorizontal: wp(16),
     paddingVertical: hp(10),
-    marginBottom: hp(-12),
+    marginBottom: hp(6),
     justifyContent: "space-between",
     alignItems: "center",
   },

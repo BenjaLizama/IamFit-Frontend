@@ -1,4 +1,4 @@
-export const BACKEND_IP = "192.168.100.13";
+export const BACKEND_IP = "192.168.1.5";
 
 export const API = {
   auth: `http://${BACKEND_IP}:8080`,
@@ -29,8 +29,8 @@ export const handleResponse = async (response: Response) => {
     // 3. Determinamos cuál será el mensaje final del error
     let finalMessage = "Error desconocido";
 
-    if (isJson && errorData.message) {
-      finalMessage = errorData.message;
+    if (isJson && (errorData.message || errorData.mensaje)) {
+      finalMessage = errorData.message || errorData.mensaje;
     } else if (errorData.rawText && errorData.rawText.trim() !== "") {
       finalMessage = `Respuesta cruda del servidor: ${errorData.rawText}`;
     } else if (response.statusText) {
@@ -67,5 +67,15 @@ export const handleResponse = async (response: Response) => {
   }
 
   // Si todo salió bien (response.ok es true)
-  return response.json();
+  const rawBody = await response.text();
+
+  if (!rawBody.trim()) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(rawBody);
+  } catch {
+    return rawBody;
+  }
 };

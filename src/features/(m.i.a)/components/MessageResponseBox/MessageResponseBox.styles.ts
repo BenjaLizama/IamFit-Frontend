@@ -23,4 +23,29 @@ export const MessageResponseBoxStyles = StyleSheet.create({
     zIndex: -1,
     borderRadius: UI.small_radius,
   },
+
+  actionList: {
+    gap: UI.spacing.sm,
+    marginTop: UI.spacing.md,
+  },
+
+  actionButton: {
+    alignItems: "center",
+    alignSelf: "flex-start",
+    backgroundColor: COLOR.BOTON_PRIMARIO,
+    borderRadius: UI.small_radius,
+    minHeight: hp(40),
+    justifyContent: "center",
+    maxWidth: "100%",
+    paddingHorizontal: UI.spacing.md,
+    paddingVertical: UI.spacing.sm,
+  },
+
+  actionButtonDisabled: {
+    opacity: 0.55,
+  },
+
+  actionButtonText: {
+    color: COLOR.TEXTO_BOTON_PRIMARIO,
+  },
 });

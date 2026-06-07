@@ -1,126 +1,223 @@
-import { COLOR, UI } from "@/src/theme";
+import { hp, wp } from "@/src/core/utils";
+import { COLOR, FONT, UI } from "@/src/theme";
 import { StyleSheet } from "react-native";
 
 export const FeedingScreenStyles = StyleSheet.create({
-  container: {
-    paddingHorizontal: UI.LATERAL_PADDING,
-    gap: UI.spacing.md,
+  scrollContent: {
+    paddingBottom: hp(110),
   },
-
-  buttonContainer: {
-    alignItems: "center",
+  mealList: {
+    gap: UI.spacing.md,
     marginTop: UI.spacing.md,
+  },
+  actions: {
+    gap: UI.spacing.sm,
+    marginTop: UI.spacing.lg,
+  },
+  generatedPlan: {
+    backgroundColor: COLOR.FONDO_OPACO,
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.meddium_radius,
+    borderWidth: 1,
+    gap: UI.spacing.sm,
+    marginBottom: hp(24),
+    marginTop: hp(12),
+    padding: UI.spacing.md,
+  },
+  generatedPlanList: {
+    gap: UI.spacing.md,
+    marginTop: UI.spacing.md,
+  },
+  generatedPlanOption: {
+    backgroundColor: COLOR.FONDO,
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.meddium_radius,
+    borderWidth: 1,
+    gap: UI.spacing.sm,
+    padding: UI.spacing.md,
+  },
+  modalBackdrop: {
+    alignItems: "center",
+    backgroundColor: "#00000055",
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: wp(16),
+  },
+  modalContent: {
+    backgroundColor: COLOR.FONDO,
+    borderRadius: UI.meddium_radius,
+    maxHeight: "88%",
+    padding: UI.spacing.md,
+    width: "100%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    gap: UI.spacing.md,
+    justifyContent: "space-between",
+    marginBottom: UI.spacing.md,
+  },
+  modalTitle: {
+    flex: 1,
+    lineHeight: hp(24),
+  },
+  closeButton: {
+    alignItems: "center",
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.large_radius,
+    borderWidth: 1,
+    height: hp(32),
+    justifyContent: "center",
+    width: hp(32),
+  },
+  modalBody: {
+    gap: UI.spacing.md,
+    paddingBottom: UI.spacing.md,
+  },
+  section: {
+    gap: UI.spacing.sm,
+  },
+  chipRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: UI.spacing.sm,
+  },
+  chip: {
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.large_radius,
+    borderWidth: 1,
+    paddingHorizontal: UI.spacing.md,
+    paddingVertical: UI.spacing.sm,
+  },
+  chipSelected: {
+    backgroundColor: COLOR.AZUL_PRIMARIO,
+    borderColor: COLOR.AZUL_PRIMARIO,
+  },
+  input: {
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.small_radius,
+    borderWidth: 1,
+    color: COLOR.TEXTO_PRINCIPAL,
+    fontFamily: FONT.PRINCIPAL_REGULAR,
+    minHeight: hp(44),
+    paddingHorizontal: UI.spacing.md,
+    paddingVertical: UI.spacing.sm,
+  },
+  helperText: {
+    lineHeight: hp(16),
+  },
+  warningBox: {
+    backgroundColor: "#FFF7E8",
+    borderColor: COLOR.WARNING,
+    borderRadius: UI.small_radius,
+    borderWidth: 1,
+    gap: UI.spacing.xs,
+    padding: UI.spacing.md,
+  },
+  actionRow: {
+    gap: UI.spacing.sm,
+    marginTop: UI.spacing.sm,
   },
 });
 
 export const FeedingScreenAddFoodStyles = StyleSheet.create({
   addFoodContainer: {
-    gap: UI.spacing.lg,
-    paddingVertical: UI.spacing.xs,
+    flexGrow: 1,
+    paddingBottom: hp(110),
+    paddingHorizontal: UI.LATERAL_PADDING,
   },
-
   searchSection: {
-    marginBottom: UI.spacing.xs,
+    marginTop: UI.spacing.md,
   },
-
-  sectionLabel: {
-    marginBottom: UI.spacing.sm,
-    fontWeight: "500",
-  },
-
   resultsSection: {
-    marginBottom: UI.spacing.lg,
+    gap: UI.spacing.sm,
+    marginTop: UI.spacing.md,
   },
-
+  sectionLabel: {
+    lineHeight: hp(18),
+  },
   resultsList: {
     gap: UI.spacing.sm,
   },
-
-  resultItem: {
-    backgroundColor: COLOR.FONDO_OPACO,
-    borderRadius: UI.small_radius,
-    padding: UI.spacing.md,
+  resultsScroll: {
+    maxHeight: hp(360),
+  },
+  resultsScrollContent: {
     gap: UI.spacing.sm,
+    paddingBottom: UI.spacing.sm,
   },
-
+  resultItem: {
+    backgroundColor: COLOR.FONDO,
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.small_radius,
+    borderWidth: 1,
+    gap: UI.spacing.xs,
+    padding: UI.spacing.md,
+  },
   resultItemContent: {
-    flexDirection: "row",
     alignItems: "center",
+    flexDirection: "row",
+    gap: UI.spacing.sm,
     justifyContent: "space-between",
-    gap: UI.spacing.md,
   },
-
   selectedFoodSection: {
     gap: UI.spacing.lg,
     marginTop: UI.spacing.lg,
   },
-
   selectedFoodHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    paddingBottom: UI.spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: COLOR.FONDO_OPACO,
+    flexDirection: "row",
+    gap: UI.spacing.md,
+    justifyContent: "space-between",
   },
-
   portionSection: {
-    gap: UI.spacing.md,
+    gap: UI.spacing.sm,
   },
-
   portionInputContainer: {
-    flexDirection: "row",
     alignItems: "center",
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: UI.spacing.md,
-    justifyContent: "space-between",
   },
-
   stepperButton: {
-    width: 50,
-    height: 50,
-    borderRadius: UI.button_radius,
-    backgroundColor: COLOR.FONDO_OPACO,
+    alignItems: "center",
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.large_radius,
+    borderWidth: 1,
+    height: hp(42),
     justifyContent: "center",
-    alignItems: "center",
+    width: hp(42),
   },
-
   portionDisplay: {
-    alignItems: "center",
-    gap: UI.spacing.sm,
-    backgroundColor: COLOR.FONDO_OPACO,
-    paddingVertical: UI.spacing.md,
-    paddingHorizontal: UI.spacing.lg,
-    borderRadius: UI.small_radius,
-    minWidth: 80,
-  },
-
-  portionInput: {
+    alignItems: "baseline",
     flexDirection: "row",
-    alignItems: "center",
-    gap: UI.spacing.md,
-    backgroundColor: COLOR.FONDO_OPACO,
-    borderRadius: UI.small_radius,
-    paddingHorizontal: UI.spacing.md,
-    height: 50,
-    minWidth: 100,
+    gap: UI.spacing.xs,
+    minWidth: wp(70),
   },
-
-  portionTextInput: {
-    flex: 1,
-    color: COLOR.TEXTO_PRINCIPAL,
-    fontSize: 16,
-    padding: 0,
-    margin: 0,
-  },
-
   portionResult: {
-    alignItems: "center",
+    alignItems: "baseline",
+    flexDirection: "row",
     gap: UI.spacing.sm,
-    flex: 1,
   },
-
   registerButtonContainer: {
-    alignItems: "center",
-    marginTop: UI.spacing.lg,
+    marginTop: UI.spacing.md,
+  },
+  mealTypeRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: UI.spacing.sm,
+  },
+  mealTypeChip: {
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.large_radius,
+    borderWidth: 1,
+    paddingHorizontal: UI.spacing.md,
+    paddingVertical: UI.spacing.sm,
+  },
+  mealTypeChipSelected: {
+    backgroundColor: COLOR.AZUL_PRIMARIO,
+    borderColor: COLOR.AZUL_PRIMARIO,
+  },
+  statusText: {
+    marginTop: UI.spacing.sm,
   },
 });

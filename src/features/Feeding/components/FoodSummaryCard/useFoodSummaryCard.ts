@@ -12,6 +12,9 @@ export const useFoodSummaryCard = ({ tipoComida }: UseFoodSummaryCardProps) => {
   if (tipoComida === "Cena") {
     typeFoodColor = COLOR.MORADO;
   }
+  if (tipoComida === "Snack") {
+    typeFoodColor = COLOR.WARNING;
+  }
   return {
     typeFoodColor,
   };

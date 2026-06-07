@@ -57,6 +57,12 @@ export const selectGeneratedRoutine = async (
   data: SelectGeneratedRoutineRequest,
   token?: string | null,
 ): Promise<SelectGeneratedRoutineResponse> => {
+  console.log("Seleccionando rutina generada:", {
+    customName: data.customName,
+    selectedIndex: data.selectedIndex,
+    sessionId: data.sessionId,
+  });
+
   const response = await fetch(`${ROUTINES_URL}/addRoutine/select`, {
     method: "POST",
     headers: getAuthHeaders(token),

@@ -24,20 +24,10 @@ export const MessageInputTextStyles = StyleSheet.create({
 
   input: {
     flex: 1,
-    maxHeight: hp(88),
-    minHeight: hp(36),
+    height: hp(42),
     paddingHorizontal: wp(15),
-    paddingVertical: hp(8),
+    paddingVertical: 0,
     fontFamily: FONT.PRINCIPAL_REGULAR,
     color: COLOR.TEXTO_BOTON_PRIMARIO,
-  },
-
-  hiddenContent: {
-    position: "absolute",
-    backgroundColor: COLOR.FONDO,
-    width: "200%",
-    height: hp(50),
-    bottom: hp(-20),
-    zIndex: -1,
   },
 });

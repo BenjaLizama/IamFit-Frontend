@@ -15,10 +15,11 @@ export type MuscleGroup =
 export type RoutineEquipment =
   | "BARRA"
   | "MANCUERNAS"
-  | "CUERDA"
-  | "CINTA"
-  | "MAQUINAS"
-  | "NINGUNO";
+  | "MAQUINA"
+  | "POLEA"
+  | "PESO_CORPORAL"
+  | "BANDA_ELASTICA"
+  | "KETTLEBELL";
 
 export interface RoutineExercise {
   id: string | null;

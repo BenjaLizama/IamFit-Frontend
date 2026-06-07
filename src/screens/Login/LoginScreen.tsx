@@ -5,6 +5,7 @@ import IamfitIcon from "@/src/core/components/IamfitIcon";
 import Wrapper from "@/src/core/components/Wrapper";
 import AuthFormTemplate from "@/src/core/templates/AuthForm/AuthFormTemplate";
 import { login } from "@/src/services/auth/auth.service";
+import { clearStoredMiaMessages } from "@/src/services/mia";
 import { getDeviceSession } from "@/src/services/session/device.storage";
 import { clearTokens, saveTokens } from "@/src/services/session/token.storage";
 import { clearNickname } from "@/src/services/session/user.storage";
@@ -42,6 +43,7 @@ export default function LoginScreen() {
       });
 
       await clearNickname();
+      clearStoredMiaMessages();
 
       await loadUserInfo(response.accessToken);
 
