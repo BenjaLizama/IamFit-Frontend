@@ -14,6 +14,24 @@ export const FeedingScreenStyles = StyleSheet.create({
     gap: UI.spacing.sm,
     marginTop: UI.spacing.lg,
   },
+  limitsBox: {
+    backgroundColor: COLOR.FONDO_OPACO,
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.small_radius,
+    borderWidth: 1,
+    gap: UI.spacing.xs,
+    marginTop: UI.spacing.md,
+    padding: UI.spacing.md,
+  },
+  activePlanBox: {
+    backgroundColor: COLOR.FONDO,
+    borderColor: COLOR.AZUL_PRIMARIO,
+    borderRadius: UI.small_radius,
+    borderWidth: 1,
+    gap: UI.spacing.xs,
+    marginTop: UI.spacing.md,
+    padding: UI.spacing.md,
+  },
   generatedPlan: {
     backgroundColor: COLOR.FONDO_OPACO,
     borderColor: COLOR.FONDO_OPACO2,
@@ -35,6 +53,24 @@ export const FeedingScreenStyles = StyleSheet.create({
     borderWidth: 1,
     gap: UI.spacing.sm,
     padding: UI.spacing.md,
+  },
+  managementList: {
+    gap: UI.spacing.md,
+    marginTop: UI.spacing.md,
+  },
+  managementCard: {
+    backgroundColor: COLOR.FONDO,
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.small_radius,
+    borderWidth: 1,
+    gap: UI.spacing.sm,
+    padding: UI.spacing.md,
+  },
+  managementCardContent: {
+    gap: UI.spacing.xs,
+  },
+  managementActions: {
+    gap: UI.spacing.sm,
   },
   modalBackdrop: {
     alignItems: "center",

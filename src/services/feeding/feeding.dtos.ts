@@ -37,6 +37,23 @@ export interface AddFoodRequest {
   logDate?: string;
 }
 
+export interface EditFoodEntryRequest {
+  logDate?: string;
+  mealType?: MealType;
+  quantity?: number;
+}
+
+export interface DeleteFoodEntryResponse {
+  deletedId: string;
+  message: string;
+}
+
+export interface FoodLimitsResponse {
+  canAddFood: boolean;
+  entriesForDate: number;
+  maxFoodEntriesPerDay: number;
+}
+
 export type EntriesByMeal = Partial<Record<MealType, FoodInfo[]>>;
 
 export type MealTotals = Partial<Record<MealType, NutritionTotals>>;
@@ -82,4 +99,35 @@ export interface GenerateMealPlanResponse {
   objetivo: string;
   menu: MealPlanWeekMenu;
   recomendaciones_nutricionales: string;
+}
+
+export type MealPlanStatus = "ACTIVE" | "INACTIVE" | "ALL";
+
+export type MealPlanSource = "AI" | "MANUAL";
+
+export interface SaveMealPlanRequest {
+  goal?: string;
+  menu?: MealPlanWeekMenu;
+  recomendacionesNutricionales?: string;
+  title: string;
+}
+
+export interface SavedMealPlan {
+  activatedAt: string | null;
+  createdAt: string;
+  goal: string;
+  id: string;
+  menu: GenerateMealPlanResponse;
+  source: MealPlanSource;
+  status: Exclude<MealPlanStatus, "ALL">;
+  title: string;
+}
+
+export interface MealPlanLimitsResponse {
+  activeMealPlans: number;
+  canActivateMealPlan: boolean;
+  canSaveMealPlan: boolean;
+  maxActiveMealPlans: number;
+  maxSavedMealPlans: number;
+  savedMealPlans: number;
 }

@@ -5,15 +5,29 @@ import { useActiveFilter } from "@/src/core/hooks/useActiveFilter";
 import { hp, wp } from "@/src/core/utils";
 import FoodSummaryCard from "@/src/features/Feeding/components/FoodSummaryCard";
 import {
+  FoodLimitsResponse,
+  FoodInfo,
   FoodLogCaloriesResponse,
   GenerateMealPlanResponse,
+  MealPlanLimitsResponse,
   MealPlanDayMenu,
   MealType,
+  SavedMealPlan,
 } from "@/src/services/feeding/feeding.dtos";
 import {
+  activateMealPlan,
+  deactivateMealPlan,
+  deleteFoodEntry,
+  deleteMealPlan,
+  editFoodEntry,
   generateMealPlan,
+  getActiveMealPlan,
   getDailyFoodLogSummary,
+  getFoodLimits,
+  getMealPlans,
+  getMealPlanLimits,
   getMealPlanText,
+  saveMealPlan,
 } from "@/src/services/feeding/feeding.service";
 import {
   getMiaGeneratedMealPlan,
@@ -24,7 +38,14 @@ import { COLOR } from "@/src/theme";
 import { useRouter } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useMemo, useState } from "react";
-import { DeviceEventEmitter, Modal, Pressable, TextInput, View } from "react-native";
+import {
+  Alert,
+  DeviceEventEmitter,
+  Modal,
+  Pressable,
+  TextInput,
+  View,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { FeedingScreenStyles as styles } from "./FeedingScreen.styles";
 
@@ -60,7 +81,7 @@ const MIA_ACTIVE_MEAL_PLAN_ID = "mia-active-meal-plan";
 
 type DayLabel = keyof typeof DAY_TO_MENU_KEY;
 
-type SavedMealPlan = {
+type LocalSavedMealPlan = {
   day: string;
   id: string;
   response: GenerateMealPlanResponse;
@@ -118,9 +139,28 @@ export default function FeedingScreen() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [isGeneratingMealPlan, setIsGeneratingMealPlan] = useState(false);
+  const [isSavingMealPlan, setIsSavingMealPlan] = useState(false);
+  const [isManagingMealPlan, setIsManagingMealPlan] = useState(false);
+  const [isDeletingFoodEntry, setIsDeletingFoodEntry] = useState(false);
+  const [isEditingFoodEntry, setIsEditingFoodEntry] = useState(false);
+  const [editingFoodEntry, setEditingFoodEntry] = useState<FoodInfo | null>(
+    null,
+  );
+  const [editFoodQuantity, setEditFoodQuantity] = useState("");
+  const [editFoodMealType, setEditFoodMealType] =
+    useState<MealType>("DESAYUNO");
+  const [foodLimits, setFoodLimits] = useState<FoodLimitsResponse | null>(null);
+  const [mealPlanLimits, setMealPlanLimits] =
+    useState<MealPlanLimitsResponse | null>(null);
   const [generatedMealPlan, setGeneratedMealPlan] =
     useState<GenerateMealPlanResponse | null>(null);
-  const [savedMealPlans, setSavedMealPlans] = useState<SavedMealPlan[]>([]);
+  const [activeMealPlan, setActiveMealPlan] = useState<SavedMealPlan | null>(
+    null,
+  );
+  const [backendMealPlans, setBackendMealPlans] = useState<SavedMealPlan[]>([]);
+  const [savedMealPlans, setSavedMealPlans] = useState<LocalSavedMealPlan[]>(
+    [],
+  );
   const [mealPlanError, setMealPlanError] = useState("");
   const [isMealPlanModalVisible, setIsMealPlanModalVisible] = useState(false);
   const [selectedGoal, setSelectedGoal] =
@@ -149,8 +189,9 @@ export default function FeedingScreen() {
     [savedMealPlans, selectedDay],
   );
   const latestSelectedDayMealPlan = selectedDayMealPlans[0]?.response || null;
-  const generatedDayMenu = latestSelectedDayMealPlan
-    ? latestSelectedDayMealPlan.menu[DAY_TO_MENU_KEY[selectedDay]]
+  const visibleMealPlan = latestSelectedDayMealPlan || activeMealPlan?.menu;
+  const generatedDayMenu = visibleMealPlan
+    ? visibleMealPlan.menu[DAY_TO_MENU_KEY[selectedDay]]
     : null;
   const mealCards = useMemo(
     () =>
@@ -172,6 +213,10 @@ export default function FeedingScreen() {
         };
       }),
     [generatedDayMenu, summary],
+  );
+  const registeredFoodEntries = useMemo(
+    () => Object.values(summary?.entriesByMeal || {}).flat(),
+    [summary],
   );
   const allergies = useMemo(
     () => parseListInput(allergiesInput),
@@ -241,26 +286,66 @@ export default function FeedingScreen() {
     [selectedDay],
   );
 
-  useEffect(() => {
-    const loadDailyFoodLog = async () => {
-      try {
-        setLoading(true);
-        setErrorMessage("");
+  const loadDailyFoodLog = React.useCallback(async () => {
+    try {
+      setLoading(true);
+      setErrorMessage("");
 
-        const token = await getAccessToken();
-        const dailySummary = await getDailyFoodLogSummary(token);
+      const token = await getAccessToken();
+      const dailySummary = await getDailyFoodLogSummary(token);
 
-        setSummary(dailySummary);
-      } catch (error) {
-        console.error("Error cargando alimentacion de la API:", error);
-        setErrorMessage("No se pudo cargar tu alimentacion del dia.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadDailyFoodLog();
+      setSummary(dailySummary);
+    } catch (error) {
+      console.error("Error cargando alimentacion de la API:", error);
+      setErrorMessage("No se pudo cargar tu alimentacion del dia.");
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    void loadDailyFoodLog();
+  }, [loadDailyFoodLog]);
+
+  const loadFeedingManagementData = React.useCallback(async () => {
+    try {
+      const token = await getAccessToken();
+      const [
+        activePlanResult,
+        foodLimitResult,
+        mealPlanLimitResult,
+        mealPlansResult,
+      ] =
+        await Promise.allSettled([
+        getActiveMealPlan(token),
+        getFoodLimits(token),
+        getMealPlanLimits(token),
+        getMealPlans("ALL", token),
+      ]);
+
+      if (activePlanResult.status === "fulfilled") {
+        setActiveMealPlan(activePlanResult.value);
+      }
+
+      if (foodLimitResult.status === "fulfilled") {
+        setFoodLimits(foodLimitResult.value);
+      }
+
+      if (mealPlanLimitResult.status === "fulfilled") {
+        setMealPlanLimits(mealPlanLimitResult.value);
+      }
+
+      if (mealPlansResult.status === "fulfilled") {
+        setBackendMealPlans(mealPlansResult.value);
+      }
+    } catch (error) {
+      console.log("Error cargando datos de gestion de alimentacion:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadFeedingManagementData();
+  }, [loadFeedingManagementData]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -348,6 +433,200 @@ export default function FeedingScreen() {
     }
   };
 
+  const handleSaveAndActivateMealPlan = async () => {
+    if (!generatedMealPlan) {
+      return;
+    }
+
+    try {
+      setIsSavingMealPlan(true);
+      setMealPlanError("");
+
+      const token = await getAccessToken();
+      const savedPlan = await saveMealPlan(
+        {
+          goal: generatedMealPlan.objetivo,
+          menu: generatedMealPlan.menu,
+          recomendacionesNutricionales:
+            generatedMealPlan.recomendaciones_nutricionales,
+          title: `Plan ${generatedMealPlan.objetivo}`,
+        },
+        token,
+      );
+      const activatedPlan = await activateMealPlan(savedPlan.id, token);
+
+      setActiveMealPlan(activatedPlan);
+      await loadFeedingManagementData();
+    } catch (error) {
+      console.error("Error guardando plan de comidas:", error);
+      setMealPlanError(
+        error instanceof Error
+          ? error.message
+          : "No se pudo guardar el plan de comidas.",
+      );
+    } finally {
+      setIsSavingMealPlan(false);
+    }
+  };
+
+  const handleMealPlanStatusChange = async (
+    mealPlan: SavedMealPlan,
+    action: "activate" | "deactivate",
+  ) => {
+    try {
+      setIsManagingMealPlan(true);
+      setMealPlanError("");
+
+      const token = await getAccessToken();
+
+      if (action === "activate") {
+        const activatedPlan = await activateMealPlan(mealPlan.id, token);
+        setActiveMealPlan(activatedPlan);
+      } else {
+        await deactivateMealPlan(mealPlan.id, token);
+        if (activeMealPlan?.id === mealPlan.id) {
+          setActiveMealPlan(null);
+        }
+      }
+
+      await loadFeedingManagementData();
+    } catch (error) {
+      console.error("Error actualizando plan de comidas:", error);
+      setMealPlanError(
+        error instanceof Error
+          ? error.message
+          : "No se pudo actualizar el plan de comidas.",
+      );
+    } finally {
+      setIsManagingMealPlan(false);
+    }
+  };
+
+  const handleDeleteMealPlan = async (mealPlan: SavedMealPlan) => {
+    Alert.alert(
+      "Eliminar plan",
+      `Eliminar ${mealPlan.title}?`,
+      [
+        { style: "cancel", text: "Cancelar" },
+        {
+          onPress: async () => {
+            try {
+              setIsManagingMealPlan(true);
+              setMealPlanError("");
+
+              const token = await getAccessToken();
+              await deleteMealPlan(mealPlan.id, token);
+
+              if (activeMealPlan?.id === mealPlan.id) {
+                setActiveMealPlan(null);
+              }
+
+              await loadFeedingManagementData();
+            } catch (error) {
+              console.error("Error eliminando plan de comidas:", error);
+              setMealPlanError(
+                error instanceof Error
+                  ? error.message
+                  : "No se pudo eliminar el plan de comidas.",
+              );
+            } finally {
+              setIsManagingMealPlan(false);
+            }
+          },
+          style: "destructive",
+          text: "Eliminar",
+        },
+      ],
+    );
+  };
+
+  const handleDeleteFoodEntry = async (entryId: string, foodName: string) => {
+    Alert.alert(
+      "Eliminar comida",
+      `Eliminar ${foodName}?`,
+      [
+        { style: "cancel", text: "Cancelar" },
+        {
+          onPress: async () => {
+            try {
+              setIsDeletingFoodEntry(true);
+              setErrorMessage("");
+
+              const token = await getAccessToken();
+              await deleteFoodEntry(entryId, token);
+              await loadDailyFoodLog();
+              await loadFeedingManagementData();
+            } catch (error) {
+              console.error("Error eliminando comida:", error);
+              setErrorMessage(
+                error instanceof Error
+                  ? error.message
+                  : "No se pudo eliminar la comida.",
+              );
+            } finally {
+              setIsDeletingFoodEntry(false);
+            }
+          },
+          style: "destructive",
+          text: "Eliminar",
+        },
+      ],
+    );
+  };
+
+  const handleOpenEditFoodEntry = (food: FoodInfo) => {
+    setEditingFoodEntry(food);
+    setEditFoodQuantity(String(food.quantity || ""));
+    setEditFoodMealType(food.mealType);
+  };
+
+  const handleCloseEditFoodEntry = () => {
+    setEditingFoodEntry(null);
+    setEditFoodQuantity("");
+    setEditFoodMealType("DESAYUNO");
+  };
+
+  const handleSubmitEditFoodEntry = async () => {
+    if (!editingFoodEntry) {
+      return;
+    }
+
+    const parsedQuantity = Number(editFoodQuantity.replace(",", "."));
+
+    if (!Number.isFinite(parsedQuantity) || parsedQuantity <= 0) {
+      setErrorMessage("Ingresa una cantidad valida.");
+      return;
+    }
+
+    try {
+      setIsEditingFoodEntry(true);
+      setErrorMessage("");
+
+      const token = await getAccessToken();
+      await editFoodEntry(
+        editingFoodEntry.id,
+        {
+          mealType: editFoodMealType,
+          quantity: parsedQuantity,
+        },
+        token,
+      );
+
+      handleCloseEditFoodEntry();
+      await loadDailyFoodLog();
+      await loadFeedingManagementData();
+    } catch (error) {
+      console.error("Error editando comida:", error);
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "No se pudo editar la comida.",
+      );
+    } finally {
+      setIsEditingFoodEntry(false);
+    }
+  };
+
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContent}
@@ -366,6 +645,31 @@ export default function FeedingScreen() {
       {!!errorMessage && (
         <CustomText type="body_secondary">{errorMessage}</CustomText>
       )}
+      {(foodLimits || mealPlanLimits) && (
+        <View style={styles.limitsBox}>
+          <CustomText type="button_secondary">Gestion de alimentacion</CustomText>
+          {foodLimits && (
+            <CustomText type="body_secondary">
+              Comidas registradas: {foodLimits.entriesForDate}/
+              {foodLimits.maxFoodEntriesPerDay}
+            </CustomText>
+          )}
+          {mealPlanLimits && (
+            <CustomText type="body_secondary">
+              Planes guardados: {mealPlanLimits.savedMealPlans}/
+              {mealPlanLimits.maxSavedMealPlans} - Activos:{" "}
+              {mealPlanLimits.activeMealPlans}/
+              {mealPlanLimits.maxActiveMealPlans}
+            </CustomText>
+          )}
+        </View>
+      )}
+      {activeMealPlan && (
+        <View style={styles.activePlanBox}>
+          <CustomText type="button_secondary">Plan activo</CustomText>
+          <CustomText type="body_secondary">{activeMealPlan.title}</CustomText>
+        </View>
+      )}
       {!loading && (
         <View style={styles.mealList}>
           {mealCards.map((meal) => (
@@ -378,6 +682,39 @@ export default function FeedingScreen() {
               dato2={meal.carbohydrates}
               dato3={meal.fat}
             />
+          ))}
+        </View>
+      )}
+      {registeredFoodEntries.length > 0 && (
+        <View style={styles.managementList}>
+          <CustomText type="button_secondary">Comidas registradas</CustomText>
+          {registeredFoodEntries.map((food) => (
+            <View key={food.id} style={styles.managementCard}>
+              <View style={styles.managementCardContent}>
+                <CustomText type="button_secondary">{food.foodName}</CustomText>
+              <CustomText type="body_secondary">
+                {food.quantity}g - {food.mealType} -{" "}
+                {Math.round(food.calories || 0)} kcal
+              </CustomText>
+            </View>
+              <View style={styles.managementActions}>
+                <CustomButton
+                  disabled={isDeletingFoodEntry || isEditingFoodEntry}
+                  onPress={() => handleOpenEditFoodEntry(food)}
+                  type="secondary"
+                >
+                  Editar
+                </CustomButton>
+                <CustomButton
+                  disabled={isDeletingFoodEntry || isEditingFoodEntry}
+                  isLoading={isDeletingFoodEntry}
+                  onPress={() => handleDeleteFoodEntry(food.id, food.foodName)}
+                  type="destructive"
+                >
+                  Eliminar
+                </CustomButton>
+              </View>
+            </View>
           ))}
         </View>
       )}
@@ -408,6 +745,14 @@ export default function FeedingScreen() {
           <CustomText type="body_secondary">
             {getMealPlanText(generatedMealPlan)}
           </CustomText>
+          <CustomButton
+            disabled={isSavingMealPlan || !mealPlanLimits?.canSaveMealPlan}
+            isLoading={isSavingMealPlan}
+            onPress={handleSaveAndActivateMealPlan}
+            type="primary"
+          >
+            Guardar y activar
+          </CustomButton>
         </View>
       )}
       {selectedDayMealPlans.length > 0 && (
@@ -425,6 +770,128 @@ export default function FeedingScreen() {
           ))}
         </View>
       )}
+      {backendMealPlans.length > 0 && (
+        <View style={styles.managementList}>
+          <CustomText type="button_secondary">Planes guardados</CustomText>
+          {backendMealPlans.map((plan) => (
+            <View key={plan.id} style={styles.managementCard}>
+              <View style={styles.managementCardContent}>
+                <CustomText type="button_secondary">{plan.title}</CustomText>
+                <CustomText type="body_secondary">
+                  {plan.goal} - {plan.status}
+                </CustomText>
+              </View>
+              <View style={styles.managementActions}>
+                <CustomButton
+                  disabled={isManagingMealPlan}
+                  isLoading={isManagingMealPlan}
+                  onPress={() =>
+                    handleMealPlanStatusChange(
+                      plan,
+                      plan.status === "ACTIVE" ? "deactivate" : "activate",
+                    )
+                  }
+                  type="secondary"
+                >
+                  {plan.status === "ACTIVE" ? "Desactivar" : "Activar"}
+                </CustomButton>
+                <CustomButton
+                  disabled={isManagingMealPlan}
+                  onPress={() => handleDeleteMealPlan(plan)}
+                  type="destructive"
+                >
+                  Eliminar
+                </CustomButton>
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
+
+      <Modal
+        animationType="fade"
+        transparent
+        visible={Boolean(editingFoodEntry)}
+        onRequestClose={handleCloseEditFoodEntry}
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <CustomText type="h2" style={styles.modalTitle}>
+                Editar comida
+              </CustomText>
+              <Pressable
+                style={styles.closeButton}
+                onPress={handleCloseEditFoodEntry}
+              >
+                <CustomText type="button_secondary">X</CustomText>
+              </Pressable>
+            </View>
+            <View style={styles.modalBody}>
+              <View style={styles.section}>
+                <CustomText type="button_secondary">
+                  {editingFoodEntry?.foodName}
+                </CustomText>
+                <TextInput
+                  keyboardType="numeric"
+                  onChangeText={setEditFoodQuantity}
+                  placeholder="Cantidad en gramos"
+                  placeholderTextColor={COLOR.TEXTO_SECUNDARIO}
+                  style={styles.input}
+                  value={editFoodQuantity}
+                />
+              </View>
+
+              <View style={styles.section}>
+                <CustomText type="button_secondary">Tipo de comida</CustomText>
+                <View style={styles.chipRow}>
+                  {MEALS.map((meal) => {
+                    const isSelected = editFoodMealType === meal.key;
+
+                    return (
+                      <Pressable
+                        key={meal.key}
+                        onPress={() => setEditFoodMealType(meal.key)}
+                        style={[
+                          styles.chip,
+                          isSelected && styles.chipSelected,
+                        ]}
+                      >
+                        <CustomText
+                          color={
+                            isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL
+                          }
+                          type="body"
+                        >
+                          {meal.label}
+                        </CustomText>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+
+              <View style={styles.actionRow}>
+                <CustomButton
+                  disabled={isEditingFoodEntry}
+                  isLoading={isEditingFoodEntry}
+                  onPress={handleSubmitEditFoodEntry}
+                  type="primary"
+                >
+                  Guardar cambios
+                </CustomButton>
+                <CustomButton
+                  disabled={isEditingFoodEntry}
+                  onPress={handleCloseEditFoodEntry}
+                  type="secondary"
+                >
+                  Cancelar
+                </CustomButton>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       <Modal
         animationType="fade"
