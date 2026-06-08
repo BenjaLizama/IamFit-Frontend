@@ -1,6 +1,6 @@
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export const UseWrapper = () => {
+export const useWrapper = () => {
   const insets = useSafeAreaInsets();
 
   return {

@@ -1,2 +1,2 @@
-export { UseWrapper } from "./useWrapper";
+export { useWrapper } from "./useWrapper";
 export { default } from "./Wrapper";

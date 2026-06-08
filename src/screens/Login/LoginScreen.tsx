@@ -10,7 +10,7 @@ import { getDeviceSession } from "@/src/services/session/device.storage";
 import { clearTokens, saveTokens } from "@/src/services/session/token.storage";
 import { clearNickname } from "@/src/services/session/user.storage";
 import { loadUserInfo } from "@/src/services/user-profile/user-profile.service";
-import { useRouter } from "expo-router";
+import { Href, useRouter } from "expo-router";
 import React from "react";
 import { TextInput, View } from "react-native";
 import { LoginScreenStyles as styles } from "./LoginScreen.styles";
@@ -99,7 +99,12 @@ export default function LoginScreen() {
               <CustomButton onPress={handleLogin} type="primary">
                 Acceder ahora
               </CustomButton>
-              <CustomText type="body">Olvide mi contraseña</CustomText>
+              <CustomText
+                onPress={() => router.push("/forgot-password" as Href)}
+                type="body_interactive"
+              >
+                Olvide mi contraseña
+              </CustomText>
             </View>
             <CustomText type="body">
               No tienes una cuenta?
