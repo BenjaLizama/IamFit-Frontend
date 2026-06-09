@@ -68,6 +68,11 @@ export default function RegisterPasswordScreen() {
     }
   };
 
+  const error =
+    value.length > 0 && !isValidPassword(value)
+      ? "La contraseña debe contener al menos 8 caracteres, una mayuscula y un caracter especial."
+      : "";
+
   return (
     <RegisterStepScreen
       loading={loading}
@@ -78,6 +83,7 @@ export default function RegisterPasswordScreen() {
       stepLabel="Paso 7 de 8"
       title={"Crea una\ncontraseña"}
       disabled={!isValidPassword(value)}
+      error={error}
       inputProps={{
         placeholder: "Contraseña",
         returnKeyType: "done",

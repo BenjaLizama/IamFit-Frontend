@@ -20,3 +20,12 @@ export const isValidNickname = (nickname: string): boolean => {
   if (!nickname) return false;
   return nickname.trim().length >= 3;
 };
+
+export const isValidPasswordSoft = (password: string): boolean => {
+  if (!password || password.trim() === "") return false;
+
+  const length = password.length;
+  if (length < 8) return false;
+
+  return true;
+};

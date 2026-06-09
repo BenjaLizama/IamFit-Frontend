@@ -4,15 +4,8 @@ import CustomText from "@/src/core/components/CustomText";
 import IamfitIcon from "@/src/core/components/IamfitIcon";
 import Wrapper from "@/src/core/components/Wrapper";
 import AuthFormTemplate from "@/src/core/templates/AuthForm/AuthFormTemplate";
-import { login } from "@/src/services/auth/auth.service";
-import { clearStoredMiaMessages } from "@/src/services/mia";
-import { getDeviceSession } from "@/src/services/session/device.storage";
-import { clearTokens, saveTokens } from "@/src/services/session/token.storage";
-import { clearNickname } from "@/src/services/session/user.storage";
-import { loadUserInfo } from "@/src/services/user-profile/user-profile.service";
-import { Href, useRouter } from "expo-router";
 import React from "react";
-import { TextInput, View } from "react-native";
+import { View } from "react-native";
 import { LoginScreenStyles as styles } from "./LoginScreen.styles";
 
 export default function LoginScreen() {
@@ -79,16 +72,16 @@ export default function LoginScreen() {
         section2={
           <View style={styles.second}>
             <CustomFormInput
+              ref={email.inputProps.ref}
               autoCapitalize="none"
               autoCorrect={false}
               keyboardType="email-address"
-              onChangeText={(value) => {
-                emailValueRef.current = value;
-              }}
-              onSubmitEditing={() => passwordInputRef.current?.focus()}
+              onChangeText={email.inputProps.onChangeText}
+              onSubmitEditing={() => password.ref.current?.focus()}
               placeholder="Correo electrónico"
               returnKeyType="next"
               submitBehavior="submit"
+              error={email.errorMessage}
             />
             <CustomFormInput
               ref={passwordInputRef}
@@ -100,6 +93,7 @@ export default function LoginScreen() {
               returnKeyType="done"
               secureTextEntry
               submitBehavior="blurAndSubmit"
+              error={password.errorMessage}
             />
           </View>
         }
@@ -122,11 +116,8 @@ export default function LoginScreen() {
               </CustomText>
             </View>
             <CustomText type="body">
-              No tienes una cuenta?
-              <CustomText
-                onPress={() => router.push("/register/age")}
-                type="body_interactive"
-              >
+              ¿No tienes una cuenta?
+              <CustomText onPress={goToRegister} type="body_interactive">
                 {" "}
                 Registrate ahora
               </CustomText>

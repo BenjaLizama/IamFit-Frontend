@@ -9,6 +9,11 @@ export default function RegisterEmailScreen() {
     "/register/password",
   );
 
+  const error =
+    value.length > 0 && !isValidEmail(value)
+      ? "El formato del correo no es válido."
+      : "";
+
   return (
     <RegisterStepScreen
       inputProps={{
@@ -24,6 +29,7 @@ export default function RegisterEmailScreen() {
       stepLabel="Paso 6 de 8"
       title={"Tu correo\nelectrónico"}
       disabled={!isValidEmail(value)}
+      error={error}
     />
   );
 }

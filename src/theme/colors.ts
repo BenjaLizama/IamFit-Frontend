@@ -23,6 +23,7 @@ export const COLOR = {
   FILTER_INFORMATION_BOX: "#ffffffbe",
   SUCCESS: "#0bb52b",
   WARNING: "#ed8309",
+  ERROR: "#d90d0d",
   MORADO: "#4d008b",
   GRIS: "#dedede",
   TEXTO_TENUE: "#6B6B6B",
