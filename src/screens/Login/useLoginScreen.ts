@@ -8,6 +8,7 @@ import { router } from "expo-router";
 export const useLoginScreen = () => {
   const handleLogin = () => {};
   const goToRegister = () => router.push("/register/age");
+  const goToForgotPassword = () => router.push("/forgot-password");
 
   const checkEmailError = (text: string): string => {
     if (text.length === 0) return "";
@@ -28,6 +29,7 @@ export const useLoginScreen = () => {
   return {
     handleLogin,
     goToRegister,
+    goToForgotPassword,
     email,
     password,
   };
