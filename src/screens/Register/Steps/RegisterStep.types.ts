@@ -13,4 +13,5 @@ export interface RegisterStepScreenProps {
   onButtonPress?: () => void;
   disabled: boolean;
   loading?: boolean;
+  error?: string;
 }

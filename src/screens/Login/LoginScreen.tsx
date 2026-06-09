@@ -4,58 +4,23 @@ import CustomText from "@/src/core/components/CustomText";
 import IamfitIcon from "@/src/core/components/IamfitIcon";
 import Wrapper from "@/src/core/components/Wrapper";
 import AuthFormTemplate from "@/src/core/templates/AuthForm/AuthFormTemplate";
-import { login } from "@/src/services/auth/auth.service";
-import { clearStoredMiaMessages } from "@/src/services/mia";
-import { getDeviceSession } from "@/src/services/session/device.storage";
-import { clearTokens, saveTokens } from "@/src/services/session/token.storage";
-import { clearNickname } from "@/src/services/session/user.storage";
-import { loadUserInfo } from "@/src/services/user-profile/user-profile.service";
-import { Href, useRouter } from "expo-router";
+import { COLOR } from "@/src/theme";
 import React from "react";
-import { TextInput, View } from "react-native";
+import { View } from "react-native";
 import { LoginScreenStyles as styles } from "./LoginScreen.styles";
+import { useLoginScreen } from "./useLoginScreen";
 
 export default function LoginScreen() {
-  const router = useRouter();
-  const passwordInputRef = React.useRef<TextInput>(null);
-  const emailValueRef = React.useRef("");
-  const passwordValueRef = React.useRef("");
-
-  const handleLogin = async () => {
-    const email = emailValueRef.current.trim();
-    const password = passwordValueRef.current;
-
-    if (!email || !password) {
-      console.warn("Ingresa tu correo y contraseña");
-      return;
-    }
-
-    try {
-      await clearTokens();
-      const session = await getDeviceSession();
-      const response = await login({
-        login: {
-          identifier: email,
-          password,
-          provider: "LOCAL",
-        },
-        session,
-      });
-
-      await clearNickname();
-      clearStoredMiaMessages();
-
-      await loadUserInfo(response.accessToken);
-
-      await saveTokens(response.accessToken, response.refreshToken);
-
-      console.log("Tokens guardados con éxito. Redirigiendo...");
-
-      router.replace("/(main)/home");
-    } catch (loginError) {
-      console.error("No se pudo iniciar sesión", loginError);
-    }
-  };
+  const {
+    handleLogin,
+    goToRegister,
+    goToForgotPassword,
+    email,
+    password,
+    loading,
+    buttonDisabled,
+    error,
+  } = useLoginScreen();
 
   return (
     <Wrapper>
@@ -69,49 +34,51 @@ export default function LoginScreen() {
         section2={
           <View style={styles.second}>
             <CustomFormInput
+              ref={email.inputProps.ref}
               autoCapitalize="none"
               autoCorrect={false}
               keyboardType="email-address"
-              onChangeText={(value) => {
-                emailValueRef.current = value;
-              }}
-              onSubmitEditing={() => passwordInputRef.current?.focus()}
+              onChangeText={email.inputProps.onChangeText}
+              onSubmitEditing={() => password.ref.current?.focus()}
               placeholder="Correo electrónico"
               returnKeyType="next"
               submitBehavior="submit"
+              error={email.errorMessage}
             />
             <CustomFormInput
-              ref={passwordInputRef}
-              onChangeText={(value) => {
-                passwordValueRef.current = value;
-              }}
-              onSubmitEditing={handleLogin}
-              placeholder="Contrasena"
+              ref={password.inputProps.ref}
+              onChangeText={password.inputProps.onChangeText}
+              placeholder="Contraseña"
               returnKeyType="done"
               secureTextEntry
               submitBehavior="blurAndSubmit"
+              error={password.errorMessage}
             />
           </View>
         }
         section3={
           <View style={styles.last}>
             <View style={styles.last_first}>
-              <CustomButton onPress={handleLogin} type="primary">
+              <View style={styles.error}>
+                <CustomText type="body" color={COLOR.ERROR}>
+                  {error || ""}
+                </CustomText>
+              </View>
+              <CustomButton
+                onPress={handleLogin}
+                type="primary"
+                isLoading={loading}
+                disabled={buttonDisabled}
+              >
                 Acceder ahora
               </CustomButton>
-              <CustomText
-                onPress={() => router.push("/forgot-password" as Href)}
-                type="body_interactive"
-              >
+              <CustomText onPress={goToForgotPassword} type="body_interactive">
                 Olvide mi contraseña
               </CustomText>
             </View>
             <CustomText type="body">
-              No tienes una cuenta?
-              <CustomText
-                onPress={() => router.push("/register/age")}
-                type="body_interactive"
-              >
+              ¿No tienes una cuenta?
+              <CustomText onPress={goToRegister} type="body_interactive">
                 {" "}
                 Registrate ahora
               </CustomText>
