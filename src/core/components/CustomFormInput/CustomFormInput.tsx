@@ -31,10 +31,8 @@ const CustomFormInput = React.forwardRef<TextInput, CustomFormInputProps>(
     );
     const isSecureTextEntry = Boolean(secureTextEntry && !isPasswordVisible);
 
-    // 1. Creamos nuestra propia referencia interna
     const internalRef = useRef<TextInput>(null);
 
-    // 2. Combinamos tu ref externa con la interna
     const handleRef = (instance: TextInput | null) => {
       internalRef.current = instance as TextInput;
       if (typeof ref === "function") {
@@ -48,9 +46,6 @@ const CustomFormInput = React.forwardRef<TextInput, CustomFormInputProps>(
     const togglePasswordVisibility = () => {
       setIsPasswordVisible((currentValue) => !currentValue);
 
-      // 🔥 EL FIX PARA EL BUG NATIVO DE iOS 🔥
-      // Inyectamos el texto de nuevo directamente en el puente nativo
-      // después de que React re-renderiza, para cancelar el borrado de iOS.
       if (Platform.OS === "ios" && textInputProps.value !== undefined) {
         setTimeout(() => {
           internalRef.current?.setNativeProps({ text: textInputProps.value });
@@ -72,12 +67,11 @@ const CustomFormInput = React.forwardRef<TextInput, CustomFormInputProps>(
 
           <TextInput
             {...textInputProps}
-            ref={handleRef} // <-- Usamos la ref combinada
+            ref={handleRef}
             editable={editable}
             placeholder={placeholder}
             placeholderTextColor={placeholderTextColor}
             secureTextEntry={isSecureTextEntry}
-            // Mantenemos esta protección extra para el teclado
             autoCorrect={secureTextEntry ? false : textInputProps.autoCorrect}
             autoCapitalize={
               secureTextEntry ? "none" : textInputProps.autoCapitalize
@@ -93,7 +87,7 @@ const CustomFormInput = React.forwardRef<TextInput, CustomFormInputProps>(
               accessibilityRole="button"
               disabled={!editable}
               hitSlop={8}
-              onPress={togglePasswordVisibility} // <-- Llamamos a nuestra función
+              onPress={togglePasswordVisibility}
               style={styles.passwordToggle}
             >
               <Ionicons
