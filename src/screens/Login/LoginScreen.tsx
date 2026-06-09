@@ -4,14 +4,23 @@ import CustomText from "@/src/core/components/CustomText";
 import IamfitIcon from "@/src/core/components/IamfitIcon";
 import Wrapper from "@/src/core/components/Wrapper";
 import AuthFormTemplate from "@/src/core/templates/AuthForm/AuthFormTemplate";
+import { COLOR } from "@/src/theme";
 import React from "react";
 import { View } from "react-native";
 import { LoginScreenStyles as styles } from "./LoginScreen.styles";
 import { useLoginScreen } from "./useLoginScreen";
 
 export default function LoginScreen() {
-  const { handleLogin, goToRegister, goToForgotPassword, email, password } =
-    useLoginScreen();
+  const {
+    handleLogin,
+    goToRegister,
+    goToForgotPassword,
+    email,
+    password,
+    loading,
+    buttonDisabled,
+    error,
+  } = useLoginScreen();
 
   return (
     <Wrapper>
@@ -51,7 +60,17 @@ export default function LoginScreen() {
         section3={
           <View style={styles.last}>
             <View style={styles.last_first}>
-              <CustomButton onPress={handleLogin} type="primary">
+              <View style={styles.error}>
+                <CustomText type="body" color={COLOR.ERROR}>
+                  {error || ""}
+                </CustomText>
+              </View>
+              <CustomButton
+                onPress={handleLogin}
+                type="primary"
+                isLoading={loading}
+                disabled={buttonDisabled}
+              >
                 Acceder ahora
               </CustomButton>
               <CustomText onPress={goToForgotPassword} type="body_interactive">

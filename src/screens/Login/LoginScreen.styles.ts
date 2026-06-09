@@ -26,4 +26,6 @@ export const LoginScreenStyles = StyleSheet.create({
     alignItems: "center",
     gap: UI.spacing.lg,
   },
+
+  error: {},
 });
