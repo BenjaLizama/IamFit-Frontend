@@ -49,7 +49,7 @@ export default function ForgotPasswordEmailScreen() {
             <IamfitIcon />
             <CustomText type="h1">Recuperar mi{"\n"}contraseña</CustomText>
             <CustomText type="body" style={styles.description}>
-              Ingresa tu correo para enviarte un codigo de recuperación.
+              Ingresa tu correo para enviarte un código de recuperación.
             </CustomText>
           </View>
         }

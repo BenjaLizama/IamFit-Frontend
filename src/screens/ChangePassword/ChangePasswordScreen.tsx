@@ -55,7 +55,7 @@ export default function ChangePasswordScreen() {
       <AuthFormTemplate
         section1={
           <View style={styles.first}>
-            <CustomText type="h1">Cambiar mi{"\n"}contrasena</CustomText>
+            <CustomText type="h1">Cambiar mi{"\n"}contraseña</CustomText>
             <CustomText type="body" style={styles.description}>
               Actualiza tu contraseña manteniendo tu sesion activa.
             </CustomText>
