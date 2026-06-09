@@ -25,14 +25,10 @@ export default function MessageInputText({
 
   return (
     <View style={styles.container}>
-      <View style={styles.hiddenContent}>
-        <View></View>
-      </View>
       <View style={styles.inputContainer}>
         <Firework />
         <TextInput
           editable={!disabled}
-          multiline
           onChangeText={setMessage}
           onSubmitEditing={handleSend}
           placeholder="Escribe tu mensaje..."

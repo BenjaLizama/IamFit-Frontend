@@ -1,5 +1,7 @@
 export type RoutineDifficulty = "PRINCIPIANTE" | "INTERMEDIO" | "AVANZADO";
 
+export type RoutineStatus = "ACTIVE" | "INACTIVE" | "ALL";
+
 export type MuscleGroup =
   | "PECHO"
   | "ESPALDA"
@@ -15,10 +17,11 @@ export type MuscleGroup =
 export type RoutineEquipment =
   | "BARRA"
   | "MANCUERNAS"
-  | "CUERDA"
-  | "CINTA"
-  | "MAQUINAS"
-  | "NINGUNO";
+  | "MAQUINA"
+  | "POLEA"
+  | "PESO_CORPORAL"
+  | "BANDA_ELASTICA"
+  | "KETTLEBELL";
 
 export interface RoutineExercise {
   id: string | null;
@@ -78,3 +81,54 @@ export type GetRoutineResponse = Routine;
 export type GetExercisesResponse = Exercise[];
 
 export type SelectGeneratedRoutineResponse = Routine;
+
+export interface RoutineLimitsResponse {
+  activeRoutines: number;
+  canCreateRoutine: boolean;
+  inactiveRoutines: number;
+  maxActiveRoutines: number;
+}
+
+export interface ExerciseOptionsResponse {
+  difficultyLevels: RoutineDifficulty[];
+  equipment: RoutineEquipment[];
+  muscleGroups: MuscleGroup[];
+}
+
+export interface UpdateRoutineRequest {
+  description?: string;
+  difficultyLevel?: RoutineDifficulty;
+  estimatedDurationMinutes?: number;
+  name?: string;
+}
+
+export interface AddExerciseToRoutineRequest {
+  exerciseId: string;
+  notes?: string;
+  reps: number;
+  restSeconds?: number;
+  sets: number;
+  weightKg?: number;
+}
+
+export interface EditRoutineExerciseRequest {
+  notes?: string;
+  reps?: number;
+  restSeconds?: number;
+  sets?: number;
+  weightKg?: number;
+}
+
+export interface ReorderExerciseRequest {
+  exerciseEntryId: string;
+  newOrderIndex: number;
+}
+
+export interface WorkoutHistory {
+  completedAt: string;
+  id: string;
+  notes?: string;
+  routineName: string;
+  status: string;
+  workoutDate: string;
+}

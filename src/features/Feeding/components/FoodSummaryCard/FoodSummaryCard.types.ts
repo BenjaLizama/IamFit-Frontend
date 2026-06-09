@@ -11,4 +11,4 @@ export interface UseFoodSummaryCardProps {
   tipoComida: TipoComida;
 }
 
-type TipoComida = "Desayuno" | "Almuerzo" | "Cena";
+type TipoComida = "Desayuno" | "Almuerzo" | "Cena" | "Snack";

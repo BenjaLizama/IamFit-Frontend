@@ -10,7 +10,8 @@ import { LoginScreenStyles as styles } from "./LoginScreen.styles";
 import { useLoginScreen } from "./useLoginScreen";
 
 export default function LoginScreen() {
-  const { handleLogin, goToRegister, email, password } = useLoginScreen();
+  const { handleLogin, goToRegister, goToForgotPassword, email, password } =
+    useLoginScreen();
 
   return (
     <Wrapper>
@@ -53,11 +54,8 @@ export default function LoginScreen() {
               <CustomButton onPress={handleLogin} type="primary">
                 Acceder ahora
               </CustomButton>
-              <CustomText
-                type="body"
-                style={{ textDecorationLine: "underline" }}
-              >
-                Olvidé mi contraseña
+              <CustomText onPress={goToForgotPassword} type="body_interactive">
+                Olvide mi contraseña
               </CustomText>
             </View>
             <CustomText type="body">

@@ -25,6 +25,18 @@ export const RoutineScreenStyles = StyleSheet.create({
     gap: UI.spacing.md,
     marginTop: UI.spacing.md,
   },
+  routineCardGroup: {
+    gap: UI.spacing.sm,
+  },
+  limitBox: {
+    backgroundColor: COLOR.FONDO_OPACO,
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.small_radius,
+    borderWidth: 1,
+    gap: UI.spacing.xs,
+    marginTop: UI.spacing.sm,
+    padding: UI.spacing.md,
+  },
   aiButton: {
     alignItems: "center",
     flexDirection: "row",

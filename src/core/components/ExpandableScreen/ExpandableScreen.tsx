@@ -74,6 +74,8 @@ export default function ExpandableScreen({
   };
 
   const effectiveKeyboardVerticalOffset = keyboardVerticalOffset ?? 0;
+  const keyboardBehavior =
+    Platform.OS === "ios" ? "padding" : variant === "chat" ? undefined : "height";
 
   return (
     <View style={styles.container}>
@@ -140,13 +142,7 @@ export default function ExpandableScreen({
 
             <Animated.View entering={FadeIn.delay(200)} style={styles.body}>
               <KeyboardAvoidingView
-                behavior={
-                  variant === "chat"
-                    ? undefined
-                    : Platform.OS === "ios"
-                      ? "padding"
-                      : "height"
-                }
+                behavior={keyboardBehavior}
                 style={styles.bodyKeyboard}
                 keyboardVerticalOffset={effectiveKeyboardVerticalOffset}
               >

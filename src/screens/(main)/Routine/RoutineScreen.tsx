@@ -10,18 +10,41 @@ import {
   MuscleGroup,
   RoutineDifficulty,
   RoutineEquipment,
+  RoutineLimitsResponse,
+  RoutineStatus,
+  activateRoutine,
+  deactivateRoutine,
   generateRoutineOptions,
+  getExerciseOptions,
+  getRoutineLimits,
   getRoutines,
   selectGeneratedRoutine,
 } from "@/src/services/routines";
+import {
+  clearMiaGeneratedRoutineOptions,
+  getMiaGeneratedRoutineOptions,
+  MIA_GENERATED_ROUTINE_OPTIONS_EVENT,
+} from "@/src/services/mia/mia.generated.storage";
 import { getAccessToken } from "@/src/services/session/token.storage";
 import { COLOR } from "@/src/theme";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Pressable, ScrollView, TextInput, View } from "react-native";
+import {
+  DeviceEventEmitter,
+  Pressable,
+  ScrollView,
+  TextInput,
+  View,
+} from "react-native";
 import { RoutineScreenStyles as style } from "./RoutineScreen.styles";
 
-const FILTER_LIST = ["Esta semana", "Completado", "Favoritas"];
-const MUSCLE_GROUP_OPTIONS: MuscleGroup[] = [
+const FILTER_LIST = ["Activas", "Inactivas", "Todas"];
+const STATUS_BY_FILTER: Record<string, RoutineStatus> = {
+  Activas: "ACTIVE",
+  Inactivas: "INACTIVE",
+  Todas: "ALL",
+};
+const DEFAULT_MUSCLE_GROUP_OPTIONS: MuscleGroup[] = [
   "PECHO",
   "ESPALDA",
   "HOMBROS",
@@ -33,15 +56,16 @@ const MUSCLE_GROUP_OPTIONS: MuscleGroup[] = [
   "CARDIO",
   "CUERPO_COMPLETO",
 ];
-const EQUIPMENT_OPTIONS: RoutineEquipment[] = [
+const DEFAULT_EQUIPMENT_OPTIONS: RoutineEquipment[] = [
   "BARRA",
   "MANCUERNAS",
-  "CUERDA",
-  "CINTA",
-  "MAQUINAS",
-  "NINGUNO",
+  "MAQUINA",
+  "PESO_CORPORAL",
+  "POLEA",
+  "BANDA_ELASTICA",
+  "KETTLEBELL",
 ];
-const DIFFICULTY_OPTIONS: RoutineDifficulty[] = [
+const DEFAULT_DIFFICULTY_OPTIONS: RoutineDifficulty[] = [
   "PRINCIPIANTE",
   "INTERMEDIO",
   "AVANZADO",
@@ -49,11 +73,15 @@ const DIFFICULTY_OPTIONS: RoutineDifficulty[] = [
 const DURATION_OPTIONS = [30, 45, 60];
 
 export default function RoutineScreen() {
-  const { handleFilterChange } = useActiveFilter();
+  const { activeFilter, handleFilterChange } = useActiveFilter("Activas");
+  const selectedRoutineStatus = STATUS_BY_FILTER[activeFilter] || "ACTIVE";
   const [checkedExerciseIds, setCheckedExerciseIds] = useState<string[]>([]);
   const [routines, setRoutines] = useState(MOCK_ROUTINES);
+  const [routineLimits, setRoutineLimits] =
+    useState<RoutineLimitsResponse | null>(null);
   const [isAiPanelOpen, setIsAiPanelOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isUpdatingRoutine, setIsUpdatingRoutine] = useState(false);
   const [isSelectingRoutine, setIsSelectingRoutine] = useState(false);
   const [generatedSessionId, setGeneratedSessionId] = useState<string | null>(
     null,
@@ -61,6 +89,15 @@ export default function RoutineScreen() {
   const [generatedRoutines, setGeneratedRoutines] = useState<BackendRoutine[]>(
     [],
   );
+  const [muscleGroupOptions, setMuscleGroupOptions] = useState<MuscleGroup[]>(
+    DEFAULT_MUSCLE_GROUP_OPTIONS,
+  );
+  const [equipmentOptions, setEquipmentOptions] = useState<RoutineEquipment[]>(
+    DEFAULT_EQUIPMENT_OPTIONS,
+  );
+  const [difficultyOptions, setDifficultyOptions] = useState<
+    RoutineDifficulty[]
+  >(DEFAULT_DIFFICULTY_OPTIONS);
   const [selectedMuscleGroups, setSelectedMuscleGroups] = useState<
     MuscleGroup[]
   >(["PECHO", "TRICEPS"]);
@@ -71,6 +108,7 @@ export default function RoutineScreen() {
     useState<RoutineDifficulty>("INTERMEDIO");
   const [selectedDuration, setSelectedDuration] = useState(45);
   const [limitations, setLimitations] = useState("ninguna");
+  const [routineErrorMessage, setRoutineErrorMessage] = useState("");
 
   const toggleExercise = (routineId: string, exerciseId: string) => {
     const compositeKey = `${routineId}-${exerciseId}`;
@@ -84,17 +122,97 @@ export default function RoutineScreen() {
   const loadRoutines = React.useCallback(async () => {
     try {
       const token = await getAccessToken();
-      const data = await getRoutines(token);
+      const data = await getRoutines(token, selectedRoutineStatus);
       setRoutines(data.map(mapBackendRoutineToScreenRoutine));
       console.log("Rutinas del usuario:", data);
     } catch (error) {
       console.log("Error cargando rutinas:", error);
+    }
+  }, [selectedRoutineStatus]);
+
+  const loadRoutineLimits = React.useCallback(async () => {
+    try {
+      const token = await getAccessToken();
+      const limits = await getRoutineLimits(token);
+
+      setRoutineLimits(limits);
+    } catch (error) {
+      console.log("Error cargando limites de rutinas:", error);
+    }
+  }, []);
+
+  const loadExerciseOptions = React.useCallback(async () => {
+    try {
+      const token = await getAccessToken();
+      const options = await getExerciseOptions(token);
+
+      if (options.muscleGroups?.length) {
+        setMuscleGroupOptions(options.muscleGroups);
+      }
+
+      if (options.equipment?.length) {
+        setEquipmentOptions(options.equipment);
+      }
+
+      if (options.difficultyLevels?.length) {
+        setDifficultyOptions(options.difficultyLevels);
+      }
+    } catch (error) {
+      console.log("Error cargando opciones de ejercicios:", error);
     }
   }, []);
 
   React.useEffect(() => {
     loadRoutines();
   }, [loadRoutines]);
+
+  React.useEffect(() => {
+    void loadRoutineLimits();
+    void loadExerciseOptions();
+  }, [loadExerciseOptions, loadRoutineLimits]);
+
+  const applyMiaRoutineOptions = React.useCallback(
+    (miaRoutineOptions: {
+      routines: BackendRoutine[];
+      sessionId: string;
+    }) => {
+      setGeneratedSessionId(miaRoutineOptions.sessionId);
+      setGeneratedRoutines(miaRoutineOptions.routines);
+      setIsAiPanelOpen(true);
+    },
+    [],
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      let isActive = true;
+
+      const loadMiaRoutineOptions = async () => {
+        const miaRoutineOptions = await getMiaGeneratedRoutineOptions();
+
+        if (!isActive || !miaRoutineOptions) {
+          return;
+        }
+
+        applyMiaRoutineOptions(miaRoutineOptions);
+      };
+
+      void loadMiaRoutineOptions();
+
+      return () => {
+        isActive = false;
+      };
+    }, [applyMiaRoutineOptions]),
+  );
+
+  React.useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      MIA_GENERATED_ROUTINE_OPTIONS_EVENT,
+      applyMiaRoutineOptions,
+    );
+
+    return () => subscription.remove();
+  }, [applyMiaRoutineOptions]);
 
   const toggleMuscleGroup = (muscleGroup: MuscleGroup) => {
     setSelectedMuscleGroups((currentMuscleGroups) =>
@@ -128,6 +246,7 @@ export default function RoutineScreen() {
 
     try {
       setIsGenerating(true);
+      setRoutineErrorMessage("");
       const token = await getAccessToken();
       const response = await generateRoutineOptions(body, token);
 
@@ -136,6 +255,11 @@ export default function RoutineScreen() {
       console.log("Rutinas generadas:", response);
     } catch (error) {
       console.log("Error generando rutinas:", error);
+      setRoutineErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "No se pudieron generar las rutinas.",
+      );
     } finally {
       setIsGenerating(false);
     }
@@ -152,25 +276,64 @@ export default function RoutineScreen() {
 
     try {
       setIsSelectingRoutine(true);
+      setRoutineErrorMessage("");
       const token = await getAccessToken();
+      const selectionPayload = {
+        customName: routine.name,
+        selectedIndex,
+        sessionId: generatedSessionId,
+      };
 
-      await selectGeneratedRoutine(
-        {
-          customName: routine.name,
-          selectedIndex,
-          sessionId: generatedSessionId,
-        },
-        token,
-      );
+      await selectGeneratedRoutine(selectionPayload, token);
 
       setGeneratedRoutines([]);
       setGeneratedSessionId(null);
       setIsAiPanelOpen(false);
+      await clearMiaGeneratedRoutineOptions();
       await loadRoutines();
+      await loadRoutineLimits();
     } catch (error) {
       console.log("Error seleccionando rutina generada:", error);
+      await clearMiaGeneratedRoutineOptions();
+      setGeneratedRoutines([]);
+      setGeneratedSessionId(null);
+      setRoutineErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "No se pudo guardar la rutina generada. Genera nuevas opciones e intenta otra vez.",
+      );
     } finally {
       setIsSelectingRoutine(false);
+    }
+  };
+
+  const handleRoutineStatusChange = async (
+    routineId: string,
+    action: "activate" | "deactivate",
+  ) => {
+    try {
+      setIsUpdatingRoutine(true);
+      setRoutineErrorMessage("");
+
+      const token = await getAccessToken();
+
+      if (action === "activate") {
+        await activateRoutine(routineId, token);
+      } else {
+        await deactivateRoutine(routineId, token);
+      }
+
+      await loadRoutines();
+      await loadRoutineLimits();
+    } catch (error) {
+      console.log("Error actualizando estado de rutina:", error);
+      setRoutineErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "No se pudo actualizar la rutina.",
+      );
+    } finally {
+      setIsUpdatingRoutine(false);
     }
   };
 
@@ -218,17 +381,59 @@ export default function RoutineScreen() {
           onFilterChange={handleFilterChange}
         />
       </View>
+      {routineLimits && (
+        <View style={style.limitBox}>
+          <CustomText type="button_secondary">Limite de rutinas</CustomText>
+          <CustomText type="body_secondary">
+            Activas: {routineLimits.activeRoutines}/
+            {routineLimits.maxActiveRoutines} - Inactivas:{" "}
+            {routineLimits.inactiveRoutines}
+          </CustomText>
+          {!routineLimits.canCreateRoutine && (
+            <CustomText type="body_secondary">
+              Desactiva una rutina antes de crear otra.
+            </CustomText>
+          )}
+        </View>
+      )}
+      {!!routineErrorMessage && !isAiPanelOpen && (
+        <CustomText type="body_secondary">{routineErrorMessage}</CustomText>
+      )}
       <View style={style.routineList}>
-        {routines.map((routine) => (
-          <RoutineExpandableCard
-            key={routine.id}
-            routine={routine}
-            checkedExerciseIds={checkedExerciseIds}
-            onToggleExercise={(exerciseId) =>
-              toggleExercise(routine.id, exerciseId)
-            }
-          />
-        ))}
+        {routines.map((routine) => {
+          const canChangeStatus = !routine.id.startsWith("temp-");
+
+          return (
+            <View key={routine.id} style={style.routineCardGroup}>
+              <RoutineExpandableCard
+                routine={routine}
+                checkedExerciseIds={checkedExerciseIds}
+                onToggleExercise={(exerciseId) =>
+                  toggleExercise(routine.id, exerciseId)
+                }
+              />
+              {selectedRoutineStatus !== "ALL" && canChangeStatus && (
+                <CustomButton
+                  disabled={isUpdatingRoutine}
+                  isLoading={isUpdatingRoutine}
+                  type="secondary"
+                  onPress={() =>
+                    handleRoutineStatusChange(
+                      routine.id,
+                      selectedRoutineStatus === "ACTIVE"
+                        ? "deactivate"
+                        : "activate",
+                    )
+                  }
+                >
+                  {selectedRoutineStatus === "ACTIVE"
+                    ? "Desactivar"
+                    : "Activar"}
+                </CustomButton>
+              )}
+            </View>
+          );
+        })}
       </View>
 
       <View style={style.aiButton}>
@@ -244,10 +449,15 @@ export default function RoutineScreen() {
 
       {isAiPanelOpen && (
         <View style={style.aiPanel}>
+          {!!routineErrorMessage && (
+            <CustomText type="body_secondary">
+              {routineErrorMessage}
+            </CustomText>
+          )}
           <View style={style.aiSection}>
             <CustomText type="button_secondary">Grupos musculares</CustomText>
             <View style={style.chipRow}>
-              {MUSCLE_GROUP_OPTIONS.map((muscleGroup) => {
+              {muscleGroupOptions.map((muscleGroup) => {
                 const isSelected = selectedMuscleGroups.includes(muscleGroup);
 
                 return (
@@ -272,7 +482,7 @@ export default function RoutineScreen() {
           <View style={style.aiSection}>
             <CustomText type="button_secondary">Equipo disponible</CustomText>
             <View style={style.chipRow}>
-              {EQUIPMENT_OPTIONS.map((equipment) => {
+              {equipmentOptions.map((equipment) => {
                 const isSelected = selectedEquipment.includes(equipment);
 
                 return (
@@ -297,7 +507,7 @@ export default function RoutineScreen() {
           <View style={style.aiSection}>
             <CustomText type="button_secondary">Dificultad</CustomText>
             <View style={style.chipRow}>
-              {DIFFICULTY_OPTIONS.map((difficulty) => {
+              {difficultyOptions.map((difficulty) => {
                 const isSelected = selectedDifficulty === difficulty;
 
                 return (
@@ -358,7 +568,7 @@ export default function RoutineScreen() {
           <CustomButton
             type="primary"
             isLoading={isGenerating}
-            disabled={isSelectingRoutine}
+            disabled={isSelectingRoutine || !routineLimits?.canCreateRoutine}
             onPress={handleGenerateRoutineOptions}
           >
             Generar 3 opciones

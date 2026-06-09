@@ -68,7 +68,7 @@ export default function MainTabBar() {
         onExpandedChange={setIsExpandableOpen}
         top={-10}
         variant="chat"
-        keyboardVerticalOffset={125}
+        keyboardVerticalOffset={155}
       />
 
       <MainTabIcon

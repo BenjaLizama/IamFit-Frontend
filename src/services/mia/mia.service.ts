@@ -1,6 +1,7 @@
 import { API, handleResponse } from "../api.service";
 import { getAccessToken } from "../session/token.storage";
 import {
+  MiaAction,
   MiaHealthResponse,
   MiaPromptRequest,
   MiaPromptResponse,
@@ -165,4 +166,33 @@ export const getMiaResponseText = (response: MiaPromptResponse) => {
     extractText(response) ||
     "M.I.A. respondio, pero no se pudo leer el mensaje."
   );
+};
+
+export const getMiaResponseActions = (
+  response: MiaPromptResponse,
+): MiaAction[] => {
+  if (!isRecord(response) || !Array.isArray(response.actions)) {
+    return [];
+  }
+
+  return response.actions.filter((action): action is MiaAction => {
+    return (
+      isRecord(action) &&
+      typeof action.type === "string" &&
+      "payload" in action
+    );
+  });
+};
+
+export const getMiaResponseMetadata = (response: MiaPromptResponse) => {
+  if (!isRecord(response)) {
+    return {};
+  }
+
+  return {
+    disclaimer:
+      typeof response.disclaimer === "string" ? response.disclaimer : undefined,
+    model: typeof response.model === "string" ? response.model : undefined,
+    status: typeof response.status === "string" ? response.status : undefined,
+  };
 };
