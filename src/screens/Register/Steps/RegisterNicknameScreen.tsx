@@ -9,6 +9,11 @@ export default function RegisterNicknameScreen() {
     "/register/email",
   );
 
+  const error =
+    value.length > 0 && !isValidNickname(value)
+      ? "El apodo debe contener al menos 3 caracteres."
+      : "";
+
   return (
     <RegisterStepScreen
       inputProps={{
@@ -23,6 +28,7 @@ export default function RegisterNicknameScreen() {
       stepLabel="Paso 5 de 8"
       title={"Selecciona tu\napodo"}
       disabled={!isValidNickname(value)}
+      error={error}
     />
   );
 }

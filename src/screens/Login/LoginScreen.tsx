@@ -48,7 +48,6 @@ export default function LoginScreen() {
             <CustomFormInput
               ref={password.inputProps.ref}
               onChangeText={password.inputProps.onChangeText}
-              onSubmitEditing={handleLogin}
               placeholder="Contraseña"
               returnKeyType="done"
               secureTextEntry

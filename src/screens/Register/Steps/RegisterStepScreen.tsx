@@ -31,6 +31,7 @@ export default function RegisterStepScreen({
   onPrivacyPolicyPress,
   disabled = false,
   loading,
+  error,
 }: RegisterStepScreenProps & {
   onPrivacyPolicyPress?: () => void;
   disabled?: boolean;
@@ -91,10 +92,9 @@ export default function RegisterStepScreen({
             ) : (
               <CustomFormInput
                 ref={inputRef}
-                onSubmitEditing={goNext}
-                returnKeyType="done"
-                submitBehavior="submit"
                 {...inputProps}
+                submitBehavior="submit"
+                error={error}
               />
             )}
           </View>
