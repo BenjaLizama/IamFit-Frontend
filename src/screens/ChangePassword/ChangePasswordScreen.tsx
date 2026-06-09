@@ -8,8 +8,7 @@ import React from "react";
 import { View } from "react-native";
 import { ForgotPasswordStyles as styles } from "../ForgotPassword/ForgotPassword.styles";
 
-const PASSWORD_REGEX =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$/;
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$/;
 
 export default function ChangePasswordScreen() {
   const [currentPassword, setCurrentPassword] = React.useState("");
@@ -25,11 +24,11 @@ export default function ChangePasswordScreen() {
 
   const validationError = React.useMemo(() => {
     if (newPassword.length > 0 && !isNewPasswordValid) {
-      return "La nueva contrasena debe tener minimo 8 caracteres, mayuscula, minuscula, numero y caracter especial.";
+      return "La nueva contraseña debe tener mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial.";
     }
 
     if (newPassword.length > 0 && currentPassword === newPassword) {
-      return "La nueva contrasena debe ser distinta a la actual.";
+      return "La nueva contraseña debe ser distinta a la actual.";
     }
 
     return null;
@@ -45,7 +44,7 @@ export default function ChangePasswordScreen() {
       // TODO: call backend endpoint to change password with Authorization header.
       router.push("/change-password/success" as Href);
     } catch {
-      setError("La contrasena actual es incorrecta.");
+      setError("La contraseña actual es incorrecta.");
     } finally {
       setIsLoading(false);
     }
@@ -58,20 +57,20 @@ export default function ChangePasswordScreen() {
           <View style={styles.first}>
             <CustomText type="h1">Cambiar mi{"\n"}contrasena</CustomText>
             <CustomText type="body" style={styles.description}>
-              Actualiza tu contrasena manteniendo tu sesion activa.
+              Actualiza tu contraseña manteniendo tu sesion activa.
             </CustomText>
           </View>
         }
         section2={
           <View style={styles.second}>
             <CustomFormInput
-              placeholder="Contrasena actual"
+              placeholder="Contraseña actual"
               value={currentPassword}
               onChangeText={setCurrentPassword}
               secureTextEntry
             />
             <CustomFormInput
-              placeholder="Nueva contrasena"
+              placeholder="Nueva contraseña"
               value={newPassword}
               onChangeText={setNewPassword}
               secureTextEntry
@@ -94,10 +93,7 @@ export default function ChangePasswordScreen() {
             >
               Confirmar
             </CustomButton>
-            <CustomText
-              type="body_interactive"
-              onPress={() => router.back()}
-            >
+            <CustomText type="body_interactive" onPress={() => router.back()}>
               Volver
             </CustomText>
           </View>

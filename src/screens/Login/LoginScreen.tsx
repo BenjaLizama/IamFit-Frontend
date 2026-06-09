@@ -20,8 +20,12 @@ export default function LoginScreen() {
   const passwordInputRef = React.useRef<TextInput>(null);
   const emailValueRef = React.useRef("");
   const passwordValueRef = React.useRef("");
+  const isLoggingInRef = React.useRef(false);
+  const [isLoggingIn, setIsLoggingIn] = React.useState(false);
 
   const handleLogin = async () => {
+    if (isLoggingInRef.current) return;
+
     const email = emailValueRef.current.trim();
     const password = passwordValueRef.current;
 
@@ -29,6 +33,9 @@ export default function LoginScreen() {
       console.warn("Ingresa tu correo y contraseña");
       return;
     }
+
+    isLoggingInRef.current = true;
+    setIsLoggingIn(true);
 
     try {
       await clearTokens();
@@ -54,6 +61,9 @@ export default function LoginScreen() {
       router.replace("/(main)/home");
     } catch (loginError) {
       console.error("No se pudo iniciar sesión", loginError);
+    } finally {
+      isLoggingInRef.current = false;
+      setIsLoggingIn(false);
     }
   };
 
@@ -86,7 +96,7 @@ export default function LoginScreen() {
                 passwordValueRef.current = value;
               }}
               onSubmitEditing={handleLogin}
-              placeholder="Contrasena"
+              placeholder="Contraseña"
               returnKeyType="done"
               secureTextEntry
               submitBehavior="blurAndSubmit"
@@ -96,14 +106,19 @@ export default function LoginScreen() {
         section3={
           <View style={styles.last}>
             <View style={styles.last_first}>
-              <CustomButton onPress={handleLogin} type="primary">
+              <CustomButton
+                disabled={isLoggingIn}
+                isLoading={isLoggingIn}
+                onPress={handleLogin}
+                type="primary"
+              >
                 Acceder ahora
               </CustomButton>
               <CustomText
                 onPress={() => router.push("/forgot-password" as Href)}
                 type="body_interactive"
               >
-                Olvide mi contraseña
+                Olvidé mi contraseña
               </CustomText>
             </View>
             <CustomText type="body">

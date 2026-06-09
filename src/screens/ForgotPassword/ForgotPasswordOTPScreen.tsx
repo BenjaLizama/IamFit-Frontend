@@ -3,6 +3,7 @@ import CustomText from "@/src/core/components/CustomText";
 import OTPInput from "@/src/core/components/OTPInput";
 import Wrapper from "@/src/core/components/Wrapper";
 import AuthFormTemplate from "@/src/core/templates/AuthForm/AuthFormTemplate";
+import { verifyForgotPassword } from "@/src/services/auth/auth.service";
 import { Href, router } from "expo-router";
 import React from "react";
 import { Text, View } from "react-native";
@@ -16,7 +17,7 @@ export default function ForgotPasswordOTPScreen({ email }: Props) {
   const [code, setCode] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const isValid = code.length === 5;
+  const isValid = code.length === 6;
 
   const handleConfirm = async () => {
     if (!isValid) return;
@@ -25,14 +26,26 @@ export default function ForgotPasswordOTPScreen({ email }: Props) {
     setError(null);
 
     try {
-      // TODO: call backend endpoint to validate password reset OTP.
+      const response = await verifyForgotPassword({ email, code });
+      const resetToken =
+        response.resetToken ??
+        (response as any).token ??
+        (response as any).data?.resetToken;
+
+      if (!resetToken) {
+        throw new Error("No se recibió el token de recuperación.");
+      }
+
       router.push(
         `/forgot-password/new-password?email=${encodeURIComponent(
           email,
-        )}&code=${encodeURIComponent(code)}` as Href,
+        )}&resetToken=${encodeURIComponent(resetToken)}` as Href,
       );
-    } catch {
-      setError("El codigo ingresado no es valido. Intenta nuevamente.");
+    } catch (verifyError: any) {
+      setError(
+        verifyError?.message ??
+          "El código ingresado no es válido. Intenta nuevamente.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -45,14 +58,14 @@ export default function ForgotPasswordOTPScreen({ email }: Props) {
           <View style={styles.first}>
             <CustomText type="h1">Validar{"\n"}codigo</CustomText>
             <CustomText type="body" style={styles.description}>
-              Hemos enviado un codigo de recuperacion al correo{" "}
+              Se ha enviado un código de recuperación al correo{" "}
               <Text style={styles.emailHighlight}>{email}</Text>.
             </CustomText>
           </View>
         }
         section2={
           <View style={styles.second}>
-            <OTPInput length={5} value={code} onChange={setCode} autoFocus />
+            <OTPInput length={6} value={code} onChange={setCode} autoFocus />
             {error ? (
               <CustomText type="body" style={styles.errorText}>
                 {error}
@@ -68,12 +81,9 @@ export default function ForgotPasswordOTPScreen({ email }: Props) {
               disabled={!isValid}
               isLoading={isLoading}
             >
-              Validar codigo
+              Válidar codigo
             </CustomButton>
-            <CustomText
-              type="body_interactive"
-              onPress={() => router.back()}
-            >
+            <CustomText type="body_interactive" onPress={() => router.back()}>
               Volver
             </CustomText>
           </View>

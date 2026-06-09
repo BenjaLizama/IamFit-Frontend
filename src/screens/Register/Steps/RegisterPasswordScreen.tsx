@@ -48,16 +48,11 @@ export default function RegisterPasswordScreen() {
       // Esperamos la respuesta real de Spring Boot en tu Ubuntu
       const respuestaBackend = await register(data);
 
-      // ¡AQUÍ ESTÁ TU TOKEN! 🎉
-      console.log(
-        "🎉 ¡Registro Exitoso! Respuesta del servidor:",
-        respuestaBackend,
-      );
+      console.log("Registro exitoso. Guardando sesión...");
 
       // Guardamos el nickname de forma temporal
       saveNickname(formData.nickname);
 
-      console.log("Token recibido:", respuestaBackend.accessToken);
       await saveTokens(
         respuestaBackend.accessToken,
         respuestaBackend.refreshToken,

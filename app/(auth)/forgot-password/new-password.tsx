@@ -2,10 +2,15 @@ import { ForgotPasswordNewScreen } from "@/src/screens/ForgotPassword";
 import { useLocalSearchParams } from "expo-router";
 
 export default function ForgotPasswordNewRoute() {
-  const { email, code } = useLocalSearchParams<{
+  const { email, resetToken } = useLocalSearchParams<{
     email: string;
-    code: string;
+    resetToken: string;
   }>();
 
-  return <ForgotPasswordNewScreen email={email ?? ""} code={code ?? ""} />;
+  return (
+    <ForgotPasswordNewScreen
+      email={email ?? ""}
+      resetToken={resetToken ?? ""}
+    />
+  );
 }

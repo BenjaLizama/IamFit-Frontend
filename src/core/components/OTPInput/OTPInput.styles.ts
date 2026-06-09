@@ -5,14 +5,14 @@ export const OTPInputStyles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: 12,
+    gap: 8,
   },
   cell: {
-    width: 52,
-    height: 60,
+    width: 44,
+    height: 54,
     borderWidth: 1.5,
     borderColor: COLOR.FONDO_OPACO2,
-    borderRadius: 12,
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: COLOR.FONDO,
@@ -25,7 +25,7 @@ export const OTPInputStyles = StyleSheet.create({
     backgroundColor: "#EBF1FF",
   },
   cellText: {
-    fontSize: 24,
+    fontSize: 22,
     color: COLOR.AZUL_PRIMARIO,
   },
   hiddenInput: {

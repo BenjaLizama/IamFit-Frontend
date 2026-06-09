@@ -4,6 +4,7 @@ import CustomText from "@/src/core/components/CustomText";
 import IamfitIcon from "@/src/core/components/IamfitIcon";
 import Wrapper from "@/src/core/components/Wrapper";
 import AuthFormTemplate from "@/src/core/templates/AuthForm/AuthFormTemplate";
+import { requestForgotPassword } from "@/src/services/auth/auth.service";
 import { Href, router } from "expo-router";
 import React from "react";
 import { View } from "react-native";
@@ -26,12 +27,15 @@ export default function ForgotPasswordEmailScreen() {
     setError(null);
 
     try {
-      // TODO: call backend endpoint to request password reset OTP.
+      await requestForgotPassword({ email: normalizedEmail });
       router.push(
         `/forgot-password/otp?email=${encodeURIComponent(normalizedEmail)}` as Href,
       );
-    } catch {
-      setError("No encontramos una cuenta con ese correo.");
+    } catch (requestError: any) {
+      setError(
+        requestError?.message ??
+          "No se pudo enviar el código. Intenta nuevamente.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -43,16 +47,16 @@ export default function ForgotPasswordEmailScreen() {
         section1={
           <View style={styles.first}>
             <IamfitIcon />
-            <CustomText type="h1">Recuperar mi{"\n"}contrasena</CustomText>
+            <CustomText type="h1">Recuperar mi{"\n"}contraseña</CustomText>
             <CustomText type="body" style={styles.description}>
-              Ingresa tu correo para enviarte un codigo de recuperacion.
+              Ingresa tu correo para enviarte un codigo de recuperación.
             </CustomText>
           </View>
         }
         section2={
           <View style={styles.second}>
             <CustomFormInput
-              placeholder="Correo electronico"
+              placeholder="Correo electrónico"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -76,12 +80,9 @@ export default function ForgotPasswordEmailScreen() {
               disabled={!isValid}
               isLoading={isLoading}
             >
-              Enviar codigo
+              Enviar código
             </CustomButton>
-            <CustomText
-              type="body_interactive"
-              onPress={() => router.back()}
-            >
+            <CustomText type="body_interactive" onPress={() => router.back()}>
               Volver
             </CustomText>
           </View>

@@ -4,7 +4,6 @@ const ACCESS_TOKEN_KEY = "iamfit_access_token";
 const REFRESH_TOKEN_KEY = "iamfit_refresh_token";
 
 export const saveTokens = async (accessToken: string, refreshToken: string) => {
-  console.log(`Guardando tokens... ${accessToken}`);
   await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, accessToken);
   await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, refreshToken);
 };
