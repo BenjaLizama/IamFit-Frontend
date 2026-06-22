@@ -1,50 +1,79 @@
-# Welcome to your Expo app 👋
+# IamFit - Frontend
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Descripcion del proyecto
 
-## Get started
+IamFit es una aplicacion movil enfocada en apoyar a los usuarios en el seguimiento de habitos relacionados con actividad fisica, alimentacion y progreso personal.
 
-1. Install dependencies
+El frontend permite registrar usuarios, iniciar sesion, recuperar contrasena, visualizar informacion principal desde el home, revisar rutinas, gestionar datos de alimentacion y acceder al perfil del usuario. Tambien incluye componentes reutilizables para formularios, botones, navegacion, filtros, tarjetas de informacion y otros elementos de interfaz.
 
-   ```bash
-   npm install
-   ```
+El proyecto esta desarrollado como una aplicacion Expo con React Native, lo que permite ejecutarla en Android, iOS y web durante el desarrollo.
 
-2. Start the app
+## Tecnologias utilizadas
 
-   ```bash
-   npx expo start
-   ```
+- **Expo**: framework principal para crear y ejecutar la aplicacion movil.
+- **React Native**: tecnologia base para construir la interfaz movil.
+- **React**: libreria utilizada para crear componentes y manejar la UI.
+- **TypeScript**: lenguaje usado para mejorar el tipado y la mantenibilidad del codigo.
+- **Expo Router**: sistema de navegacion basado en archivos dentro de la carpeta `app`.
+- **React Navigation**: soporte para navegacion, tabs y pantallas.
+- **Vitest y Testing Library**: herramientas para pruebas unitarias y de componentes.
+- **ESLint y Prettier**: herramientas para mantener calidad y formato del codigo.
+- **pnpm**: gestor de paquetes recomendado por el proyecto.
 
-In the output, you'll find options to open the app in a
+## Estructura general del proyecto
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- `app/`: rutas y pantallas principales usando Expo Router.
+- `src/screens/`: pantallas organizadas por modulo o flujo de usuario.
+- `src/features/`: funcionalidades especificas del dominio, como rutina, home, alimentacion y M.I.A.
+- `src/core/`: componentes reutilizables, hooks, utilidades, contexto y navegacion.
+- `src/services/`: servicios de comunicacion con API, autenticacion, perfil, rutinas, ejercicios, alimentacion y M.I.A.
+- `src/theme/`: configuracion visual de colores, fuentes y estilos base.
+- `assets/`: imagenes, iconos y fuentes del proyecto.
+- `test/`: configuraciones y mocks utilizados por las pruebas.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Estructura del equipo
 
-## Get a fresh project
+| Integrante        | Rol              |
+| ----------------- | ---------------- |
+| Camilo Mena       | Jefe de Proyecto |
+| Nicolas Rivera    | QA               |
+| Lucciano Martinez | DevOps           |
+| Benjamin Lizama   | Desarrollador    |
 
-When you're ready, run:
+## Comandos principales
+
+Instalar dependencias:
 
 ```bash
-npm run reset-project
+pnpm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Iniciar el proyecto:
 
-## Learn more
+```bash
+pnpm start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Ejecutar en Android:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+pnpm android
+```
 
-## Join the community
+Ejecutar en iOS:
 
-Join our community of developers creating universal apps.
+```bash
+pnpm ios
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Ejecutar pruebas:
+
+```bash
+pnpm test
+```
+
+Validar TypeScript:
+
+```bash
+pnpm ts:check
+```
