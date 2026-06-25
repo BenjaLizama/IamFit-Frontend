@@ -11,9 +11,9 @@ vi.mock("@/src/theme/fonts", () => ({
 }));
 
 vi.mock("@/src/theme", async () => {
-  const actual = await vi.importActual<typeof import("./src/theme")>("./src/theme");
+  const actual = await vi.importActual("./src/theme");
   return {
-    ...actual,
+    ...(actual as object),
     FONTS_TO_LOAD: {},
     FONT: {
       PRINCIPAL_BOLD: "System",
@@ -57,7 +57,8 @@ vi.mock("react-native-reanimated", () => {
 });
 
 vi.mock("react-native-safe-area-context", () => {
-  const SafeAreaView = ({ children }: { children: React.ReactNode }) => children;
+  const SafeAreaView = ({ children }: { children: React.ReactNode }) =>
+    children;
   return {
     SafeAreaView,
     SafeAreaProvider: SafeAreaView,
@@ -79,11 +80,8 @@ vi.mock("react-native-svg", () => {
 });
 
 vi.mock("@gorhom/bottom-sheet", () => {
-  const MockBottomSheet = ({
-    children,
-  }: {
-    children?: React.ReactNode;
-  }) => React.createElement(React.Fragment, null, children);
+  const MockBottomSheet = ({ children }: { children?: React.ReactNode }) =>
+    React.createElement(React.Fragment, null, children);
 
   return {
     __esModule: true,
@@ -101,10 +99,7 @@ vi.mock("react-native-gesture-handler", async () => {
   return {
     ...(actual as object),
     ScrollView: (actual as { ScrollView: unknown }).ScrollView,
-    GestureHandlerRootView: ({
+    GestureHandlerRootView: ({ children }: { children: React.ReactNode }) =>
       children,
-    }: {
-      children: React.ReactNode;
-    }) => children,
   };
 });
