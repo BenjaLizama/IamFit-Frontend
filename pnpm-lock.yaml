@@ -120,6 +120,9 @@ importers:
       '@types/react':
         specifier: ~19.1.10
         version: 19.1.17
+      '@types/react-test-renderer':
+        specifier: ^19.1.0
+        version: 19.1.0
       babel-preset-expo:
         specifier: ~11.0.0
         version: 11.0.15(@babel/core@7.29.0)(@babel/preset-env@7.29.5(@babel/core@7.29.0))
@@ -2135,6 +2138,9 @@ packages:
 
   '@types/node@25.9.0':
     resolution: {integrity: sha512-AOQwYUNolgy3VosiRqXrACUXTN8nJUtPl7FJXMqZVyxiiCLhQuG3jXKvCS1ALr+Y2OmZhzzLVlYPEqJaiqkaJQ==}
+
+  '@types/react-test-renderer@19.1.0':
+    resolution: {integrity: sha512-XD0WZrHqjNrxA/MaR9O22w/RNidWR9YZmBdRGI7wcnWGrv/3dA8wKCJ8m63Sn+tLJhcjmuhOi629N66W6kgWzQ==}
 
   '@types/react@19.1.17':
     resolution: {integrity: sha512-Qec1E3mhALmaspIrhWt9jkQMNdw6bReVu64mjvhbhq2NFPftLPVr+l1SZgmw/66WwBNpDh7ao5AT6gF5v41PFA==}
@@ -9173,6 +9179,10 @@ snapshots:
   '@types/node@25.9.0':
     dependencies:
       undici-types: 7.24.6
+
+  '@types/react-test-renderer@19.1.0':
+    dependencies:
+      '@types/react': 19.1.17
 
   '@types/react@19.1.17':
     dependencies:

@@ -1,8 +1,22 @@
 import React from "react";
 import { Text } from "react-native";
-import TestRenderer, { act } from "react-test-renderer";
+import TestRenderer, { act, type ReactTestRenderer } from "react-test-renderer";
 import { describe, expect, it, vi } from "vitest";
 import { BottomSheet } from "./BottomSheet";
+
+const renderWithAct = (element: React.ReactElement): ReactTestRenderer => {
+  let renderer: ReactTestRenderer | null = null;
+
+  act(() => {
+    renderer = TestRenderer.create(element);
+  });
+
+  if (!renderer) {
+    throw new Error("No se pudo renderizar el componente");
+  }
+
+  return renderer;
+};
 
 // 1. Mock de librerías externas
 vi.mock("@gorhom/bottom-sheet", () => ({
@@ -42,16 +56,11 @@ vi.mock("@/src/core/utils", () => ({
 
 describe("BottomSheet Component", () => {
   it("se renderiza correctamente con el contenido proporcionado", () => {
-    let renderer: ReturnType<typeof TestRenderer.create>;
-
-    act(() => {
-      renderer = TestRenderer.create(
-        <BottomSheet>
-          <Text>Contenido de prueba</Text>
-        </BottomSheet>,
-      );
-    });
-
+    const renderer = renderWithAct(
+      <BottomSheet>
+        <Text>Contenido de prueba</Text>
+      </BottomSheet>,
+    );
     const root = renderer.root;
 
     // Verificamos que el mock del BottomSheet existe
@@ -64,17 +73,15 @@ describe("BottomSheet Component", () => {
   });
 
   it("pasa las propiedades correctas al componente de Gorhom", () => {
-    let renderer: ReturnType<typeof TestRenderer.create>;
+    const renderer = renderWithAct(
+      <BottomSheet>
+        <Text>Test</Text>
+      </BottomSheet>,
+    );
 
-    act(() => {
-      renderer = TestRenderer.create(
-        <BottomSheet>
-          <Text>Test</Text>
-        </BottomSheet>,
-      );
+    const bottomSheet = renderer.root.findByProps({
+      testID: "bottom-sheet-mock",
     });
-
-    const bottomSheet = renderer.root.findByType("mock-bottom-sheet");
 
     // Validamos que el BottomSheet reciba las props que definiste en tu componente
     expect(bottomSheet.props.index).toBe(-1);
