@@ -33,10 +33,20 @@ vi.mock("expo-router", () => ({
   useRouter: () => ({ replace: vi.fn(), push: vi.fn(), back: vi.fn() }),
   usePathname: () => "/home",
 }));
+const mockChainable = {
+  delay: vi.fn().mockReturnThis(),
+  duration: vi.fn().mockReturnThis(),
+  springify: vi.fn().mockReturnThis(),
+  damping: vi.fn().mockReturnThis(),
+  stiffness: vi.fn().mockReturnThis(),
+  build: vi.fn(),
+};
 
 vi.mock("react-native-reanimated", () => {
   const noOp = () => {};
   return {
+    interpolate: vi.fn((value, inputRange, outputRange) => outputRange[0]), 
+    Extrapolation: { CLAMP: 'clamp', EXTEND: 'extend', IDENTITY: 'identity' },
     __esModule: true,
     default: {
       View: "View",
@@ -51,11 +61,12 @@ vi.mock("react-native-reanimated", () => {
     withSpring: (value: unknown) => value,
     withTiming: (value: unknown) => value,
     withSequence: (...values: unknown[]) => values[values.length - 1],
-    FadeIn: { duration: () => ({}) },
-    FadeOut: { duration: () => ({}) },
+    
+    // 👇 Aplicamos el mockChainable aquí 👇
+    FadeIn: mockChainable,
+    FadeOut: mockChainable,
   };
 });
-
 vi.mock("react-native-safe-area-context", () => {
   const SafeAreaView = ({ children }: { children: React.ReactNode }) =>
     children;
