@@ -5,28 +5,34 @@ import {
 } from "@/src/core/utils/validations";
 import { login } from "@/src/services/auth/auth.service";
 import { ErrorResponse } from "@/src/services/errors.dto";
+import { clearStoredMiaMessages } from "@/src/services/mia";
 import { getDeviceSession } from "@/src/services/session/device.storage";
 import { clearTokens, saveTokens } from "@/src/services/session/token.storage";
 import { clearNickname } from "@/src/services/session/user.storage";
 import { loadUserInfo } from "@/src/services/user-profile/user-profile.service";
-import { router } from "expo-router";
-import { useState } from "react";
+import { Href, router } from "expo-router";
+import { useRef, useState } from "react";
 
 export const useLoginScreen = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const isLoggingInRef = useRef(false);
   const goToRegister = () => router.push("/register/age");
-  const goToForgotPassword = () => router.push("/forgot-password");
+  const goToForgotPassword = () => router.push("/forgot-password" as Href);
 
   const handleLogin = async () => {
+    if (isLoggingInRef.current) return;
+
+    isLoggingInRef.current = true;
     setLoading(true);
+    setError("");
 
     try {
       await clearTokens();
       const session = await getDeviceSession();
       const response = await login({
         login: {
-          identifier: email.inputProps.value,
+          identifier: email.inputProps.value.trim().toLowerCase(),
           password: password.inputProps.value,
           provider: "LOCAL",
         },
@@ -34,6 +40,7 @@ export const useLoginScreen = () => {
       });
 
       await clearNickname();
+      clearStoredMiaMessages();
 
       await loadUserInfo(response.accessToken);
 
@@ -48,6 +55,7 @@ export const useLoginScreen = () => {
       console.log("No se pudo iniciar sesión", loginError);
       setError(finalError.message);
     } finally {
+      isLoggingInRef.current = false;
       setLoading(false);
       return;
     }

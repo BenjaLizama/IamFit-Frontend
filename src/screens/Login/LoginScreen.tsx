@@ -7,58 +7,19 @@ import AuthFormTemplate from "@/src/core/templates/AuthForm/AuthFormTemplate";
 import React from "react";
 import { View } from "react-native";
 import { LoginScreenStyles as styles } from "./LoginScreen.styles";
+import { useLoginScreen } from "./useLoginScreen";
 
 export default function LoginScreen() {
-  const router = useRouter();
-  const passwordInputRef = React.useRef<TextInput>(null);
-  const emailValueRef = React.useRef("");
-  const passwordValueRef = React.useRef("");
-  const isLoggingInRef = React.useRef(false);
-  const [isLoggingIn, setIsLoggingIn] = React.useState(false);
-
-  const handleLogin = async () => {
-    if (isLoggingInRef.current) return;
-
-    const email = emailValueRef.current.trim();
-    const password = passwordValueRef.current;
-
-    if (!email || !password) {
-      console.warn("Ingresa tu correo y contraseña");
-      return;
-    }
-
-    isLoggingInRef.current = true;
-    setIsLoggingIn(true);
-
-    try {
-      await clearTokens();
-      const session = await getDeviceSession();
-      const response = await login({
-        login: {
-          identifier: email,
-          password,
-          provider: "LOCAL",
-        },
-        session,
-      });
-
-      await clearNickname();
-      clearStoredMiaMessages();
-
-      await loadUserInfo(response.accessToken);
-
-      await saveTokens(response.accessToken, response.refreshToken);
-
-      console.log("Tokens guardados con éxito. Redirigiendo...");
-
-      router.replace("/(main)/home");
-    } catch (loginError) {
-      console.error("No se pudo iniciar sesión", loginError);
-    } finally {
-      isLoggingInRef.current = false;
-      setIsLoggingIn(false);
-    }
-  };
+  const {
+    handleLogin,
+    goToRegister,
+    goToForgotPassword,
+    email,
+    password,
+    loading,
+    buttonDisabled,
+    error,
+  } = useLoginScreen();
 
   return (
     <Wrapper>
@@ -78,22 +39,22 @@ export default function LoginScreen() {
               keyboardType="email-address"
               onChangeText={email.inputProps.onChangeText}
               onSubmitEditing={() => password.ref.current?.focus()}
-              placeholder="Correo electrónico"
+              placeholder="Correo electronico"
               returnKeyType="next"
               submitBehavior="submit"
+              value={email.inputProps.value}
               error={email.errorMessage}
             />
             <CustomFormInput
-              ref={passwordInputRef}
-              onChangeText={(value) => {
-                passwordValueRef.current = value;
-              }}
+              ref={password.inputProps.ref}
+              onChangeText={password.inputProps.onChangeText}
               onSubmitEditing={handleLogin}
-              placeholder="Contraseña"
+              placeholder="Contrasena"
               returnKeyType="done"
               secureTextEntry
               submitBehavior="blurAndSubmit"
-              error={password.errorMessage}
+              value={password.inputProps.value}
+              error={password.errorMessage || error}
             />
           </View>
         }
@@ -101,22 +62,22 @@ export default function LoginScreen() {
           <View style={styles.last}>
             <View style={styles.last_first}>
               <CustomButton
-                disabled={isLoggingIn}
-                isLoading={isLoggingIn}
+                disabled={buttonDisabled}
+                isLoading={loading}
                 onPress={handleLogin}
                 type="primary"
               >
                 Acceder ahora
               </CustomButton>
               <CustomText
-                onPress={() => router.push("/forgot-password" as Href)}
+                onPress={goToForgotPassword}
                 type="body_interactive"
               >
-                Olvidé mi contraseña
+                Olvide mi contrasena
               </CustomText>
             </View>
             <CustomText type="body">
-              ¿No tienes una cuenta?
+              No tienes una cuenta?
               <CustomText onPress={goToRegister} type="body_interactive">
                 {" "}
                 Registrate ahora
