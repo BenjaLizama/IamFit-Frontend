@@ -34,11 +34,11 @@ describe("CircleProgress", () => {
     const radius = 45;
     const circumference = radius * 2 * Math.PI;
     const progressCircle = circles.find(
-      (circle) => circle.props.strokeDasharray === circumference,
+      (circle: any) => circle.props.strokeDasharray === circumference,
     );
 
     expect(texts).toContain("67%");
-    expect(circles.some((circle) => circle.props.r === radius)).toBe(true);
+    expect(circles.some((circle: any) => circle.props.r === radius)).toBe(true);
     expect(progressCircle?.props.strokeDashoffset).toBeCloseTo(
       circumference - (circumference * 66.6) / 100,
     );

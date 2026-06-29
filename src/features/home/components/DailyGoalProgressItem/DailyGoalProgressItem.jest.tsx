@@ -1,8 +1,8 @@
+import { COLOR } from "@/src/theme";
 import React from "react";
 import { Text, View } from "react-native";
 import TestRenderer, { act } from "react-test-renderer";
 import { describe, expect, it } from "vitest";
-import { COLOR } from "@/src/theme";
 import DailyGoalProgressItem from "./DailyGoalProgressItem";
 
 type Renderer = ReturnType<typeof TestRenderer.create>;
@@ -37,7 +37,7 @@ describe("DailyGoalProgressItem", () => {
     const texts = renderer.root
       .findAllByType(Text)
       .map((node: TextNode) => textContent(node.props.children));
-    const filler = renderer.root.findAllByType(View).find((node) => {
+    const filler = renderer.root.findAllByType(View).find((node: any) => {
       const style = node.props.style;
       return (
         Array.isArray(style) && style.some((item) => item?.width === "75%")

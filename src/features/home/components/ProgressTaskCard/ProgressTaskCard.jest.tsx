@@ -30,9 +30,9 @@ describe("ProgressTaskCard", () => {
       .findAllByType(Text)
       .map((node: TextNode) => textContent(node.props.children));
 
-    expect(texts.some((text) => text.includes("Tu progreso de hoy"))).toBe(
-      true,
-    );
+    expect(
+      texts.some((text: string) => text.includes("Tu progreso de hoy")),
+    ).toBe(true);
     expect(texts).toContain("1.250 kcal");
     expect(texts).toContain("Meta: 2.000 kcal");
     expect(texts).toContain("Faltan: 750 kcal");
