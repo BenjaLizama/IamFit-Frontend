@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1782588512026" clover="3.2.0">
-  <project timestamp="1782588512026" name="All files">
-    <metrics statements="177" coveredstatements="165" conditionals="133" coveredconditionals="109" methods="53" coveredmethods="50" elements="363" coveredelements="324" complexity="0" loc="177" ncloc="177" packages="24" files="44" classes="44"/>
+<coverage generated="1782706321762" clover="3.2.0">
+  <project timestamp="1782706321762" name="All files">
+    <metrics statements="199" coveredstatements="188" conditionals="138" coveredconditionals="115" methods="60" coveredmethods="57" elements="397" coveredelements="360" complexity="0" loc="199" ncloc="199" packages="27" files="61" classes="61"/>
     <package name="core.Navigation">
       <metrics statements="39" coveredstatements="39" conditionals="6" coveredconditionals="6" methods="9" coveredmethods="9"/>
-      <file name="MainTabBar.constants.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/Navigation/MainTabBar.constants.ts">
+      <file name="MainTabBar.constants.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\Navigation\MainTabBar.constants.ts">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="3" count="2" type="stmt"/>
         <line num="10" count="2" type="stmt"/>
@@ -12,17 +12,17 @@
         <line num="12" count="2" type="stmt"/>
         <line num="13" count="2" type="stmt"/>
       </file>
-      <file name="MainTabBar.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/Navigation/MainTabBar.styles.ts">
+      <file name="MainTabBar.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\Navigation\MainTabBar.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="5" count="1" type="stmt"/>
       </file>
-      <file name="MainTabBar.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/Navigation/MainTabBar.tsx">
+      <file name="MainTabBar.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\Navigation\MainTabBar.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="24" count="4" type="stmt"/>
         <line num="26" count="4" type="stmt"/>
         <line num="28" count="4" type="stmt"/>
       </file>
-      <file name="MainTabBar.utils.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/Navigation/MainTabBar.utils.ts">
+      <file name="MainTabBar.utils.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\Navigation\MainTabBar.utils.ts">
         <metrics statements="30" coveredstatements="30" conditionals="6" coveredconditionals="6" methods="8" coveredmethods="8"/>
         <line num="10" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="12" count="2" type="stmt"/>
@@ -58,7 +58,7 @@
     </package>
     <package name="core.Navigation.components.MainTabIcon">
       <metrics statements="3" coveredstatements="3" conditionals="4" coveredconditionals="4" methods="2" coveredmethods="2"/>
-      <file name="MainTabIcon.utils.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/Navigation/components/MainTabIcon/MainTabIcon.utils.ts">
+      <file name="MainTabIcon.utils.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\Navigation\components\MainTabIcon\MainTabIcon.utils.ts">
         <metrics statements="3" coveredstatements="3" conditionals="4" coveredconditionals="4" methods="2" coveredmethods="2"/>
         <line num="4" count="2" type="stmt"/>
         <line num="8" count="5" type="cond" truecount="2" falsecount="0"/>
@@ -67,7 +67,7 @@
     </package>
     <package name="core.components.BottomSheet">
       <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="BottomSheet.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/BottomSheet/BottomSheet.tsx">
+      <file name="BottomSheet.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\BottomSheet\BottomSheet.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="10" count="1" type="stmt"/>
         <line num="12" count="2" type="stmt"/>
@@ -78,11 +78,11 @@
     </package>
     <package name="core.components.CustomButton">
       <metrics statements="5" coveredstatements="5" conditionals="13" coveredconditionals="11" methods="3" coveredmethods="3"/>
-      <file name="CustomButton.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/CustomButton/CustomButton.styles.ts">
+      <file name="CustomButton.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\CustomButton\CustomButton.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="5" count="1" type="stmt"/>
       </file>
-      <file name="CustomButton.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/CustomButton/CustomButton.tsx">
+      <file name="CustomButton.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\CustomButton\CustomButton.tsx">
         <metrics statements="4" coveredstatements="4" conditionals="13" coveredconditionals="11" methods="3" coveredmethods="3"/>
         <line num="17" count="4" type="stmt"/>
         <line num="20" count="4" type="cond" truecount="1" falsecount="1"/>
@@ -92,7 +92,7 @@
     </package>
     <package name="core.components.CustomCarousel">
       <metrics statements="9" coveredstatements="9" conditionals="6" coveredconditionals="4" methods="2" coveredmethods="2"/>
-      <file name="CustomCarousel.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/CustomCarousel/CustomCarousel.styles.ts">
+      <file name="CustomCarousel.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\CustomCarousel\CustomCarousel.styles.ts">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="4" count="1" type="stmt"/>
         <line num="5" count="1" type="stmt"/>
@@ -100,7 +100,7 @@
         <line num="10" count="1" type="stmt"/>
         <line num="12" count="1" type="stmt"/>
       </file>
-      <file name="CustomCarousel.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/CustomCarousel/CustomCarousel.tsx">
+      <file name="CustomCarousel.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\CustomCarousel\CustomCarousel.tsx">
         <metrics statements="4" coveredstatements="4" conditionals="6" coveredconditionals="4" methods="2" coveredmethods="2"/>
         <line num="13" count="2" type="stmt"/>
         <line num="16" count="2" type="stmt"/>
@@ -110,22 +110,22 @@
     </package>
     <package name="core.components.CustomCheckbox">
       <metrics statements="2" coveredstatements="2" conditionals="6" coveredconditionals="5" methods="1" coveredmethods="1"/>
-      <file name="CustomCheckbox.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/CustomCheckbox/CustomCheckbox.styles.ts">
+      <file name="CustomCheckbox.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\CustomCheckbox\CustomCheckbox.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="5" count="1" type="stmt"/>
       </file>
-      <file name="CustomCheckbox.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/CustomCheckbox/CustomCheckbox.tsx">
+      <file name="CustomCheckbox.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\CustomCheckbox\CustomCheckbox.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="6" coveredconditionals="5" methods="1" coveredmethods="1"/>
         <line num="15" count="3" type="stmt"/>
       </file>
     </package>
     <package name="core.components.CustomFormInput">
       <metrics statements="20" coveredstatements="16" conditionals="39" coveredconditionals="32" methods="5" coveredmethods="4"/>
-      <file name="CustomFormInput.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/CustomFormInput/CustomFormInput.styles.ts">
+      <file name="CustomFormInput.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\CustomFormInput\CustomFormInput.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="5" count="1" type="stmt"/>
       </file>
-      <file name="CustomFormInput.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/CustomFormInput/CustomFormInput.tsx">
+      <file name="CustomFormInput.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\CustomFormInput\CustomFormInput.tsx">
         <metrics statements="19" coveredstatements="15" conditionals="39" coveredconditionals="32" methods="5" coveredmethods="4"/>
         <line num="8" count="1" type="stmt"/>
         <line num="27" count="5" type="stmt"/>
@@ -150,22 +150,28 @@
     </package>
     <package name="core.components.CustomText">
       <metrics statements="2" coveredstatements="2" conditionals="5" coveredconditionals="5" methods="1" coveredmethods="1"/>
-      <file name="CustomText.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/CustomText/CustomText.styles.ts">
+      <file name="CustomText.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\CustomText\CustomText.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="6" count="1" type="stmt"/>
+        <line num="6" count="8" type="stmt"/>
       </file>
-      <file name="CustomText.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/CustomText/CustomText.tsx">
+      <file name="CustomText.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\CustomText\CustomText.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="5" coveredconditionals="5" methods="1" coveredmethods="1"/>
-        <line num="14" count="4" type="stmt"/>
+        <line num="14" count="28" type="stmt"/>
+      </file>
+      <file name="CustomText.types.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\CustomText\CustomText.types.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="index.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\CustomText\index.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       </file>
     </package>
     <package name="core.components.ExpandableScreen">
       <metrics statements="19" coveredstatements="14" conditionals="23" coveredconditionals="16" methods="5" coveredmethods="3"/>
-      <file name="ExpandableScreen.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/ExpandableScreen/ExpandableScreen.styles.ts">
+      <file name="ExpandableScreen.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\ExpandableScreen\ExpandableScreen.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="4" count="1" type="stmt"/>
       </file>
-      <file name="ExpandableScreen.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/ExpandableScreen/ExpandableScreen.tsx">
+      <file name="ExpandableScreen.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\ExpandableScreen\ExpandableScreen.tsx">
         <metrics statements="18" coveredstatements="13" conditionals="23" coveredconditionals="16" methods="5" coveredmethods="3"/>
         <line num="18" count="1" type="stmt"/>
         <line num="32" count="2" type="stmt"/>
@@ -189,22 +195,22 @@
     </package>
     <package name="core.components.FilterInformationBox">
       <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="FilterInformationBox.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/FilterInformationBox/FilterInformationBox.styles.ts">
+      <file name="FilterInformationBox.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\FilterInformationBox\FilterInformationBox.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="5" count="1" type="stmt"/>
       </file>
-      <file name="FilterInformationBox.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/FilterInformationBox/FilterInformationBox.tsx">
+      <file name="FilterInformationBox.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\FilterInformationBox\FilterInformationBox.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="13" count="3" type="stmt"/>
       </file>
     </package>
     <package name="core.components.FilterSelector">
       <metrics statements="6" coveredstatements="6" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
-      <file name="FilterSelector.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/FilterSelector/FilterSelector.styles.ts">
+      <file name="FilterSelector.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\FilterSelector\FilterSelector.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="5" count="1" type="stmt"/>
       </file>
-      <file name="FilterSelector.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/FilterSelector/FilterSelector.tsx">
+      <file name="FilterSelector.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\FilterSelector\FilterSelector.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
         <line num="14" count="3" type="stmt"/>
         <line num="20" count="3" type="stmt"/>
@@ -215,22 +221,22 @@
     </package>
     <package name="core.components.IamfitIcon">
       <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="IamfitIcon.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/IamfitIcon/IamfitIcon.styles.ts">
+      <file name="IamfitIcon.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\IamfitIcon\IamfitIcon.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="5" count="1" type="stmt"/>
       </file>
-      <file name="IamfitIcon.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/IamfitIcon/IamfitIcon.tsx">
+      <file name="IamfitIcon.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\IamfitIcon\IamfitIcon.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="6" count="3" type="stmt"/>
       </file>
     </package>
     <package name="core.components.OTPInput">
       <metrics statements="4" coveredstatements="4" conditionals="6" coveredconditionals="6" methods="2" coveredmethods="2"/>
-      <file name="OTPInput.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/OTPInput/OTPInput.styles.ts">
+      <file name="OTPInput.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\OTPInput\OTPInput.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="4" count="1" type="stmt"/>
       </file>
-      <file name="OTPInput.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/OTPInput/OTPInput.tsx">
+      <file name="OTPInput.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\OTPInput\OTPInput.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="6" coveredconditionals="6" methods="2" coveredmethods="2"/>
         <line num="9" count="4" type="stmt"/>
         <line num="11" count="4" type="stmt"/>
@@ -239,41 +245,41 @@
     </package>
     <package name="core.components.ProgressBar">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="ProgressBar.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/ProgressBar/ProgressBar.styles.ts">
+      <file name="ProgressBar.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\ProgressBar\ProgressBar.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="5" count="1" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
       </file>
-      <file name="ProgressBar.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/ProgressBar/ProgressBar.tsx">
+      <file name="ProgressBar.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\ProgressBar\ProgressBar.tsx">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="12" count="5" type="stmt"/>
-        <line num="14" count="5" type="stmt"/>
+        <line num="12" count="6" type="stmt"/>
+        <line num="14" count="6" type="stmt"/>
       </file>
     </package>
     <package name="core.components.Separator">
       <metrics statements="2" coveredstatements="2" conditionals="3" coveredconditionals="3" methods="1" coveredmethods="1"/>
-      <file name="Separator.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/Separator/Separator.styles.ts">
+      <file name="Separator.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\Separator\Separator.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="4" count="1" type="stmt"/>
       </file>
-      <file name="Separator.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/Separator/Separator.tsx">
+      <file name="Separator.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\Separator\Separator.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="3" coveredconditionals="3" methods="1" coveredmethods="1"/>
         <line num="11" count="3" type="stmt"/>
       </file>
     </package>
     <package name="core.components.SuccessResult">
       <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="SuccessResult.styles.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/components/SuccessResult/SuccessResult.styles.ts">
+      <file name="SuccessResult.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\SuccessResult\SuccessResult.styles.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="4" count="1" type="stmt"/>
       </file>
-      <file name="SuccessResult.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/SuccessResult/SuccessResult.tsx">
+      <file name="SuccessResult.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\SuccessResult\SuccessResult.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="14" count="4" type="stmt"/>
       </file>
     </package>
     <package name="core.components.Wrapper">
       <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="Wrapper.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/components/Wrapper/Wrapper.tsx">
+      <file name="Wrapper.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\components\Wrapper\Wrapper.tsx">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="8" count="2" type="stmt"/>
         <line num="10" count="2" type="stmt"/>
@@ -281,7 +287,7 @@
     </package>
     <package name="core.context">
       <metrics statements="11" coveredstatements="10" conditionals="2" coveredconditionals="1" methods="5" coveredmethods="5"/>
-      <file name="RegisterContext.tsx" path="/home/benja/workspace/IamFit-Frontend/src/core/context/RegisterContext.tsx">
+      <file name="RegisterContext.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\context\RegisterContext.tsx">
         <metrics statements="11" coveredstatements="10" conditionals="2" coveredconditionals="1" methods="5" coveredmethods="5"/>
         <line num="22" count="1" type="stmt"/>
         <line num="29" count="6" type="stmt"/>
@@ -298,89 +304,165 @@
     </package>
     <package name="core.utils">
       <metrics statements="13" coveredstatements="12" conditionals="4" coveredconditionals="1" methods="4" coveredmethods="4"/>
-      <file name="formatToLocalNumber.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/utils/formatToLocalNumber.ts">
+      <file name="formatToLocalNumber.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\utils\formatToLocalNumber.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="2" count="3" type="stmt"/>
+        <line num="2" count="6" type="stmt"/>
       </file>
-      <file name="index.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/utils/index.ts">
+      <file name="index.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\utils\index.ts">
         <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       </file>
-      <file name="responsiveScreen.ts" path="/home/benja/workspace/IamFit-Frontend/src/core/utils/responsiveScreen.ts">
+      <file name="responsiveScreen.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\core\utils\responsiveScreen.ts">
         <metrics statements="12" coveredstatements="11" conditionals="4" coveredconditionals="1" methods="3" coveredmethods="3"/>
-        <line num="6" count="13" type="stmt"/>
-        <line num="7" count="13" type="stmt"/>
-        <line num="9" count="13" type="stmt"/>
-        <line num="10" count="247" type="cond" truecount="1" falsecount="1"/>
+        <line num="6" count="20" type="stmt"/>
+        <line num="7" count="20" type="stmt"/>
+        <line num="9" count="20" type="stmt"/>
+        <line num="10" count="491" type="cond" truecount="1" falsecount="1"/>
         <line num="11" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="14" count="247" type="stmt"/>
-        <line num="17" count="13" type="stmt"/>
-        <line num="18" count="70" type="stmt"/>
-        <line num="21" count="13" type="stmt"/>
-        <line num="22" count="177" type="stmt"/>
-        <line num="25" count="13" type="stmt"/>
-        <line num="26" count="13" type="stmt"/>
+        <line num="14" count="491" type="stmt"/>
+        <line num="17" count="20" type="stmt"/>
+        <line num="18" count="178" type="stmt"/>
+        <line num="21" count="20" type="stmt"/>
+        <line num="22" count="313" type="stmt"/>
+        <line num="25" count="20" type="stmt"/>
+        <line num="26" count="20" type="stmt"/>
       </file>
     </package>
     <package name="features.Feeding.components.FoodSummaryCard">
-      <metrics statements="11" coveredstatements="10" conditionals="8" coveredconditionals="7" methods="1" coveredmethods="1"/>
-      <file name="useFoodSummaryCard.ts" path="/home/benja/workspace/IamFit-Frontend/src/features/Feeding/components/FoodSummaryCard/useFoodSummaryCard.ts">
-        <metrics statements="11" coveredstatements="10" conditionals="8" coveredconditionals="7" methods="1" coveredmethods="1"/>
-        <line num="4" count="1" type="stmt"/>
-        <line num="5" count="4" type="stmt"/>
-        <line num="6" count="4" type="cond" truecount="2" falsecount="0"/>
+      <metrics statements="14" coveredstatements="14" conditionals="8" coveredconditionals="8" methods="2" coveredmethods="2"/>
+      <file name="FoodSummaryCard.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\Feeding\components\FoodSummaryCard\FoodSummaryCard.styles.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="5" count="1" type="stmt"/>
+      </file>
+      <file name="FoodSummaryCard.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\Feeding\components\FoodSummaryCard\FoodSummaryCard.tsx">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="18" count="2" type="stmt"/>
+      </file>
+      <file name="useFoodSummaryCard.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\Feeding\components\FoodSummaryCard\useFoodSummaryCard.ts">
+        <metrics statements="11" coveredstatements="11" conditionals="8" coveredconditionals="8" methods="1" coveredmethods="1"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="6" type="stmt"/>
+        <line num="6" count="6" type="cond" truecount="2" falsecount="0"/>
         <line num="7" count="1" type="stmt"/>
-        <line num="9" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="10" count="1" type="stmt"/>
-        <line num="12" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="9" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="12" count="6" type="cond" truecount="2" falsecount="0"/>
         <line num="13" count="1" type="stmt"/>
-        <line num="15" count="4" type="cond" truecount="1" falsecount="1"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="18" count="4" type="stmt"/>
+        <line num="15" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="16" count="2" type="stmt"/>
+        <line num="18" count="6" type="stmt"/>
+      </file>
+    </package>
+    <package name="features.home.components.CircleProgress">
+      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="CircleProgress.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\CircleProgress\CircleProgress.styles.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="3" count="2" type="stmt"/>
+      </file>
+      <file name="CircleProgress.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\CircleProgress\CircleProgress.tsx">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="19" count="2" type="stmt"/>
+      </file>
+      <file name="index.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\CircleProgress\index.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="features.home.components.DailyGoalItem">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="DailyGoalItem.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\DailyGoalItem\DailyGoalItem.styles.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="5" count="1" type="stmt"/>
+      </file>
+      <file name="DailyGoalItem.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\DailyGoalItem\DailyGoalItem.tsx">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="13" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="features.home.components.DailyGoalProgressItem">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="DailyGoalProgressItem.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\DailyGoalProgressItem\DailyGoalProgressItem.styles.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="5" count="1" type="stmt"/>
+      </file>
+      <file name="DailyGoalProgressItem.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\DailyGoalProgressItem\DailyGoalProgressItem.tsx">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="19" count="1" type="stmt"/>
       </file>
     </package>
     <package name="features.home.components.DayCalendarCard">
-      <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="useDayCalendarCard.ts" path="/home/benja/workspace/IamFit-Frontend/src/features/home/components/DayCalendarCard/useDayCalendarCard.ts">
+      <metrics statements="8" coveredstatements="8" conditionals="5" coveredconditionals="5" methods="2" coveredmethods="2"/>
+      <file name="DayCalendarCard.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\DayCalendarCard\DayCalendarCard.styles.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="5" count="1" type="stmt"/>
+      </file>
+      <file name="DayCalendarCard.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\DayCalendarCard\DayCalendarCard.tsx">
+        <metrics statements="3" coveredstatements="3" conditionals="5" coveredconditionals="5" methods="1" coveredmethods="1"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="20" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="22" count="2" type="stmt"/>
+      </file>
+      <file name="useDayCalendarCard.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\DayCalendarCard\useDayCalendarCard.ts">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="8" count="1" type="stmt"/>
-        <line num="9" count="1" type="stmt"/>
-        <line num="10" count="1" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="9" count="3" type="stmt"/>
+        <line num="10" count="3" type="stmt"/>
       </file>
     </package>
     <package name="features.home.components.ProgressTaskCard">
-      <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="useProgressTaskCard.ts" path="/home/benja/workspace/IamFit-Frontend/src/features/home/components/ProgressTaskCard/useProgressTaskCard.ts">
+      <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+      <file name="ProgressTaskCard.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\ProgressTaskCard\ProgressTaskCard.styles.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="5" count="1" type="stmt"/>
+      </file>
+      <file name="ProgressTaskCard.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\ProgressTaskCard\ProgressTaskCard.tsx">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+      </file>
+      <file name="useProgressTaskCard.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\ProgressTaskCard\useProgressTaskCard.ts">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="7" count="2" type="stmt"/>
-        <line num="9" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="7" count="3" type="stmt"/>
+        <line num="9" count="3" type="stmt"/>
       </file>
     </package>
     <package name="features.home.components.WelcomeUser">
-      <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
-      <file name="useWelcomeUser.ts" path="/home/benja/workspace/IamFit-Frontend/src/features/home/components/WelcomeUser/useWelcomeUser.ts">
+      <metrics statements="8" coveredstatements="8" conditionals="4" coveredconditionals="4" methods="2" coveredmethods="2"/>
+      <file name="WelcomeUser.styles.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\WelcomeUser\WelcomeUser.styles.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="4" count="1" type="stmt"/>
+      </file>
+      <file name="WelcomeUser.tsx" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\WelcomeUser\WelcomeUser.tsx">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+      </file>
+      <file name="useWelcomeUser.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\features\home\components\WelcomeUser\useWelcomeUser.ts">
         <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="4" count="3" type="stmt"/>
-        <line num="6" count="3" type="cond" truecount="4" falsecount="0"/>
-        <line num="7" count="1" type="stmt"/>
-        <line num="10" count="3" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="4" count="5" type="stmt"/>
+        <line num="6" count="5" type="cond" truecount="4" falsecount="0"/>
+        <line num="7" count="2" type="stmt"/>
+        <line num="10" count="5" type="stmt"/>
       </file>
     </package>
     <package name="theme">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="colors.ts" path="/home/benja/workspace/IamFit-Frontend/src/theme/colors.ts">
+      <file name="colors.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\theme\colors.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="1" count="9" type="stmt"/>
+        <line num="1" count="16" type="stmt"/>
       </file>
-      <file name="index.ts" path="/home/benja/workspace/IamFit-Frontend/src/theme/index.ts">
+      <file name="index.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\theme\index.ts">
         <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       </file>
-      <file name="ui.ts" path="/home/benja/workspace/IamFit-Frontend/src/theme/ui.ts">
+      <file name="ui.ts" path="C:\Users\nicol\Documents\IamFit-Frontend\src\theme\ui.ts">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="3" count="10" type="stmt"/>
-        <line num="5" count="10" type="stmt"/>
+        <line num="3" count="17" type="stmt"/>
+        <line num="5" count="17" type="stmt"/>
       </file>
     </package>
   </project>
