@@ -4,9 +4,9 @@ import { useDayCalendarCard } from "./useDayCalendarCard";
 describe("useDayCalendarCard", () => {
   it("trims month and day labels to 3 chars", () => {
     const result = useDayCalendarCard({
-      month: "enero",
+      month: "Enero",
       dayNumber: 20,
-      dayText: "lunes",
+      dayText: "Lunes",
       type: undefined,
     });
 
@@ -14,4 +14,3 @@ describe("useDayCalendarCard", () => {
     expect(result.fomatDay).toBe("lun");
   });
 });
-

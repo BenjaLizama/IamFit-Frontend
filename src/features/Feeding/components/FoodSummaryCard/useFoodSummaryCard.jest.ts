@@ -3,28 +3,31 @@ import { describe, expect, it } from "vitest";
 import { useFoodSummaryCard } from "./useFoodSummaryCard";
 
 describe("useFoodSummaryCard", () => {
-  it("maps breakfast color", () => {
+  it("asigna color azul al desayuno", () => {
+    // Este test valida el color usado para identificar comidas de tipo desayuno.
     expect(useFoodSummaryCard({ tipoComida: "Desayuno" }).typeFoodColor).toBe(
       COLOR.AZUL_PRIMARIO,
     );
   });
 
-  it("maps lunch color", () => {
+  it("asigna color verde al almuerzo", () => {
+    // Este test valida el color usado para identificar comidas de tipo almuerzo.
     expect(useFoodSummaryCard({ tipoComida: "Almuerzo" }).typeFoodColor).toBe(
       COLOR.SUCCESS,
     );
   });
 
-  it("maps dinner color", () => {
+  it("asigna color morado a la cena", () => {
+    // Este test valida el color usado para identificar comidas de tipo cena.
     expect(useFoodSummaryCard({ tipoComida: "Cena" }).typeFoodColor).toBe(
       COLOR.MORADO,
     );
   });
 
-  it("uses default color for unknown type", () => {
-    expect(useFoodSummaryCard({ tipoComida: "Colación" }).typeFoodColor).toBe(
-      COLOR.TEXTO_PRINCIPAL,
+  it("asigna color de advertencia al snack", () => {
+    // Este test valida el color usado para identificar comidas de tipo snack.
+    expect(useFoodSummaryCard({ tipoComida: "Snack" }).typeFoodColor).toBe(
+      COLOR.WARNING,
     );
   });
 });
-
