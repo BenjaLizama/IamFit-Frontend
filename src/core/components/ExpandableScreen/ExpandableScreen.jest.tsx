@@ -1,7 +1,8 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
-import TestRenderer, { act, type ReactTestRenderer } from "react-test-renderer";
+import TestRenderer, { act } from "react-test-renderer";
 import { describe, expect, it, vi } from "vitest";
+import { RendererType } from "../../types/RenderType";
 import ExpandableScreen from "./ExpandableScreen";
 
 // 1. Mock de Reanimated y Haptics
@@ -68,8 +69,8 @@ vi.mock("./useExpandableScreen", () => ({
   })),
 }));
 
-const renderWithAct = (element: React.ReactElement): ReactTestRenderer => {
-  let renderer: ReactTestRenderer | null = null;
+const renderWithAct = (element: React.ReactElement): RendererType => {
+  let renderer: RendererType | null = null;
   act(() => {
     renderer = TestRenderer.create(element);
   });

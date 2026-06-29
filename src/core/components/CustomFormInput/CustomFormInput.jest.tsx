@@ -1,7 +1,8 @@
 import React from "react";
 import { Text, TextInput } from "react-native";
-import TestRenderer, { act, type ReactTestRenderer } from "react-test-renderer";
+import TestRenderer, { act } from "react-test-renderer";
 import { describe, expect, it, vi } from "vitest";
+import { RendererType } from "../../types/RenderType";
 import CustomFormInput from "./CustomFormInput";
 
 // 1. Mock de Ionicons (evita problemas de fuentes)
@@ -9,8 +10,8 @@ vi.mock("@expo/vector-icons", () => ({
   Ionicons: (props: any) => React.createElement("mock-icon", props),
 }));
 
-const renderWithAct = (element: React.ReactElement): ReactTestRenderer => {
-  let renderer: ReactTestRenderer | null = null;
+const renderWithAct = (element: React.ReactElement): RendererType => {
+  let renderer: RendererType | null = null;
   act(() => {
     renderer = TestRenderer.create(element);
   });
@@ -35,7 +36,7 @@ describe("CustomFormInput", () => {
 
     // 2. Filtramos el que contiene nuestro mensaje de error
     const errorText = allTexts.find(
-      (node) => node.props.children === errorMessage,
+      (node: any) => node.props.children === errorMessage,
     );
 
     // 3. Verificamos que existe

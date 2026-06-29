@@ -1,13 +1,9 @@
 import React from "react";
 import { View } from "react-native";
-import TestRenderer, { act, type ReactTestRenderer } from "react-test-renderer";
+import TestRenderer, { act } from "react-test-renderer";
 import { describe, expect, it, vi } from "vitest";
+import { RendererType } from "../../types/RenderType";
 import CustomCarousel from "./CustomCarousel";
-
-// 1. Definimos un componente funcional genérico para el mock
-// Usamos "any" aquí solo para el mock, el componente real tiene sus tipos propios.
-const MockScrollView = (props: any) =>
-  React.createElement(View, props, props.children);
 
 // 2. Mocks integrados
 vi.mock("./useCustomCarousel", () => ({
@@ -23,8 +19,8 @@ vi.mock("react-native-gesture-handler", () => ({
   ScrollView: (props: any) => React.createElement(View, props, props.children),
 }));
 
-const renderWithAct = (element: React.ReactElement): ReactTestRenderer => {
-  let renderer: ReactTestRenderer | null = null;
+const renderWithAct = (element: React.ReactElement): RendererType => {
+  let renderer: RendererType | null = null;
   act(() => {
     renderer = TestRenderer.create(element);
   });

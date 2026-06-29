@@ -1,11 +1,12 @@
 import React from "react";
 import { Text } from "react-native";
-import TestRenderer, { act, type ReactTestRenderer } from "react-test-renderer";
+import TestRenderer, { act } from "react-test-renderer";
 import { describe, expect, it, vi } from "vitest";
+import { RendererType } from "../../types/RenderType";
 import { BottomSheet } from "./BottomSheet";
 
-const renderWithAct = (element: React.ReactElement): ReactTestRenderer => {
-  let renderer: ReactTestRenderer | null = null;
+const renderWithAct = (element: React.ReactElement): RendererType => {
+  let renderer: RendererType | null = null;
 
   act(() => {
     renderer = TestRenderer.create(element);

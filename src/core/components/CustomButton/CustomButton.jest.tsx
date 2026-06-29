@@ -1,11 +1,12 @@
 import type { ReactElement } from "react";
 import { ActivityIndicator, Pressable } from "react-native";
-import TestRenderer, { act, type ReactTestRenderer } from "react-test-renderer";
+import TestRenderer, { act } from "react-test-renderer";
 import { describe, expect, it, vi } from "vitest";
+import { RendererType } from "../../types/RenderType";
 import CustomButton from "./CustomButton";
 
-const renderWithAct = (element: ReactElement): ReactTestRenderer => {
-  let renderer: ReactTestRenderer | null = null;
+const renderWithAct = (element: ReactElement): RendererType => {
+  let renderer: RendererType | null = null;
 
   act(() => {
     renderer = TestRenderer.create(element);

@@ -1,7 +1,8 @@
 import React from "react";
 import { Pressable } from "react-native";
-import TestRenderer, { act, type ReactTestRenderer } from "react-test-renderer";
+import TestRenderer, { act } from "react-test-renderer";
 import { describe, expect, it, vi } from "vitest";
+import { RendererType } from "../../types/RenderType";
 import CustomCheckbox from "./CustomCheckbox";
 
 // 1. Mockeamos el componente REAL importado
@@ -9,8 +10,8 @@ vi.mock("@expo/vector-icons", () => ({
   Ionicons: (props: any) => React.createElement("mock-icon", props),
 }));
 
-const renderWithAct = (element: React.ReactElement): ReactTestRenderer => {
-  let renderer: ReactTestRenderer | null = null;
+const renderWithAct = (element: React.ReactElement): RendererType => {
+  let renderer: RendererType | null = null;
   act(() => {
     renderer = TestRenderer.create(element);
   });
