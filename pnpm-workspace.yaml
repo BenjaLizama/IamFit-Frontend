@@ -1,3 +1,2 @@
 allowBuilds:
   unrs-resolver: false
-storeDir: ${USERPROFILE}/.local/share/pnpm/store/v11
