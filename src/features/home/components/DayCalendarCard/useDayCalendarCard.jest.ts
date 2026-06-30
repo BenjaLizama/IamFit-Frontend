@@ -10,7 +10,7 @@ describe("useDayCalendarCard", () => {
       type: undefined,
     });
 
-    expect(result.formatMonth).toBe("ene");
-    expect(result.fomatDay).toBe("lun");
+    expect(result.formatMonth).toBe("Ene");
+    expect(result.fomatDay).toBe("Lun");
   });
 });
