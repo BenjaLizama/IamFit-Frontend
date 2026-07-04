@@ -1,4 +1,4 @@
-export const BACKEND_IP = "192.168.1.8";
+export const BACKEND_IP = process.env.EXPO_PUBLIC_SERVER_IP as string;
 
 export const API = {
   auth: `http://${BACKEND_IP}:8080`,
