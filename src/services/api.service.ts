@@ -21,7 +21,7 @@ export const handleResponse = async (response: Response) => {
         errorData = JSON.parse(rawBody);
         isJson = true;
       }
-    } catch (e) {
+    } catch {
       // Si falla el parseo, guardamos el texto (puede ser HTML de error de Docker/Nginx)
       errorData.rawText = rawBody;
     }
