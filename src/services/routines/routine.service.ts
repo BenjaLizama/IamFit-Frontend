@@ -1,18 +1,25 @@
 import { API, handleResponse } from "../api.service";
 import {
   AddExerciseToRoutineRequest,
+  CompleteSessionExerciseRequest,
   EditRoutineExerciseRequest,
   ExerciseOptionsResponse,
   GenerateRoutineRequest,
   GenerateRoutineResponse,
   GetExercisesResponse,
   GetRoutinesResponse,
+  LogWorkoutRequest,
   ReorderExerciseRequest,
+  RoutineProgressDto,
   RoutineLimitsResponse,
   RoutineStatus,
   SelectGeneratedRoutineRequest,
   SelectGeneratedRoutineResponse,
+  SessionExerciseCompletionDto,
+  StartWorkoutSessionRequest,
   UpdateRoutineRequest,
+  WorkoutHistory,
+  WorkoutSessionDto,
 } from "./routine.dtos";
 
 const ROUTINES_URL = `${API.ejercicios}/api/v1`;
@@ -204,6 +211,93 @@ export const reorderRoutineExercise = async (
       body: JSON.stringify(data),
     },
   );
+
+  return handleResponse(response);
+};
+
+export const startWorkoutSession = async (
+  routineId: string,
+  data: StartWorkoutSessionRequest = {},
+  token?: string | null,
+): Promise<WorkoutSessionDto> => {
+  const response = await fetch(`${ROUTINES_URL}/routines/${routineId}/sessions`, {
+    method: "POST",
+    headers: getAuthHeaders(token),
+    body: JSON.stringify(data),
+  });
+
+  return handleResponse(response);
+};
+
+export const completeSessionExercise = async (
+  routineId: string,
+  sessionId: string,
+  exerciseEntryId: string,
+  data: CompleteSessionExerciseRequest = {},
+  token?: string | null,
+): Promise<SessionExerciseCompletionDto> => {
+  const response = await fetch(
+    `${ROUTINES_URL}/routines/${routineId}/sessions/${sessionId}/exercises/${exerciseEntryId}/complete`,
+    {
+      method: "PATCH",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(data),
+    },
+  );
+
+  return handleResponse(response);
+};
+
+export const uncompleteSessionExercise = async (
+  routineId: string,
+  sessionId: string,
+  exerciseEntryId: string,
+  token?: string | null,
+): Promise<SessionExerciseCompletionDto> => {
+  const response = await fetch(
+    `${ROUTINES_URL}/routines/${routineId}/sessions/${sessionId}/exercises/${exerciseEntryId}/uncomplete`,
+    {
+      method: "PATCH",
+      headers: getAuthHeaders(token),
+    },
+  );
+
+  return handleResponse(response);
+};
+
+export const getRoutineProgress = async (
+  routineId: string,
+  token?: string | null,
+): Promise<RoutineProgressDto> => {
+  const response = await fetch(`${ROUTINES_URL}/routines/${routineId}/progress`, {
+    method: "GET",
+    headers: getAuthHeaders(token),
+  });
+
+  return handleResponse(response);
+};
+
+export const logWorkout = async (
+  routineId: string,
+  data: LogWorkoutRequest = {},
+  token?: string | null,
+): Promise<WorkoutHistory> => {
+  const response = await fetch(`${ROUTINES_URL}/routines/${routineId}/log`, {
+    method: "POST",
+    headers: getAuthHeaders(token),
+    body: JSON.stringify(data),
+  });
+
+  return handleResponse(response);
+};
+
+export const getWorkoutHistory = async (
+  token?: string | null,
+): Promise<WorkoutHistory[]> => {
+  const response = await fetch(`${ROUTINES_URL}/routines/history`, {
+    method: "GET",
+    headers: getAuthHeaders(token),
+  });
 
   return handleResponse(response);
 };
