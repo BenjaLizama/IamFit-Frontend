@@ -1,4 +1,4 @@
-export const BACKEND_IP = "192.168.1.8";
+export const BACKEND_IP = process.env.EXPO_PUBLIC_SERVER_IP as string;
 
 export const API = {
   auth: `http://${BACKEND_IP}:8080`,
@@ -21,7 +21,7 @@ export const handleResponse = async (response: Response) => {
         errorData = JSON.parse(rawBody);
         isJson = true;
       }
-    } catch (e) {
+    } catch {
       // Si falla el parseo, guardamos el texto (puede ser HTML de error de Docker/Nginx)
       errorData.rawText = rawBody;
     }
