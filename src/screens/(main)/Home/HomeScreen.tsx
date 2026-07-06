@@ -6,125 +6,65 @@ import DailyGoalProgressItem from "@/src/features/home/components/DailyGoalProgr
 import DayCalendarCard from "@/src/features/home/components/DayCalendarCard";
 import ProgressTaskCard from "@/src/features/home/components/ProgressTaskCard";
 import WelcomeUser from "@/src/features/home/components/WelcomeUser";
-import { getExcerciseDailyResume } from "@/src/services/exercises/exercises.service";
-import {
-  getDailyCalorieSummary,
-  getDailyProteinFood,
-} from "@/src/services/feeding/feeding.service";
-import { getAccessToken } from "@/src/services/session/token.storage";
-import { getNickname } from "@/src/services/session/user.storage";
 import { COLOR, UI } from "@/src/theme";
-import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import React from "react";
+import { RefreshControl, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { HomeScreenStyles as styles } from "./HomeScreen.styles";
+import { useHomeScreen } from "./useHomeScreen";
 
 export default function HomeScreen() {
-  const [calories, setCalories] = useState(0);
-  const [protein, setProtein] = useState(0);
-  const [exercises, setExercises] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [nickname, setNickname] = useState<string | null>("");
+  const {
+    calendarDays,
+    calories,
+    calorieGoal,
+    errorMessage,
+    exerciseCount,
+    loading,
+    nickname,
+    protein,
+    proteinGoal,
+    progressTasks,
+    reload,
+  } = useHomeScreen();
 
-  // Cargar datos del usuario
-  useEffect(() => {
-    const chargeUserData = async () => {
-      try {
-        const nickname = await getNickname();
-        setNickname(nickname);
-      } catch (error) {
-        console.error("Error cargando Nickname:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    chargeUserData();
-  }, []);
-
-  useEffect(() => {
-    const cargarCalorias = async () => {
-      try {
-        const token = await getAccessToken();
-        const myCalories = await getDailyCalorieSummary(token);
-        setCalories(myCalories);
-      } catch (error) {
-        console.error("Error cargando calorias de la API:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    cargarCalorias();
-  }, []);
-
-  useEffect(() => {
-    const cargarProteina = async () => {
-      try {
-        const token = await getAccessToken();
-        const myProtein = await getDailyProteinFood(token);
-        setProtein(myProtein);
-      } catch (error) {
-        console.error("Error cargando proteina de la API:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    cargarProteina();
-  }, []);
-
-  useEffect(() => {
-    const cargarEjercicios = async () => {
-      try {
-        const token = await getAccessToken();
-        const ejerciciosTotales = await getExcerciseDailyResume(token);
-        setExercises(ejerciciosTotales);
-      } catch (error) {
-        console.error("Error cargando ejercicios de la API:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    cargarEjercicios();
-  }, []);
+  const proteinProgressLabel = `${protein}/${proteinGoal}g`;
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={loading} onRefresh={reload} />
+      }
+      style={styles.container}
+    >
       <WelcomeUser name={nickname} />
       <CustomCarousel mode="centered" initialIndex={7}>
-        {/* --- UNA SEMANA ANTES --- */}
-        <DayCalendarCard month="Agosto" dayNumber={1} dayText="Sabado" />
-        <DayCalendarCard month="Agosto" dayNumber={2} dayText="Domingo" />
-        <DayCalendarCard month="Agosto" dayNumber={3} dayText="Lunes" />
-        <DayCalendarCard month="Agosto" dayNumber={4} dayText="Martes" />
-        <DayCalendarCard month="Agosto" dayNumber={5} dayText="Miercoles" />
-        <DayCalendarCard month="Agosto" dayNumber={6} dayText="Jueves" />
-        <DayCalendarCard month="Agosto" dayNumber={7} dayText="Viernes" />
-
-        {/* --- DÍA SELECCIONADO --- */}
-        <DayCalendarCard
-          type="selected"
-          month="Agosto"
-          dayNumber={8}
-          dayText="Sabado"
-        />
-
-        {/* --- UNA SEMANA DESPUÉS --- */}
-        <DayCalendarCard month="Agosto" dayNumber={9} dayText="Domingo" />
-        <DayCalendarCard month="Agosto" dayNumber={10} dayText="Lunes" />
-        <DayCalendarCard month="Agosto" dayNumber={11} dayText="Martes" />
-        <DayCalendarCard month="Agosto" dayNumber={12} dayText="Miercoles" />
-        <DayCalendarCard month="Agosto" dayNumber={13} dayText="Jueves" />
-        <DayCalendarCard month="Agosto" dayNumber={14} dayText="Viernes" />
-        <DayCalendarCard month="Agosto" dayNumber={15} dayText="Sabado" />
+        {calendarDays.map((day) => (
+          <DayCalendarCard
+            key={day.id}
+            type={day.isSelected ? "selected" : undefined}
+            month={day.month}
+            dayNumber={day.dayNumber}
+            dayText={day.dayText}
+          />
+        ))}
       </CustomCarousel>
+
       <View style={{ marginTop: hp(12) }}>
-        <ProgressTaskCard actualCalories={Math.round(calories)} goal={1900} />
+        <ProgressTaskCard
+          actualCalories={Math.round(calories)}
+          goal={calorieGoal}
+        />
       </View>
+
+      {!!errorMessage && (
+        <View style={{ paddingTop: UI.spacing.md }}>
+          <CustomText type="body_secondary">{errorMessage}</CustomText>
+        </View>
+      )}
+
       <View style={{ paddingVertical: UI.LATERAL_PADDING }}>
-        <CustomText type="body_secondary">Resumen del día</CustomText>
+        <CustomText type="body_secondary">Resumen del dia</CustomText>
       </View>
       <View
         style={{
@@ -134,8 +74,8 @@ export default function HomeScreen() {
       >
         <DailyGoalItem
           color={COLOR.AZUL_PRIMARIO}
-          item={exercises}
-          text="Ejerecicios"
+          item={exerciseCount}
+          text="Ejercicios"
         />
         <DailyGoalItem
           color={COLOR.TEXTO_PRINCIPAL}
@@ -144,27 +84,33 @@ export default function HomeScreen() {
         />
         <DailyGoalItem
           color={COLOR.SUCCESS}
-          item={`8/8`}
-          text="Vasos de Agua"
+          item={proteinProgressLabel}
+          text="Meta proteina"
         />
       </View>
+
       <View style={{ paddingVertical: UI.LATERAL_PADDING }}>
         <CustomText type="body_secondary">En progreso</CustomText>
       </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <DailyGoalProgressItem
-          goal="Abdominales"
-          subtitle="3/4 Series"
-          progress={75}
-          color={COLOR.AZUL_PRIMARIO}
-        />
-        <DailyGoalProgressItem
-          goal="Corre 2km"
-          subtitle="1.4/2 km"
-          progress={63}
-          color={COLOR.WARNING}
-        />
-      </View>
+      {progressTasks.length > 0 ? (
+        <View style={styles.progressGrid}>
+          {progressTasks.map((task) => (
+            <DailyGoalProgressItem
+              key={task.id}
+              goal={task.goal}
+              subtitle={task.subtitle}
+              progress={task.progress}
+              color={task.color}
+            />
+          ))}
+        </View>
+      ) : (
+        <View style={styles.emptyProgress}>
+          <CustomText type="body_secondary">
+            Activa una rutina o un plan de comidas para ver tu progreso aqui.
+          </CustomText>
+        </View>
+      )}
     </ScrollView>
   );
 }

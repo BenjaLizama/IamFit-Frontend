@@ -6,4 +6,14 @@ export const HomeScreenStyles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: UI.LATERAL_PADDING,
   },
+  emptyProgress: {
+    alignItems: "center",
+    paddingVertical: UI.spacing.lg,
+  },
+  progressGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: UI.spacing.md,
+    justifyContent: "space-between",
+  },
 });
