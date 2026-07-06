@@ -2,16 +2,20 @@ import { hp } from "@/src/core/utils";
 import MessageInputText from "@/src/features/(m.i.a)/components/MessageInputText";
 import MessageUserBox from "@/src/features/(m.i.a)/components/MessageUserBox";
 import {
-  addFood,
-  generateMealPlan,
-  searchFood,
-} from "@/src/services/feeding/feeding.service";
-import {
   GenerateMealPlanRequest,
   GenerateMealPlanResponse,
   MealPlanDayMenu,
   MealType,
 } from "@/src/services/feeding/feeding.dtos";
+import {
+  addFood,
+  generateMealPlan,
+  searchFood,
+} from "@/src/services/feeding/feeding.service";
+import {
+  getStoredMiaMessages,
+  saveMiaMessages,
+} from "@/src/services/mia/mia.chat.storage";
 import {
   MiaAction,
   MiaAddFoodPayload,
@@ -20,19 +24,15 @@ import {
   MiaGenerateMealPlanPayload,
 } from "@/src/services/mia/mia.dtos";
 import {
+  saveMiaGeneratedMealPlan,
+  saveMiaGeneratedRoutineOptions,
+} from "@/src/services/mia/mia.generated.storage";
+import {
   getMiaResponseActions,
   getMiaResponseMetadata,
   getMiaResponseText,
   sendPromptToMia,
 } from "@/src/services/mia/mia.service";
-import {
-  getStoredMiaMessages,
-  saveMiaMessages,
-} from "@/src/services/mia/mia.chat.storage";
-import {
-  saveMiaGeneratedMealPlan,
-  saveMiaGeneratedRoutineOptions,
-} from "@/src/services/mia/mia.generated.storage";
 import { generateRoutineOptions } from "@/src/services/routines";
 import {
   GenerateRoutineRequest,
@@ -41,6 +41,7 @@ import {
 } from "@/src/services/routines/routine.dtos";
 import { getAccessToken } from "@/src/services/session/token.storage";
 import { COLOR } from "@/src/theme";
+import { useRouter } from "expo-router";
 import React from "react";
 import { Alert, FlatList, View } from "react-native";
 import MessageResponseBox from "../../components/MessageResponseBox";
@@ -62,7 +63,7 @@ const VALID_ROUTINE_EQUIPMENT: RoutineEquipment[] = [
   "BANDA_ELASTICA",
   "KETTLEBELL",
 ];
-const MEAL_PLAN_DAYS: Array<keyof GenerateMealPlanResponse["menu"]> = [
+const MEAL_PLAN_DAYS: (keyof GenerateMealPlanResponse["menu"])[] = [
   "lunes",
   "martes",
   "miercoles",
@@ -103,9 +104,7 @@ const getMealType = (value: unknown): MealType | undefined => {
     : undefined;
 };
 
-const getMealPlanGoal = (
-  value: unknown,
-): GenerateMealPlanRequest["goal"] => {
+const getMealPlanGoal = (value: unknown): GenerateMealPlanRequest["goal"] => {
   if (typeof value !== "string") {
     return "Mantener peso";
   }
@@ -123,10 +122,7 @@ const getMealPlanGoal = (
     return "Ganar musculo";
   }
 
-  if (
-    normalizedValue.includes("bajar") ||
-    normalizedValue.includes("perder")
-  ) {
+  if (normalizedValue.includes("bajar") || normalizedValue.includes("perder")) {
     return "Bajar de peso";
   }
 
@@ -138,7 +134,9 @@ const getStringList = (value: unknown) =>
     ? value.filter((item): item is string => typeof item === "string")
     : [];
 
-const normalizeRoutineEquipment = (equipment: string): RoutineEquipment | null => {
+const normalizeRoutineEquipment = (
+  equipment: string,
+): RoutineEquipment | null => {
   const normalizedEquipment = equipment
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -201,13 +199,13 @@ const isRoutineResponse = (
     return false;
   }
 
-  return (
-    typeof value.sessionId === "string" &&
-    Array.isArray(value.routines)
-  );
+  return typeof value.sessionId === "string" && Array.isArray(value.routines);
 };
 
-const formatDayMenu = (day: keyof GenerateMealPlanResponse["menu"], menu: MealPlanDayMenu) => {
+const formatDayMenu = (
+  day: keyof GenerateMealPlanResponse["menu"],
+  menu: MealPlanDayMenu,
+) => {
   const dayLabel = day.charAt(0).toUpperCase() + day.slice(1);
   const snacks = menu.snacks?.length ? menu.snacks.join(", ") : "Sin snacks";
 
@@ -255,6 +253,7 @@ export default function MiaChatScreen() {
     () => (isSending ? [loadingMessage, ...messages] : messages),
     [isSending, messages],
   );
+  const router = useRouter();
 
   React.useEffect(() => {
     let isMounted = true;
@@ -362,24 +361,22 @@ export default function MiaChatScreen() {
       availableEquipment: getRoutineEquipmentList(
         routinePayload.availableEquipment,
       ),
-      difficulty: routinePayload.difficulty as GenerateRoutineRequest["difficulty"],
+      difficulty:
+        routinePayload.difficulty as GenerateRoutineRequest["difficulty"],
       durationMinutes: routinePayload.durationMinutes,
       limitations: routinePayload.limitations || "ninguna",
-      muscleGroups: routinePayload.muscleGroups as GenerateRoutineRequest["muscleGroups"],
+      muscleGroups:
+        routinePayload.muscleGroups as GenerateRoutineRequest["muscleGroups"],
     };
     const response = await generateRoutineOptions(request, token);
 
-    addBotMessage(
-      setMessages,
-      formatRoutineOptionsForChat(response),
-      [
-        {
-          label: "Ver opciones en Rutinas",
-          payload: response,
-          type: "SHOW_ROUTINE_OPTIONS",
-        },
-      ],
-    );
+    addBotMessage(setMessages, formatRoutineOptionsForChat(response), [
+      {
+        label: "Ver opciones en Rutinas",
+        payload: response,
+        type: "SHOW_ROUTINE_OPTIONS",
+      },
+    ]);
   };
 
   const handleGenerateMealPlanAction = async (payload: unknown) => {
@@ -442,6 +439,8 @@ export default function MiaChatScreen() {
       setMessages,
       "Listo. Las opciones quedaron disponibles en la pantalla de Rutinas para elegir una.",
     );
+
+    router.push("/(main)/routine");
   };
 
   const handleMiaAction = async (action: MiaAction) => {

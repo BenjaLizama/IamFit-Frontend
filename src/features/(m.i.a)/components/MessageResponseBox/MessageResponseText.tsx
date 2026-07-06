@@ -25,7 +25,7 @@ export default function MessageResponseBox({
                 disabledActions && styles.actionButtonDisabled,
               ]}
             >
-              <CustomText style={styles.actionButtonText} type="body">
+              <CustomText style={styles.actionButtonText} type="button_primary">
                 {action.label || action.type}
               </CustomText>
             </Pressable>
