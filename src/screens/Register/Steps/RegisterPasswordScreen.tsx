@@ -3,9 +3,14 @@ import { useRegisterInput } from "@/src/core/hooks/useRegisterInput";
 import { isValidPassword } from "@/src/core/utils/validations";
 import { RegisterRequest } from "@/src/services/auth/auth.dtos";
 import { register } from "@/src/services/auth/auth.service";
+import { clearStoredMiaMessages } from "@/src/services/mia";
 import { getDeviceSession } from "@/src/services/session/device.storage";
-import { saveTokens } from "@/src/services/session/token.storage";
-import { saveNickname } from "@/src/services/session/user.storage";
+import { clearTokens, saveTokens } from "@/src/services/session/token.storage";
+import {
+  clearNickname,
+  saveNickname,
+} from "@/src/services/session/user.storage";
+import { loadUserInfo } from "@/src/services/user-profile/user-profile.service";
 import React, { useState } from "react";
 import RegisterStepScreen from "./RegisterStepScreen";
 
@@ -45,13 +50,16 @@ export default function RegisterPasswordScreen() {
 
     try {
       setLoading(true);
-      // Esperamos la respuesta real de Spring Boot en tu Ubuntu
       const respuestaBackend = await register(data);
 
       console.log("Registro exitoso. Guardando sesión...");
 
-      // Guardamos el nickname de forma temporal
+      await clearTokens();
+      clearNickname();
+      clearStoredMiaMessages();
       saveNickname(formData.nickname);
+
+      await loadUserInfo(respuestaBackend.accessToken);
 
       await saveTokens(
         respuestaBackend.accessToken,

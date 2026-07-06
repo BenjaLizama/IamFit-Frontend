@@ -15,7 +15,7 @@ export default function RegisterResultScreen() {
 
   const handleFinish = () => {
     resetForm();
-    router.replace("/login");
+    router.replace("/(main)/home");
   };
 
   return (
