@@ -10,3 +10,8 @@ export interface ExpandableScreenProps {
   showHeader?: boolean;
   pressScale?: number;
 }
+
+export interface ExpandableScreenRef {
+  collapse: () => void;
+  expand: () => void;
+}

@@ -4,30 +4,63 @@ import { StyleSheet } from "react-native";
 
 export const MessageInputTextStyles = StyleSheet.create({
   container: {
-    backgroundColor: COLOR.AZUL_PRIMARIO,
+    alignItems: "center",
+    backgroundColor: COLOR.FONDO,
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.large_radius,
+    borderWidth: 1,
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
     padding: wp(10),
-    borderRadius: UI.large_radius,
+    shadowColor: COLOR.TEXTO_PRINCIPAL,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    width: "100%",
+  },
+
+  containerDisabled: {
+    opacity: 0.82,
   },
 
   inputContainer: {
-    maxWidth: "100%",
-    flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
-    gap: wp(5),
     flex: 1,
+    flexDirection: "row",
+    gap: wp(8),
+    justifyContent: "center",
+    maxWidth: "100%",
+  },
+
+  leadingIcon: {
+    alignItems: "center",
+    backgroundColor: COLOR.AZUL_PRIMARIO,
+    borderRadius: UI.small_radius,
+    height: hp(36),
+    justifyContent: "center",
+    width: hp(36),
   },
 
   input: {
+    color: COLOR.TEXTO_PRINCIPAL,
     flex: 1,
-    height: hp(42),
-    paddingHorizontal: wp(15),
-    paddingVertical: 0,
     fontFamily: FONT.PRINCIPAL_REGULAR,
-    color: COLOR.TEXTO_BOTON_PRIMARIO,
+    maxHeight: hp(112),
+    minHeight: hp(40),
+    paddingHorizontal: wp(4),
+    paddingVertical: hp(8),
+  },
+
+  sendButton: {
+    alignItems: "center",
+    backgroundColor: COLOR.AZUL_PRIMARIO,
+    borderRadius: UI.small_radius,
+    height: hp(40),
+    justifyContent: "center",
+    width: hp(40),
+  },
+
+  sendButtonDisabled: {
+    opacity: 0.42,
   },
 });

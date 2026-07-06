@@ -12,23 +12,32 @@ import {
 } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { ExpandableScreenStyles as styles } from "./ExpandableScreen.styles";
-import { ExpandableScreenProps } from "./ExpandableScreen.types";
+import type {
+  ExpandableScreenProps,
+  ExpandableScreenRef,
+} from "./ExpandableScreen.types";
 import { useExpandableScreen } from "./useExpandableScreen";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-export default function ExpandableScreen({
-  children1,
-  children2,
-  headerChildren,
-  initialRadius = 20,
-  onExpandedChange,
-  top = 0,
-  variant = "default",
-  keyboardVerticalOffset,
-  showHeader = true,
-  pressScale = 0.96,
-}: ExpandableScreenProps) {
+const ExpandableScreen = React.forwardRef<
+  ExpandableScreenRef,
+  ExpandableScreenProps
+>(function ExpandableScreen(
+  {
+    children1,
+    children2,
+    headerChildren,
+    initialRadius = 20,
+    onExpandedChange,
+    top = 0,
+    variant = "default",
+    keyboardVerticalOffset,
+    showHeader = true,
+    pressScale = 0.96,
+  },
+  ref,
+) {
   const cardRef = useRef<View>(null);
 
   const {
@@ -72,6 +81,15 @@ export default function ExpandableScreen({
     onExpandedChange?.(false);
     collapse();
   };
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      collapse: handleCollapse,
+      expand: handleExpand,
+    }),
+    [handleCollapse, handleExpand],
+  );
 
   const effectiveKeyboardVerticalOffset = keyboardVerticalOffset ?? 0;
   const keyboardBehavior =
@@ -186,4 +204,6 @@ export default function ExpandableScreen({
       </Modal>
     </View>
   );
-}
+});
+
+export default ExpandableScreen;

@@ -1,3 +1,6 @@
 export { default } from "./ExpandableScreen";
-export { ExpandableScreenProps } from "./ExpandableScreen.types";
+export type {
+  ExpandableScreenProps,
+  ExpandableScreenRef,
+} from "./ExpandableScreen.types";
 export { useExpandableScreen } from "./useExpandableScreen";

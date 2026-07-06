@@ -11,7 +11,6 @@ export default function MessageUserBox({ message }: MessageUserBoxProps) {
       <CustomText type="body" color={COLOR.FONDO}>
         {message}
       </CustomText>
-      <View style={styles.extra}></View>
     </View>
   );
 }
