@@ -28,7 +28,6 @@ export default function RegisterSexScreen() {
       disabled={false}
       inputComponent={
         <InputSelector
-          key={currentSexValue}
           maxVisibleOptions={2}
           onChange={handleSexChange}
           options={SEX_OPTIONS}

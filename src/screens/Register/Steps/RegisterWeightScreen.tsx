@@ -31,7 +31,6 @@ export default function RegisterWeightScreen() {
       disabled={false}
       inputComponent={
         <InputSelector
-          key={currentWeightValue}
           maxVisibleOptions={3}
           onChange={handleWeightChange}
           options={WEIGHT_OPTIONS}
