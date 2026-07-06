@@ -9,7 +9,14 @@ import {
   FoodLogCaloriesResponse,
   GenerateMealPlanRequest,
   GenerateMealPlanResponse,
+  ConsumeMealRequest,
+  MealPlanDayCompletionResponse,
+  MealPlanHistoryResponse,
   MealPlanLimitsResponse,
+  MealPlanMealCompletionResponse,
+  MealPlanProgressDay,
+  MealPlanProgressMealId,
+  MealPlanProgressResponse,
   MealPlanStatus,
   SaveMealPlanRequest,
   SavedMealPlan,
@@ -266,6 +273,90 @@ export const getMealPlanLimits = async (
     method: "GET",
     headers: getAuthHeaders(token),
   });
+
+  return handleResponse(response);
+};
+
+export const getActiveMealPlanProgress = async (
+  token?: string | null,
+): Promise<MealPlanProgressResponse> => {
+  const response = await fetch(`${FEEDING_API_URL}/meal-plans/active/progress`, {
+    method: "GET",
+    headers: getAuthHeaders(token),
+  });
+
+  return handleResponse(response);
+};
+
+export const consumeMealPlanMeal = async (
+  planId: string,
+  day: MealPlanProgressDay,
+  mealId: MealPlanProgressMealId,
+  data: ConsumeMealRequest = {},
+  token?: string | null,
+): Promise<MealPlanMealCompletionResponse> => {
+  const response = await fetch(
+    `${FEEDING_API_URL}/meal-plans/${planId}/days/${day}/meals/${mealId}/consume`,
+    {
+      method: "PATCH",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(data),
+    },
+  );
+
+  return handleResponse(response);
+};
+
+export const unconsumeMealPlanMeal = async (
+  planId: string,
+  day: MealPlanProgressDay,
+  mealId: MealPlanProgressMealId,
+  data: ConsumeMealRequest = {},
+  token?: string | null,
+): Promise<MealPlanMealCompletionResponse> => {
+  const response = await fetch(
+    `${FEEDING_API_URL}/meal-plans/${planId}/days/${day}/meals/${mealId}/unconsume`,
+    {
+      method: "PATCH",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(data),
+    },
+  );
+
+  return handleResponse(response);
+};
+
+export const completeMealPlanDay = async (
+  planId: string,
+  day: MealPlanProgressDay,
+  data: ConsumeMealRequest = {},
+  token?: string | null,
+): Promise<MealPlanDayCompletionResponse> => {
+  const response = await fetch(
+    `${FEEDING_API_URL}/meal-plans/${planId}/days/${day}/complete`,
+    {
+      method: "PATCH",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(data),
+    },
+  );
+
+  return handleResponse(response);
+};
+
+export const getMealPlanHistory = async (
+  from: string,
+  to: string,
+  token?: string | null,
+): Promise<MealPlanHistoryResponse> => {
+  const params = new URLSearchParams({ from, to });
+  const response = await fetch(
+    `${FEEDING_API_URL}/meal-plans/history?${params.toString()}`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(token),
+    },
+  );
 
   return handleResponse(response);
 };

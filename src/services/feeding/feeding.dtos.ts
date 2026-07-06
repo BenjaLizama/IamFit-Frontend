@@ -1,5 +1,20 @@
 export type MealType = "DESAYUNO" | "ALMUERZO" | "CENA" | "SNACK";
 
+export type MealPlanProgressDay =
+  | "lunes"
+  | "martes"
+  | "miercoles"
+  | "jueves"
+  | "viernes"
+  | "sabado"
+  | "domingo";
+
+export type MealPlanProgressMealId =
+  | "desayuno"
+  | "almuerzo"
+  | "cena"
+  | "snacks";
+
 export interface NutritionTotals {
   calories: number;
   carbohydrates: number;
@@ -130,4 +145,66 @@ export interface MealPlanLimitsResponse {
   maxActiveMealPlans: number;
   maxSavedMealPlans: number;
   savedMealPlans: number;
+}
+
+export interface ConsumeMealRequest {
+  createFoodLogEntries?: boolean;
+  date?: string;
+}
+
+export interface MealProgressItem {
+  completed: boolean;
+  completedAt: string | null;
+  mealId: MealPlanProgressMealId | string;
+  mealType: string;
+  title: string;
+}
+
+export interface MealPlanDayProgress {
+  completed: boolean;
+  completedAt: string | null;
+  day: MealPlanProgressDay | string;
+  meals: MealProgressItem[];
+}
+
+export interface MealPlanProgressResponse {
+  currentDay: MealPlanProgressDay | string;
+  days: MealPlanDayProgress[];
+  name: string;
+  planId: string;
+  progressPercentage: number;
+  status: string;
+}
+
+export interface MealPlanMealCompletionResponse {
+  completed: boolean;
+  completedAt?: string | null;
+  createdFoodEntryIds?: string[];
+  day: MealPlanProgressDay | string;
+  mealId: MealPlanProgressMealId | string;
+  planId: string;
+}
+
+export interface MealPlanDayCompletionResponse {
+  completed: boolean;
+  completedAt?: string | null;
+  completedMeals?: number;
+  day: MealPlanProgressDay | string;
+  planId: string;
+  totalMeals?: number;
+}
+
+export interface MealPlanHistoryDay {
+  adherencePercentage: number;
+  completed: boolean;
+  completedMeals: number;
+  date: string;
+  planId: string;
+  totalMeals: number;
+}
+
+export interface MealPlanHistoryResponse {
+  days: MealPlanHistoryDay[];
+  from: string;
+  to: string;
 }

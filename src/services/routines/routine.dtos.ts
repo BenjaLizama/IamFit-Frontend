@@ -132,3 +132,43 @@ export interface WorkoutHistory {
   status: string;
   workoutDate: string;
 }
+
+export interface WorkoutSessionDto {
+  routineId: string;
+  sessionId: string;
+  startedAt: string;
+  status: "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+}
+
+export interface SessionExerciseCompletionDto {
+  completed: boolean;
+  completedAt: string | null;
+  exerciseEntryId: string;
+  sessionId: string;
+}
+
+export interface RoutineProgressDto {
+  completedWorkouts: number;
+  currentStreak: number;
+  lastCompletedAt: string | null;
+  routineId: string;
+  weeklyCompletionPercentage: number;
+}
+
+export interface StartWorkoutSessionRequest {
+  date?: string;
+}
+
+export interface CompleteSessionExerciseRequest {
+  notes?: string;
+  repsCompleted?: number;
+  setsCompleted?: number;
+  weightUsed?: number;
+}
+
+export interface LogWorkoutRequest {
+  completedExerciseIds?: string[];
+  date?: string;
+  durationMinutes?: number;
+  notes?: string;
+}
