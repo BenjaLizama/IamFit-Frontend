@@ -1,10 +1,11 @@
 export interface FoodSummaryCardProps {
   tipoComida: TipoComida;
-  calorias: number;
+  calorias?: number;
   descripcion: string;
-  dato1: number;
-  dato2: number;
-  dato3: number;
+  dato1?: number;
+  dato2?: number;
+  dato3?: number;
+  showNutrition?: boolean;
 }
 
 export interface UseFoodSummaryCardProps {

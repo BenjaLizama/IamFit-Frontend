@@ -5,13 +5,15 @@ import { useActiveFilter } from "@/src/core/hooks/useActiveFilter";
 import { hp, wp } from "@/src/core/utils";
 import FoodSummaryCard from "@/src/features/Feeding/components/FoodSummaryCard";
 import {
-  FoodLimitsResponse,
   FoodInfo,
+  FoodLimitsResponse,
   FoodLogCaloriesResponse,
+  GeneratedMealInfo,
   GenerateMealPlanResponse,
-  MealPlanLimitsResponse,
   MealPlanDayMenu,
+  MealPlanLimitsResponse,
   MealType,
+  NutritionTotals,
   SavedMealPlan,
 } from "@/src/services/feeding/feeding.dtos";
 import {
@@ -24,8 +26,8 @@ import {
   getActiveMealPlan,
   getDailyFoodLogSummary,
   getFoodLimits,
-  getMealPlans,
   getMealPlanLimits,
+  getMealPlans,
   getMealPlanText,
   saveMealPlan,
 } from "@/src/services/feeding/feeding.service";
@@ -35,8 +37,8 @@ import {
 } from "@/src/services/mia/mia.generated.storage";
 import { getAccessToken } from "@/src/services/session/token.storage";
 import { COLOR } from "@/src/theme";
-import { useRouter } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
@@ -78,6 +80,13 @@ const DAY_TO_MENU_KEY = {
 } as const;
 
 const MIA_ACTIVE_MEAL_PLAN_ID = "mia-active-meal-plan";
+const EMPTY_NUTRITION: NutritionTotals = {
+  calories: 0,
+  carbohydrates: 0,
+  fat: 0,
+  fiber: 0,
+  protein: 0,
+};
 
 type DayLabel = keyof typeof DAY_TO_MENU_KEY;
 
@@ -100,18 +109,89 @@ const buildMealDescription = (
   return foods.map((food) => food.foodName).join(", ");
 };
 
-const getGeneratedMealDescription = (
+const getGeneratedMealInfo = (
   menu: MealPlanDayMenu | null,
   mealType: MealType,
-) => {
-  if (!menu) {
-    return "";
-  }
+): GeneratedMealInfo | null => {
+  if (!menu) return null;
 
   if (mealType === "DESAYUNO") return menu.desayuno;
   if (mealType === "ALMUERZO") return menu.almuerzo;
   if (mealType === "CENA") return menu.cena;
-  return menu.snacks?.length ? menu.snacks.join(", ") : "";
+
+  // Para los snacks, si hay varios, unimos las descripciones y sumamos los macros
+  if (menu.snacks?.length) {
+    return menu.snacks.reduce(
+      (acc, snack) => ({
+        descripcion: acc.descripcion
+          ? `${acc.descripcion}, ${snack.descripcion}`
+          : snack.descripcion,
+        calorias: acc.calorias + snack.calorias,
+        proteina: acc.proteina + snack.proteina,
+        carbohidratos: acc.carbohidratos + snack.carbohidratos,
+        grasa: acc.grasa + snack.grasa,
+      }),
+      { descripcion: "", calorias: 0, proteina: 0, carbohidratos: 0, grasa: 0 },
+    );
+  }
+  return null;
+};
+
+const sumNutrition = (foods: FoodInfo[] = []): NutritionTotals =>
+  foods.reduce(
+    (totals, food) => ({
+      calories: totals.calories + (food.calories || 0),
+      carbohydrates: totals.carbohydrates + (food.carbohydrates || 0),
+      fat: totals.fat + (food.fat || 0),
+      fiber: totals.fiber + (food.fiber || 0),
+      protein: totals.protein + (food.protein || 0),
+    }),
+    EMPTY_NUTRITION,
+  );
+
+const getMealNutrition = (
+  summary: FoodLogCaloriesResponse | null,
+  mealType: MealType,
+) => {
+  const foods = summary?.entriesByMeal?.[mealType] || [];
+  const summedTotals = sumNutrition(foods);
+  const backendTotals = summary?.mealTotals?.[mealType] || EMPTY_NUTRITION;
+
+  return {
+    calories: backendTotals.calories || summedTotals.calories,
+    carbohydrates: backendTotals.carbohydrates || summedTotals.carbohydrates,
+    fat: backendTotals.fat || summedTotals.fat,
+    fiber: backendTotals.fiber || summedTotals.fiber,
+    protein: backendTotals.protein || summedTotals.protein,
+  };
+};
+
+const hasNutrition = (nutrition: NutritionTotals) =>
+  nutrition.calories > 0 ||
+  nutrition.carbohydrates > 0 ||
+  nutrition.fat > 0 ||
+  nutrition.protein > 0;
+
+const getSavedMealPlanResponse = (
+  mealPlan: SavedMealPlan | null,
+): GenerateMealPlanResponse | null => {
+  if (!mealPlan?.menu) {
+    return null;
+  }
+
+  const storedMenu = mealPlan.menu as unknown as
+    | GenerateMealPlanResponse
+    | GenerateMealPlanResponse["menu"];
+
+  if ("menu" in storedMenu) {
+    return storedMenu;
+  }
+
+  return {
+    objetivo: mealPlan.goal,
+    menu: storedMenu,
+    recomendaciones_nutricionales: "",
+  };
 };
 
 const parseListInput = (value: string) =>
@@ -130,7 +210,9 @@ const normalizeText = (value: string) =>
 const getListIntersections = (baseList: string[], checkList: string[]) => {
   const normalizedCheckList = new Set(checkList.map(normalizeText));
 
-  return baseList.filter((item) => normalizedCheckList.has(normalizeText(item)));
+  return baseList.filter((item) =>
+    normalizedCheckList.has(normalizeText(item)),
+  );
 };
 
 export default function FeedingScreen() {
@@ -184,34 +266,51 @@ export default function FeedingScreen() {
   ];
   const { activeFilter, handleFilterChange } = useActiveFilter("Lunes");
   const selectedDay = (activeFilter || "Lunes") as DayLabel;
+  const activeMealPlanResponse = useMemo(
+    () => getSavedMealPlanResponse(activeMealPlan),
+    [activeMealPlan],
+  );
   const selectedDayMealPlans = useMemo(
     () => savedMealPlans.filter((plan) => plan.day === selectedDay),
     [savedMealPlans, selectedDay],
   );
   const latestSelectedDayMealPlan = selectedDayMealPlans[0]?.response || null;
-  const visibleMealPlan = latestSelectedDayMealPlan || activeMealPlan?.menu;
+  const visibleMealPlan =
+    generatedMealPlan || latestSelectedDayMealPlan || activeMealPlanResponse;
   const generatedDayMenu = visibleMealPlan
     ? visibleMealPlan.menu[DAY_TO_MENU_KEY[selectedDay]]
     : null;
   const mealCards = useMemo(
     () =>
       MEALS.map((meal) => {
-        const totals = summary?.mealTotals?.[meal.key];
-        const generatedDescription = getGeneratedMealDescription(
-          generatedDayMenu,
-          meal.key,
-        );
+        const foods = summary?.entriesByMeal?.[meal.key] || [];
+        const totals = getMealNutrition(summary, meal.key);
 
+        // 1. Obtenemos toda la info generada (descripción + macros)
+        const generatedInfo = getGeneratedMealInfo(generatedDayMenu, meal.key);
+        const hasGeneratedInfo = Boolean(generatedInfo);
+        const hasRegisteredFoods = foods.length > 0;
+        const showNutrition =
+          hasRegisteredFoods || hasNutrition(totals) || hasGeneratedInfo;
+
+        // 2. Si hay plan generado, usamos sus macros. Si no, usamos los registrados manualmente.
         return {
           ...meal,
-          calories: Math.round(totals?.calories || 0),
-          carbohydrates: Math.round(totals?.carbohydrates || 0),
-          fat: Math.round(totals?.fat || 0),
-          protein: Math.round(totals?.protein || 0),
+          calories: Math.round(
+            totals?.calories || generatedInfo?.calorias || 0,
+          ),
+          carbohydrates: Math.round(
+            totals?.carbohydrates || generatedInfo?.carbohidratos || 0,
+          ),
+          fat: Math.round(totals?.fat || generatedInfo?.grasa || 0),
+          protein: Math.round(totals?.protein || generatedInfo?.proteina || 0),
+          hasContent: hasGeneratedInfo || hasRegisteredFoods,
           description:
-            generatedDescription || buildMealDescription(summary, meal.key),
+            generatedInfo?.descripcion ||
+            buildMealDescription(summary, meal.key),
+          showNutrition,
         };
-      }),
+      }).filter((meal) => meal.hasContent),
     [generatedDayMenu, summary],
   );
   const registeredFoodEntries = useMemo(
@@ -278,9 +377,7 @@ export default function FeedingScreen() {
           id: MIA_ACTIVE_MEAL_PLAN_ID,
           response: miaMealPlan,
         },
-        ...currentPlans.filter(
-          (plan) => plan.id !== MIA_ACTIVE_MEAL_PLAN_ID,
-        ),
+        ...currentPlans.filter((plan) => plan.id !== MIA_ACTIVE_MEAL_PLAN_ID),
       ]);
     },
     [selectedDay],
@@ -315,8 +412,7 @@ export default function FeedingScreen() {
         foodLimitResult,
         mealPlanLimitResult,
         mealPlansResult,
-      ] =
-        await Promise.allSettled([
+      ] = await Promise.allSettled([
         getActiveMealPlan(token),
         getFoodLimits(token),
         getMealPlanLimits(token),
@@ -503,75 +599,67 @@ export default function FeedingScreen() {
   };
 
   const handleDeleteMealPlan = async (mealPlan: SavedMealPlan) => {
-    Alert.alert(
-      "Eliminar plan",
-      `Eliminar ${mealPlan.title}?`,
-      [
-        { style: "cancel", text: "Cancelar" },
-        {
-          onPress: async () => {
-            try {
-              setIsManagingMealPlan(true);
-              setMealPlanError("");
+    Alert.alert("Eliminar plan", `Eliminar ${mealPlan.title}?`, [
+      { style: "cancel", text: "Cancelar" },
+      {
+        onPress: async () => {
+          try {
+            setIsManagingMealPlan(true);
+            setMealPlanError("");
 
-              const token = await getAccessToken();
-              await deleteMealPlan(mealPlan.id, token);
+            const token = await getAccessToken();
+            await deleteMealPlan(mealPlan.id, token);
 
-              if (activeMealPlan?.id === mealPlan.id) {
-                setActiveMealPlan(null);
-              }
-
-              await loadFeedingManagementData();
-            } catch (error) {
-              console.error("Error eliminando plan de comidas:", error);
-              setMealPlanError(
-                error instanceof Error
-                  ? error.message
-                  : "No se pudo eliminar el plan de comidas.",
-              );
-            } finally {
-              setIsManagingMealPlan(false);
+            if (activeMealPlan?.id === mealPlan.id) {
+              setActiveMealPlan(null);
             }
-          },
-          style: "destructive",
-          text: "Eliminar",
+
+            await loadFeedingManagementData();
+          } catch (error) {
+            console.error("Error eliminando plan de comidas:", error);
+            setMealPlanError(
+              error instanceof Error
+                ? error.message
+                : "No se pudo eliminar el plan de comidas.",
+            );
+          } finally {
+            setIsManagingMealPlan(false);
+          }
         },
-      ],
-    );
+        style: "destructive",
+        text: "Eliminar",
+      },
+    ]);
   };
 
   const handleDeleteFoodEntry = async (entryId: string, foodName: string) => {
-    Alert.alert(
-      "Eliminar comida",
-      `Eliminar ${foodName}?`,
-      [
-        { style: "cancel", text: "Cancelar" },
-        {
-          onPress: async () => {
-            try {
-              setIsDeletingFoodEntry(true);
-              setErrorMessage("");
+    Alert.alert("Eliminar comida", `Eliminar ${foodName}?`, [
+      { style: "cancel", text: "Cancelar" },
+      {
+        onPress: async () => {
+          try {
+            setIsDeletingFoodEntry(true);
+            setErrorMessage("");
 
-              const token = await getAccessToken();
-              await deleteFoodEntry(entryId, token);
-              await loadDailyFoodLog();
-              await loadFeedingManagementData();
-            } catch (error) {
-              console.error("Error eliminando comida:", error);
-              setErrorMessage(
-                error instanceof Error
-                  ? error.message
-                  : "No se pudo eliminar la comida.",
-              );
-            } finally {
-              setIsDeletingFoodEntry(false);
-            }
-          },
-          style: "destructive",
-          text: "Eliminar",
+            const token = await getAccessToken();
+            await deleteFoodEntry(entryId, token);
+            await loadDailyFoodLog();
+            await loadFeedingManagementData();
+          } catch (error) {
+            console.error("Error eliminando comida:", error);
+            setErrorMessage(
+              error instanceof Error
+                ? error.message
+                : "No se pudo eliminar la comida.",
+            );
+          } finally {
+            setIsDeletingFoodEntry(false);
+          }
         },
-      ],
-    );
+        style: "destructive",
+        text: "Eliminar",
+      },
+    ]);
   };
 
   const handleOpenEditFoodEntry = (food: FoodInfo) => {
@@ -618,9 +706,7 @@ export default function FeedingScreen() {
     } catch (error) {
       console.error("Error editando comida:", error);
       setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "No se pudo editar la comida.",
+        error instanceof Error ? error.message : "No se pudo editar la comida.",
       );
     } finally {
       setIsEditingFoodEntry(false);
@@ -647,7 +733,9 @@ export default function FeedingScreen() {
       )}
       {(foodLimits || mealPlanLimits) && (
         <View style={styles.limitsBox}>
-          <CustomText type="button_secondary">Gestion de alimentacion</CustomText>
+          <CustomText type="button_secondary">
+            Gestion de alimentacion
+          </CustomText>
           {foodLimits && (
             <CustomText type="body_secondary">
               Comidas registradas: {foodLimits.entriesForDate}/
@@ -681,6 +769,7 @@ export default function FeedingScreen() {
               dato1={meal.protein}
               dato2={meal.carbohydrates}
               dato3={meal.fat}
+              showNutrition={meal.showNutrition}
             />
           ))}
         </View>
@@ -692,11 +781,11 @@ export default function FeedingScreen() {
             <View key={food.id} style={styles.managementCard}>
               <View style={styles.managementCardContent}>
                 <CustomText type="button_secondary">{food.foodName}</CustomText>
-              <CustomText type="body_secondary">
-                {food.quantity}g - {food.mealType} -{" "}
-                {Math.round(food.calories || 0)} kcal
-              </CustomText>
-            </View>
+                <CustomText type="body_secondary">
+                  {food.quantity}g - {food.mealType} -{" "}
+                  {Math.round(food.calories || 0)} kcal
+                </CustomText>
+              </View>
               <View style={styles.managementActions}>
                 <CustomButton
                   disabled={isDeletingFoodEntry || isEditingFoodEntry}
@@ -852,10 +941,7 @@ export default function FeedingScreen() {
                       <Pressable
                         key={meal.key}
                         onPress={() => setEditFoodMealType(meal.key)}
-                        style={[
-                          styles.chip,
-                          isSelected && styles.chipSelected,
-                        ]}
+                        style={[styles.chip, isSelected && styles.chipSelected]}
                       >
                         <CustomText
                           color={
@@ -930,7 +1016,9 @@ export default function FeedingScreen() {
                       >
                         <CustomText
                           type="body"
-                          color={isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL}
+                          color={
+                            isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL
+                          }
                         >
                           {goal}
                         </CustomText>
@@ -944,8 +1032,7 @@ export default function FeedingScreen() {
                 <CustomText type="button_secondary">Preferencias</CustomText>
                 <View style={styles.chipRow}>
                   {PREFERENCES.map((preference) => {
-                    const isSelected =
-                      selectedPreferences.includes(preference);
+                    const isSelected = selectedPreferences.includes(preference);
 
                     return (
                       <Pressable
@@ -955,7 +1042,9 @@ export default function FeedingScreen() {
                       >
                         <CustomText
                           type="body"
-                          color={isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL}
+                          color={
+                            isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL
+                          }
                         >
                           {preference}
                         </CustomText>
@@ -1012,7 +1101,9 @@ export default function FeedingScreen() {
 
               {safetyWarnings.length > 0 && (
                 <View style={styles.warningBox}>
-                  <CustomText type="button_secondary">Doble revision</CustomText>
+                  <CustomText type="button_secondary">
+                    Doble revision
+                  </CustomText>
                   {safetyWarnings.map((warning) => (
                     <CustomText
                       key={warning}

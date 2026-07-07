@@ -13,6 +13,7 @@ export default function FoodSummaryCard({
   dato1,
   dato2,
   dato3,
+  showNutrition = true,
 }: FoodSummaryCardProps) {
   const { typeFoodColor } = useFoodSummaryCard({ tipoComida });
   return (
@@ -21,16 +22,20 @@ export default function FoodSummaryCard({
         <CustomText
           color={typeFoodColor}
           type="body_interactive"
-        >{`${tipoComida} - ${calorias} kcal`}</CustomText>
+        >
+          {showNutrition ? `${tipoComida} - ${calorias} kcal` : tipoComida}
+        </CustomText>
       </View>
       <View>
         <CustomText size={hp(18)} type="body">
           {descripcion}
         </CustomText>
       </View>
-      <View>
-        <CustomText type="body_secondary">{`P: ${dato1} - C: ${dato2} - G: ${dato3}`}</CustomText>
-      </View>
+      {showNutrition && (
+        <View>
+          <CustomText type="body_secondary">{`P: ${dato1} - C: ${dato2} - G: ${dato3}`}</CustomText>
+        </View>
+      )}
     </View>
   );
 }
