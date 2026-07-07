@@ -1,6 +1,6 @@
 import { hp, wp } from "@/src/core/utils";
 import { COLOR, UI } from "@/src/theme";
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 export const MiaChatScreenStyles = StyleSheet.create({
   container: {
@@ -27,7 +27,6 @@ export const MiaChatScreenStyles = StyleSheet.create({
     gap: UI.spacing.md,
     paddingHorizontal: UI.spacing.md,
     paddingVertical: UI.spacing.xl,
-    transform: [{ scaleY: Platform.OS === "ios" ? -1 : 1 }],
   },
 
   emptyEyebrow: {
