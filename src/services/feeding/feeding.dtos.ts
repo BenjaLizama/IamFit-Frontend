@@ -93,11 +93,19 @@ export interface GenerateMealPlanRequest {
   dislikes?: string[];
 }
 
+export interface GeneratedMealInfo {
+  descripcion: string;
+  calorias: number;
+  proteina: number;
+  carbohidratos: number;
+  grasa: number;
+}
+
 export interface MealPlanDayMenu {
-  desayuno: string;
-  almuerzo: string;
-  cena: string;
-  snacks: string[];
+  desayuno: GeneratedMealInfo;
+  almuerzo: GeneratedMealInfo;
+  cena: GeneratedMealInfo;
+  snacks: GeneratedMealInfo[];
 }
 
 export interface MealPlanWeekMenu {
