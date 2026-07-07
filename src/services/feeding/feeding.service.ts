@@ -1,6 +1,7 @@
 import { API, handleResponse } from "../api.service";
 import {
   AddFoodRequest,
+  ConsumeMealRequest,
   DeleteFoodEntryResponse,
   EditFoodEntryRequest,
   FoodCatalogItem,
@@ -9,7 +10,6 @@ import {
   FoodLogCaloriesResponse,
   GenerateMealPlanRequest,
   GenerateMealPlanResponse,
-  ConsumeMealRequest,
   MealPlanDayCompletionResponse,
   MealPlanHistoryResponse,
   MealPlanLimitsResponse,
@@ -127,10 +127,7 @@ export const searchFood = async (
 
   console.log("Respuesta busqueda alimentos:", data);
 
-  const foods = [
-    ...(data.localResults || []),
-    ...(data.externalResults || []),
-  ];
+  const foods = [...(data.localResults || []), ...(data.externalResults || [])];
 
   const uniqueFoods = dedupeFoods(foods);
 
@@ -205,10 +202,13 @@ export const getMealPlans = async (
   status: MealPlanStatus = "ALL",
   token?: string | null,
 ): Promise<SavedMealPlan[]> => {
-  const response = await fetch(`${FEEDING_API_URL}/meal-plans?status=${status}`, {
-    method: "GET",
-    headers: getAuthHeaders(token),
-  });
+  const response = await fetch(
+    `${FEEDING_API_URL}/meal-plans?status=${status}`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(token),
+    },
+  );
 
   return handleResponse(response);
 };
@@ -280,12 +280,31 @@ export const getMealPlanLimits = async (
 export const getActiveMealPlanProgress = async (
   token?: string | null,
 ): Promise<MealPlanProgressResponse> => {
-  const response = await fetch(`${FEEDING_API_URL}/meal-plans/active/progress`, {
-    method: "GET",
-    headers: getAuthHeaders(token),
-  });
+  const response = await fetch(
+    `${FEEDING_API_URL}/meal-plans/active/progress`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(token),
+    },
+  );
 
   return handleResponse(response);
+};
+
+const buildPatchRequest = (
+  token?: string | null,
+  data: ConsumeMealRequest = {},
+): RequestInit => {
+  const init: RequestInit = {
+    method: "PATCH",
+    headers: getAuthHeaders(token),
+  };
+
+  if (data && Object.keys(data).length > 0) {
+    init.body = JSON.stringify(data);
+  }
+
+  return init;
 };
 
 export const consumeMealPlanMeal = async (
@@ -297,11 +316,7 @@ export const consumeMealPlanMeal = async (
 ): Promise<MealPlanMealCompletionResponse> => {
   const response = await fetch(
     `${FEEDING_API_URL}/meal-plans/${planId}/days/${day}/meals/${mealId}/consume`,
-    {
-      method: "PATCH",
-      headers: getAuthHeaders(token),
-      body: JSON.stringify(data),
-    },
+    buildPatchRequest(token, data),
   );
 
   return handleResponse(response);
@@ -316,11 +331,7 @@ export const unconsumeMealPlanMeal = async (
 ): Promise<MealPlanMealCompletionResponse> => {
   const response = await fetch(
     `${FEEDING_API_URL}/meal-plans/${planId}/days/${day}/meals/${mealId}/unconsume`,
-    {
-      method: "PATCH",
-      headers: getAuthHeaders(token),
-      body: JSON.stringify(data),
-    },
+    buildPatchRequest(token, data),
   );
 
   return handleResponse(response);
