@@ -54,6 +54,27 @@ export const FeedingScreenStyles = StyleSheet.create({
     gap: UI.spacing.sm,
     padding: UI.spacing.md,
   },
+  selectedGeneratedPlanOption: {
+    borderColor: COLOR.AZUL_PRIMARIO,
+    backgroundColor: "#eff5ff",
+  },
+  checklistRow: {
+    marginTop: UI.spacing.sm,
+    marginBottom: UI.spacing.lg,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  checklistButton: {
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.large_radius,
+    borderWidth: 1,
+    paddingHorizontal: UI.spacing.md,
+    paddingVertical: UI.spacing.sm,
+  },
+  checklistButtonChecked: {
+    backgroundColor: COLOR.AZUL_PRIMARIO,
+    borderColor: COLOR.AZUL_PRIMARIO,
+  },
   managementList: {
     gap: UI.spacing.md,
     marginTop: UI.spacing.md,

@@ -1,10 +1,10 @@
 import CustomText from "@/src/core/components/CustomText";
+import { hp } from "@/src/core/utils";
 import React from "react";
 import { View } from "react-native";
 import { FoodSummaryCardStyles as styles } from "./FoodSummaryCard.styles";
 import { FoodSummaryCardProps } from "./FoodSummaryCard.types";
 import { useFoodSummaryCard } from "./useFoodSummaryCard";
-import { hp } from "@/src/core/utils";
 
 export default function FoodSummaryCard({
   tipoComida,
@@ -16,15 +16,15 @@ export default function FoodSummaryCard({
   showNutrition = true,
 }: FoodSummaryCardProps) {
   const { typeFoodColor } = useFoodSummaryCard({ tipoComida });
+
   return (
     <View style={styles.container}>
-      <View>
-        <CustomText
-          color={typeFoodColor}
-          type="body_interactive"
-        >
-          {showNutrition ? `${tipoComida} - ${calorias} kcal` : tipoComida}
-        </CustomText>
+      <View style={styles.headerRow}>
+        <View style={styles.titleColumn}>
+          <CustomText color={typeFoodColor} type="body_interactive">
+            {showNutrition ? `${tipoComida} - ${calorias} kcal` : tipoComida}
+          </CustomText>
+        </View>
       </View>
       <View>
         <CustomText size={hp(18)} type="body">
