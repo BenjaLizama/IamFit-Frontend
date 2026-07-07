@@ -4,6 +4,7 @@ import HomeLogo from "@/assets/images/Icons/home.svg";
 import PeopleLogo from "@/assets/images/Icons/people.svg";
 import ProfileLogo from "@/assets/images/Icons/profile.svg";
 import ExpandableScreen from "@/src/core/components/ExpandableScreen";
+import type { ExpandableScreenRef } from "@/src/core/components/ExpandableScreen";
 import MiaHeader from "@/src/features/(m.i.a)/layout/MiaHeader";
 import MiaChatScreen from "@/src/features/(m.i.a)/screens/MiaChatScreen";
 import { COLOR } from "@/src/theme";
@@ -24,6 +25,11 @@ export default function MainTabBar() {
     touchIndicatorStyle,
   } = useMainTabBar();
   const touchIndicatorBaseStyle = styles.touchIndicator as unknown as object;
+  const expandableScreenRef = React.useRef<ExpandableScreenRef>(null);
+
+  const closeMiaScreen = React.useCallback(() => {
+    expandableScreenRef.current?.collapse();
+  }, []);
 
   return (
     <View
@@ -57,12 +63,13 @@ export default function MainTabBar() {
       </MainTabIcon>
 
       <ExpandableScreen
+        ref={expandableScreenRef}
         children1={
           <MainTabIcon type="big">
             <AiLogo color={COLOR.AZUL_PRIMARIO} height={30} width={30} />
           </MainTabIcon>
         }
-        children2={<MiaChatScreen />}
+        children2={<MiaChatScreen onRequestClose={closeMiaScreen} />}
         headerChildren={<MiaHeader />}
         initialRadius={100}
         onExpandedChange={setIsExpandableOpen}

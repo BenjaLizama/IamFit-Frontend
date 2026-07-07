@@ -4,24 +4,18 @@ import { StyleSheet } from "react-native";
 
 export const MessageResponseBoxStyles = StyleSheet.create({
   messageContainer: {
-    marginTop: hp(12),
-    position: "relative",
-    backgroundColor: COLOR.GRIS,
-    paddingVertical: UI.spacing.sm,
-    paddingHorizontal: UI.spacing.md,
-    borderRadius: UI.small_radius,
-    maxWidth: "75%",
     alignSelf: "flex-start",
+    backgroundColor: COLOR.GRIS,
+    borderRadius: UI.small_radius,
+    borderBottomLeftRadius: wp(4),
+    marginTop: hp(10),
+    maxWidth: "88%",
+    paddingHorizontal: UI.spacing.md,
+    paddingVertical: UI.spacing.sm,
   },
 
-  extra: {
-    left: wp(0),
-    position: "absolute",
-    backgroundColor: COLOR.GRIS,
-    height: hp(20),
-    width: wp(20),
-    zIndex: -1,
-    borderRadius: UI.small_radius,
+  responseText: {
+    lineHeight: hp(22),
   },
 
   actionList: {
@@ -34,6 +28,8 @@ export const MessageResponseBoxStyles = StyleSheet.create({
     alignSelf: "flex-start",
     backgroundColor: COLOR.BOTON_PRIMARIO,
     borderRadius: UI.small_radius,
+    flexDirection: "row",
+    gap: UI.spacing.xs,
     minHeight: hp(40),
     justifyContent: "center",
     maxWidth: "100%",

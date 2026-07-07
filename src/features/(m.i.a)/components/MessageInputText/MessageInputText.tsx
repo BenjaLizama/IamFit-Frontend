@@ -2,7 +2,7 @@ import Firework from "@/assets/images/Icons/firework.svg";
 import SendMessage from "@/assets/images/Icons/send-message.svg";
 import { COLOR } from "@/src/theme";
 import React from "react";
-import { Pressable, TextInput, View } from "react-native";
+import { ActivityIndicator, Pressable, TextInput, View } from "react-native";
 import { MessageInputTextStyles as styles } from "./MessageInputText.styles";
 import { MessageInputTextProps } from "./MessageInputText.types";
 
@@ -23,24 +23,42 @@ export default function MessageInputText({
     setMessage("");
   };
 
+  const canSend = Boolean(message.trim()) && !disabled;
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, disabled && styles.containerDisabled]}>
       <View style={styles.inputContainer}>
-        <Firework />
+        <View style={styles.leadingIcon}>
+          <Firework />
+        </View>
         <TextInput
           editable={!disabled}
+          maxLength={800}
+          multiline
           onChangeText={setMessage}
           onSubmitEditing={handleSend}
-          placeholder="Escribe tu mensaje..."
-          placeholderTextColor={COLOR.FILTER_INFORMATION_BOX}
+          placeholder={
+            disabled ? "M.I.A. esta respondiendo..." : "Preguntale a M.I.A."
+          }
+          placeholderTextColor={COLOR.TEXTO_TENUE}
           returnKeyType="send"
-          selectionColor={COLOR.FONDO}
+          selectionColor={COLOR.AZUL_PRIMARIO}
           style={styles.input}
-          textAlignVertical="center"
+          textAlignVertical="top"
           value={message}
         />
-        <Pressable disabled={disabled} onPress={handleSend}>
-          <SendMessage />
+        <Pressable
+          accessibilityLabel="Enviar mensaje"
+          disabled={!canSend}
+          hitSlop={8}
+          onPress={handleSend}
+          style={[styles.sendButton, !canSend && styles.sendButtonDisabled]}
+        >
+          {disabled ? (
+            <ActivityIndicator color={COLOR.FONDO} size="small" />
+          ) : (
+            <SendMessage />
+          )}
         </Pressable>
       </View>
     </View>

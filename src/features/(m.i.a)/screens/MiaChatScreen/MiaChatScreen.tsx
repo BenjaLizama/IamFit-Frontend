@@ -1,17 +1,21 @@
-import { hp } from "@/src/core/utils";
+import CustomText from "@/src/core/components/CustomText";
 import MessageInputText from "@/src/features/(m.i.a)/components/MessageInputText";
 import MessageUserBox from "@/src/features/(m.i.a)/components/MessageUserBox";
-import {
-  addFood,
-  generateMealPlan,
-  searchFood,
-} from "@/src/services/feeding/feeding.service";
 import {
   GenerateMealPlanRequest,
   GenerateMealPlanResponse,
   MealPlanDayMenu,
   MealType,
 } from "@/src/services/feeding/feeding.dtos";
+import {
+  addFood,
+  generateMealPlan,
+  searchFood,
+} from "@/src/services/feeding/feeding.service";
+import {
+  getStoredMiaMessages,
+  saveMiaMessages,
+} from "@/src/services/mia/mia.chat.storage";
 import {
   MiaAction,
   MiaAddFoodPayload,
@@ -20,19 +24,15 @@ import {
   MiaGenerateMealPlanPayload,
 } from "@/src/services/mia/mia.dtos";
 import {
+  saveMiaGeneratedMealPlan,
+  saveMiaGeneratedRoutineOptions,
+} from "@/src/services/mia/mia.generated.storage";
+import {
   getMiaResponseActions,
   getMiaResponseMetadata,
   getMiaResponseText,
   sendPromptToMia,
 } from "@/src/services/mia/mia.service";
-import {
-  getStoredMiaMessages,
-  saveMiaMessages,
-} from "@/src/services/mia/mia.chat.storage";
-import {
-  saveMiaGeneratedMealPlan,
-  saveMiaGeneratedRoutineOptions,
-} from "@/src/services/mia/mia.generated.storage";
 import { generateRoutineOptions } from "@/src/services/routines";
 import {
   GenerateRoutineRequest,
@@ -41,9 +41,11 @@ import {
 } from "@/src/services/routines/routine.dtos";
 import { getAccessToken } from "@/src/services/session/token.storage";
 import { COLOR } from "@/src/theme";
+import { useRouter } from "expo-router";
 import React from "react";
-import { Alert, FlatList, View } from "react-native";
+import { Alert, FlatList, Pressable, View } from "react-native";
 import MessageResponseBox from "../../components/MessageResponseBox";
+import { MiaChatScreenStyles as styles } from "./MiaChatScreen.styles";
 
 const createMessageId = () => `${Date.now()}-${Math.random()}`;
 const loadingMessage: MiaChatMessage = {
@@ -51,7 +53,13 @@ const loadingMessage: MiaChatMessage = {
   type: "bot",
   text: "M.I.A. esta escribiendo...",
 };
-const MIA_CHAT_DEBUG = true;
+const MIA_CHAT_DEBUG = false;
+const SUGGESTED_PROMPTS = [
+  "Genera un plan de comidas alto en proteina",
+  "Crea una rutina de 30 minutos sin equipo",
+  "Registra 120g de pollo en mi almuerzo",
+  "Dame una idea de cena liviana para hoy",
+];
 const VALID_MEAL_TYPES: MealType[] = ["DESAYUNO", "ALMUERZO", "CENA", "SNACK"];
 const VALID_ROUTINE_EQUIPMENT: RoutineEquipment[] = [
   "BARRA",
@@ -62,7 +70,7 @@ const VALID_ROUTINE_EQUIPMENT: RoutineEquipment[] = [
   "BANDA_ELASTICA",
   "KETTLEBELL",
 ];
-const MEAL_PLAN_DAYS: Array<keyof GenerateMealPlanResponse["menu"]> = [
+const MEAL_PLAN_DAYS: (keyof GenerateMealPlanResponse["menu"])[] = [
   "lunes",
   "martes",
   "miercoles",
@@ -103,9 +111,7 @@ const getMealType = (value: unknown): MealType | undefined => {
     : undefined;
 };
 
-const getMealPlanGoal = (
-  value: unknown,
-): GenerateMealPlanRequest["goal"] => {
+const getMealPlanGoal = (value: unknown): GenerateMealPlanRequest["goal"] => {
   if (typeof value !== "string") {
     return "Mantener peso";
   }
@@ -123,10 +129,7 @@ const getMealPlanGoal = (
     return "Ganar musculo";
   }
 
-  if (
-    normalizedValue.includes("bajar") ||
-    normalizedValue.includes("perder")
-  ) {
+  if (normalizedValue.includes("bajar") || normalizedValue.includes("perder")) {
     return "Bajar de peso";
   }
 
@@ -138,7 +141,9 @@ const getStringList = (value: unknown) =>
     ? value.filter((item): item is string => typeof item === "string")
     : [];
 
-const normalizeRoutineEquipment = (equipment: string): RoutineEquipment | null => {
+const normalizeRoutineEquipment = (
+  equipment: string,
+): RoutineEquipment | null => {
   const normalizedEquipment = equipment
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -201,13 +206,13 @@ const isRoutineResponse = (
     return false;
   }
 
-  return (
-    typeof value.sessionId === "string" &&
-    Array.isArray(value.routines)
-  );
+  return typeof value.sessionId === "string" && Array.isArray(value.routines);
 };
 
-const formatDayMenu = (day: keyof GenerateMealPlanResponse["menu"], menu: MealPlanDayMenu) => {
+const formatDayMenu = (
+  day: keyof GenerateMealPlanResponse["menu"],
+  menu: MealPlanDayMenu,
+) => {
   const dayLabel = day.charAt(0).toUpperCase() + day.slice(1);
   const snacks = menu.snacks?.length ? menu.snacks.join(", ") : "Sin snacks";
 
@@ -231,6 +236,30 @@ const formatRoutineOptionsForChat = (response: GenerateRoutineResponse) => {
   return `${response.message || "Rutinas generadas."}\n\n${routineNames}`;
 };
 
+const getMiaActionKey = (
+  messageId: string,
+  action: MiaAction,
+  actionIndex: number,
+) => `${messageId}-${action.type}-${actionIndex}`;
+
+const getMiaActionLoadingLabel = (action: MiaAction) => {
+  if (
+    action.type === "GENERATE_MEAL_PLAN" ||
+    action.type === "CREATE_ROUTINE"
+  ) {
+    return "Generando...";
+  }
+
+  if (
+    action.type === "USE_MEAL_PLAN" ||
+    action.type === "SHOW_ROUTINE_OPTIONS"
+  ) {
+    return "Abriendo...";
+  }
+
+  return "Cargando...";
+};
+
 const confirmAction = (title: string, message: string) =>
   new Promise<boolean>((resolve) => {
     Alert.alert(title, message, [
@@ -246,8 +275,15 @@ const confirmAction = (title: string, message: string) =>
     ]);
   });
 
-export default function MiaChatScreen() {
+interface MiaChatScreenProps {
+  onRequestClose?: () => void;
+}
+
+export default function MiaChatScreen({ onRequestClose }: MiaChatScreenProps) {
   const hasLoadedStoredMessages = React.useRef(false);
+  const [activeActionKey, setActiveActionKey] = React.useState<string | null>(
+    null,
+  );
   const [messages, setMessages] = React.useState<MiaChatMessage[]>([]);
   const [isActionRunning, setIsActionRunning] = React.useState(false);
   const [isSending, setIsSending] = React.useState(false);
@@ -255,6 +291,7 @@ export default function MiaChatScreen() {
     () => (isSending ? [loadingMessage, ...messages] : messages),
     [isSending, messages],
   );
+  const router = useRouter();
 
   React.useEffect(() => {
     let isMounted = true;
@@ -362,27 +399,28 @@ export default function MiaChatScreen() {
       availableEquipment: getRoutineEquipmentList(
         routinePayload.availableEquipment,
       ),
-      difficulty: routinePayload.difficulty as GenerateRoutineRequest["difficulty"],
+      difficulty:
+        routinePayload.difficulty as GenerateRoutineRequest["difficulty"],
       durationMinutes: routinePayload.durationMinutes,
       limitations: routinePayload.limitations || "ninguna",
-      muscleGroups: routinePayload.muscleGroups as GenerateRoutineRequest["muscleGroups"],
+      muscleGroups:
+        routinePayload.muscleGroups as GenerateRoutineRequest["muscleGroups"],
     };
     const response = await generateRoutineOptions(request, token);
 
-    addBotMessage(
-      setMessages,
-      formatRoutineOptionsForChat(response),
-      [
-        {
-          label: "Ver opciones en Rutinas",
-          payload: response,
-          type: "SHOW_ROUTINE_OPTIONS",
-        },
-      ],
-    );
+    addBotMessage(setMessages, formatRoutineOptionsForChat(response), [
+      {
+        label: "Ver opciones en Rutinas",
+        payload: response,
+        type: "SHOW_ROUTINE_OPTIONS",
+      },
+    ]);
   };
 
-  const handleGenerateMealPlanAction = async (payload: unknown) => {
+  const handleGenerateMealPlanAction = async (
+    payload: unknown,
+    sourceMessageId?: string,
+  ) => {
     if (!isRecord(payload)) {
       throw new Error("M.I.A. no envio los datos del plan de comidas.");
     }
@@ -411,12 +449,20 @@ export default function MiaChatScreen() {
     const token = await getAccessToken();
     const mealPlan = await generateMealPlan(request, token);
 
-    addBotMessage(setMessages, formatMealPlanForChat(mealPlan), [
+    setMessages((currentMessages) => [
       {
-        label: "Usar este plan",
-        payload: mealPlan,
-        type: "USE_MEAL_PLAN",
+        actions: [
+          {
+            label: "Ir a ver mi plan",
+            payload: mealPlan,
+            type: "USE_MEAL_PLAN",
+          },
+        ],
+        id: createMessageId(),
+        type: "bot",
+        text: formatMealPlanForChat(mealPlan),
       },
+      ...currentMessages.filter((message) => message.id !== sourceMessageId),
     ]);
   };
 
@@ -428,8 +474,10 @@ export default function MiaChatScreen() {
     await saveMiaGeneratedMealPlan(payload);
     addBotMessage(
       setMessages,
-      "Listo. Este plan quedo aplicado para las tarjetas de Alimentacion.",
+      "Listo. Te llevo a Alimentacion para revisar y activar el plan.",
     );
+    onRequestClose?.();
+    router.replace("/(main)/feeding");
   };
 
   const handleShowRoutineOptionsAction = async (payload: unknown) => {
@@ -440,16 +488,28 @@ export default function MiaChatScreen() {
     await saveMiaGeneratedRoutineOptions(payload);
     addBotMessage(
       setMessages,
-      "Listo. Las opciones quedaron disponibles en la pantalla de Rutinas para elegir una.",
+      "Listo. Te llevo a Rutinas para escoger la opcion que prefieras.",
     );
+
+    onRequestClose?.();
+    router.replace("/(main)/routine");
   };
 
-  const handleMiaAction = async (action: MiaAction) => {
+  const handleMiaAction = async (
+    action: MiaAction,
+    sourceMessageId?: string,
+    actionIndex = 0,
+  ) => {
     if (isActionRunning) {
       return;
     }
 
     setIsActionRunning(true);
+    setActiveActionKey(
+      sourceMessageId
+        ? getMiaActionKey(sourceMessageId, action, actionIndex)
+        : null,
+    );
 
     try {
       if (action.type === "ADD_FOOD") {
@@ -463,7 +523,7 @@ export default function MiaChatScreen() {
       }
 
       if (action.type === "GENERATE_MEAL_PLAN") {
-        await handleGenerateMealPlanAction(action.payload);
+        await handleGenerateMealPlanAction(action.payload, sourceMessageId);
         return;
       }
 
@@ -493,11 +553,16 @@ export default function MiaChatScreen() {
 
       addBotMessage(setMessages, errorMessage);
     } finally {
+      setActiveActionKey(null);
       setIsActionRunning(false);
     }
   };
 
   const handleSendMessage = async (message: string) => {
+    if (isSending || isActionRunning) {
+      return;
+    }
+
     if (MIA_CHAT_DEBUG) {
       console.log("[MIA screen] send pressed:", message);
     }
@@ -558,25 +623,56 @@ export default function MiaChatScreen() {
     }
   };
 
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <View style={styles.emptyEyebrow}>
+        <CustomText color={COLOR.AZUL_PRIMARIO} type="button_extra">
+          M.I.A. lista
+        </CustomText>
+      </View>
+      <CustomText style={styles.emptyTitle} type="h2">
+        ¿Qué hacemos hoy?
+      </CustomText>
+      <CustomText
+        color={COLOR.TEXTO_TENUE}
+        style={styles.emptySubtitle}
+        type="body"
+      >
+        Puedo ayudarte con comidas, rutinas y registros rápidos.
+      </CustomText>
+
+      <View style={styles.suggestionList}>
+        {SUGGESTED_PROMPTS.map((prompt) => (
+          <Pressable
+            disabled={isSending || isActionRunning}
+            key={prompt}
+            onPress={() => handleSendMessage(prompt)}
+            style={[
+              styles.suggestionButton,
+              (isSending || isActionRunning) && styles.suggestionButtonDisabled,
+            ]}
+          >
+            <CustomText type="body_interactive">{prompt}</CustomText>
+          </Pressable>
+        ))}
+      </View>
+    </View>
+  );
+
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: COLOR.SIN_COLOR,
-      }}
-    >
+    <View style={styles.container}>
       <FlatList
-        showsVerticalScrollIndicator={false}
         data={visibleMessages}
-        style={{ flex: 1 }}
         inverted={true}
         keyExtractor={(item) => item.id}
         keyboardShouldPersistTaps="always"
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingBottom: hp(20),
-          paddingTop: hp(12),
-        }}
+        ListEmptyComponent={renderEmptyState}
+        showsVerticalScrollIndicator={false}
+        style={styles.list}
+        contentContainerStyle={[
+          styles.listContent,
+          visibleMessages.length === 0 && styles.emptyListContent,
+        ]}
         renderItem={({ item }) => {
           if (MIA_CHAT_DEBUG) {
             console.log("[MIA screen] render message:", item);
@@ -586,21 +682,26 @@ export default function MiaChatScreen() {
             <MessageUserBox message={item.text} />
           ) : (
             <MessageResponseBox
+              activeActionKey={activeActionKey}
               actions={item.actions}
               disabledActions={isActionRunning}
-              onActionPress={handleMiaAction}
+              getActionKey={(action, index) =>
+                getMiaActionKey(item.id, action, index)
+              }
+              getActionLoadingLabel={getMiaActionLoadingLabel}
+              onActionPress={(action, index) =>
+                handleMiaAction(action, item.id, index)
+              }
               response={item.text}
             />
           );
         }}
       />
-      <View
-        style={{
-          paddingBottom: hp(12),
-          paddingHorizontal: hp(0),
-        }}
-      >
-        <MessageInputText disabled={isSending} onSend={handleSendMessage} />
+      <View style={styles.inputShell}>
+        <MessageInputText
+          disabled={isSending || isActionRunning}
+          onSend={handleSendMessage}
+        />
       </View>
     </View>
   );
