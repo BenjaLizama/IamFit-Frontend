@@ -1,10 +1,10 @@
 import AiLogo from "@/assets/images/Icons/ai-commentary.svg";
-import FeedingLogo from "@/assets/images/Icons/chart.svg";
+import PeopleLogo from "@/assets/images/Icons/exercise.svg";
+import FeedingLogo from "@/assets/images/Icons/fork.svg";
 import HomeLogo from "@/assets/images/Icons/home.svg";
-import PeopleLogo from "@/assets/images/Icons/people.svg";
 import ProfileLogo from "@/assets/images/Icons/profile.svg";
-import ExpandableScreen from "@/src/core/components/ExpandableScreen";
 import type { ExpandableScreenRef } from "@/src/core/components/ExpandableScreen";
+import ExpandableScreen from "@/src/core/components/ExpandableScreen";
 import MiaHeader from "@/src/features/(m.i.a)/layout/MiaHeader";
 import MiaChatScreen from "@/src/features/(m.i.a)/screens/MiaChatScreen";
 import { COLOR } from "@/src/theme";
