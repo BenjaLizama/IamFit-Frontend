@@ -1,35 +1,36 @@
 import CustomButton from "@/src/core/components/CustomButton";
 import CustomText from "@/src/core/components/CustomText";
+import ExpandableScreen from "@/src/core/components/ExpandableScreen";
 import FilterSelector from "@/src/core/components/FilterSelector";
-import { useActiveFilter } from "@/src/core/hooks/useActiveFilter";
 import RoutineExpandableCard from "@/src/features/routine/components/RoutineExpandableCard";
 import { MOCK_ROUTINES } from "@/src/features/routine/data/RoutineMock";
-import {
-  Routine as BackendRoutine,
-  GenerateRoutineRequest,
-  MuscleGroup,
-  RoutineDifficulty,
-  RoutineEquipment,
-  RoutineLimitsResponse,
-  RoutineStatus,
-  activateRoutine,
-  deactivateRoutine,
-  generateRoutineOptions,
-  getExerciseOptions,
-  getRoutineLimits,
-  getRoutines,
-  selectGeneratedRoutine,
-} from "@/src/services/routines";
 import {
   clearMiaGeneratedRoutineOptions,
   getMiaGeneratedRoutineOptions,
   MIA_GENERATED_ROUTINE_OPTIONS_EVENT,
 } from "@/src/services/mia/mia.generated.storage";
+import {
+  activateRoutine,
+  Routine as BackendRoutine,
+  deactivateRoutine,
+  generateRoutineOptions,
+  GenerateRoutineRequest,
+  getExerciseOptions,
+  getRoutineLimits,
+  getRoutines,
+  MuscleGroup,
+  RoutineDifficulty,
+  RoutineEquipment,
+  RoutineLimitsResponse,
+  RoutineStatus,
+  selectGeneratedRoutine,
+} from "@/src/services/routines";
 import { getAccessToken } from "@/src/services/session/token.storage";
 import { COLOR } from "@/src/theme";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   DeviceEventEmitter,
   Pressable,
   ScrollView,
@@ -73,10 +74,11 @@ const DEFAULT_DIFFICULTY_OPTIONS: RoutineDifficulty[] = [
 const DURATION_OPTIONS = [30, 45, 60];
 
 export default function RoutineScreen() {
-  const { activeFilter, handleFilterChange } = useActiveFilter("Activas");
-  const selectedRoutineStatus = STATUS_BY_FILTER[activeFilter] || "ACTIVE";
+  const [selectedRoutineStatus, setSelectedRoutineStatus] =
+    React.useState<RoutineStatus>("ACTIVE");
   const [checkedExerciseIds, setCheckedExerciseIds] = useState<string[]>([]);
-  const [routines, setRoutines] = useState(MOCK_ROUTINES);
+  const [routines, setRoutines] = useState<typeof MOCK_ROUTINES>([]);
+  const [isLoadingRoutines, setIsLoadingRoutines] = useState(true);
   const [routineLimits, setRoutineLimits] =
     useState<RoutineLimitsResponse | null>(null);
   const [isAiPanelOpen, setIsAiPanelOpen] = useState(false);
@@ -95,6 +97,13 @@ export default function RoutineScreen() {
   const [equipmentOptions, setEquipmentOptions] = useState<RoutineEquipment[]>(
     DEFAULT_EQUIPMENT_OPTIONS,
   );
+  const activeFilter =
+    selectedRoutineStatus === "ACTIVE"
+      ? "Activas"
+      : selectedRoutineStatus === "INACTIVE"
+        ? "Inactivas"
+        : "Todas";
+
   const [difficultyOptions, setDifficultyOptions] = useState<
     RoutineDifficulty[]
   >(DEFAULT_DIFFICULTY_OPTIONS);
@@ -121,12 +130,18 @@ export default function RoutineScreen() {
 
   const loadRoutines = React.useCallback(async () => {
     try {
+      setIsLoadingRoutines(true);
       const token = await getAccessToken();
       const data = await getRoutines(token, selectedRoutineStatus);
-      setRoutines(data.map(mapBackendRoutineToScreenRoutine));
-      console.log("Rutinas del usuario:", data);
+      if (data) {
+        setRoutines(data.map(mapBackendRoutineToScreenRoutine));
+      } else {
+        setRoutines([]);
+      }
     } catch (error) {
       console.log("Error cargando rutinas:", error);
+    } finally {
+      setIsLoadingRoutines(false);
     }
   }, [selectedRoutineStatus]);
 
@@ -172,10 +187,7 @@ export default function RoutineScreen() {
   }, [loadExerciseOptions, loadRoutineLimits]);
 
   const applyMiaRoutineOptions = React.useCallback(
-    (miaRoutineOptions: {
-      routines: BackendRoutine[];
-      sessionId: string;
-    }) => {
+    (miaRoutineOptions: { routines: BackendRoutine[]; sessionId: string }) => {
       setGeneratedSessionId(miaRoutineOptions.sessionId);
       setGeneratedRoutines(miaRoutineOptions.routines);
       setIsAiPanelOpen(true);
@@ -339,7 +351,6 @@ export default function RoutineScreen() {
 
   const mapBackendRoutineToScreenRoutine = (routine: BackendRoutine) => {
     return {
-      // 💡 SI routine.id es null, le asigna un string único temporal basado en el nombre o un timestamp
       id:
         routine.id ??
         `temp-ia-${routine.name.replace(/\s+/g, "-").toLowerCase()}`,
@@ -356,8 +367,9 @@ export default function RoutineScreen() {
         nextSessionLabel: "Hoy",
         estimatedTime: routine.estimatedDurationMinutes,
       },
+
       exercises: routine.exercises.map((exercise) => ({
-        id: exercise.id ?? `temp-ex-${exercise.orderIndex}`, // Evita nulls también en ejercicios
+        id: exercise.id ?? `temp-ex-${exercise.orderIndex}`,
         kind: "weight" as const,
         name: exercise.exerciseName,
         series: exercise.sets,
@@ -365,6 +377,11 @@ export default function RoutineScreen() {
         weight: exercise.weightKg,
       })),
     };
+  };
+
+  const handleFilterChange = (filterName: string) => {
+    const backendStatus = STATUS_BY_FILTER[filterName] || "ACTIVE";
+    setSelectedRoutineStatus(backendStatus);
   };
 
   return (
@@ -399,228 +416,281 @@ export default function RoutineScreen() {
       {!!routineErrorMessage && !isAiPanelOpen && (
         <CustomText type="body_secondary">{routineErrorMessage}</CustomText>
       )}
-      <View style={style.routineList}>
-        {routines.map((routine) => {
-          const canChangeStatus = !routine.id.startsWith("temp-");
 
-          return (
-            <View key={routine.id} style={style.routineCardGroup}>
-              <RoutineExpandableCard
-                routine={routine}
-                checkedExerciseIds={checkedExerciseIds}
-                onToggleExercise={(exerciseId) =>
-                  toggleExercise(routine.id, exerciseId)
-                }
-              />
-              {selectedRoutineStatus !== "ALL" && canChangeStatus && (
-                <CustomButton
-                  disabled={isUpdatingRoutine}
-                  isLoading={isUpdatingRoutine}
-                  type="secondary"
-                  onPress={() =>
-                    handleRoutineStatusChange(
-                      routine.id,
-                      selectedRoutineStatus === "ACTIVE"
-                        ? "deactivate"
-                        : "activate",
-                    )
+      <View style={style.routineList}>
+        {isLoadingRoutines ? (
+          <View
+            style={{
+              padding: 40,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size="large" color={COLOR.AZUL_PRIMARIO} />
+          </View>
+        ) : (
+          // Si ya terminó de cargar, dibuja las rutinas normalmente
+          routines.map((routine) => {
+            const canChangeStatus = !routine.id.startsWith("temp-");
+            const totalExercises = routine.exercises.length;
+            const markedExercises = routine.exercises.filter((exercise) =>
+              checkedExerciseIds.includes(`${routine.id}-${exercise.id}`),
+            ).length;
+            const updatedRoutine = {
+              ...routine,
+              checked: totalExercises > 0 && markedExercises === totalExercises,
+            };
+            return (
+              <View key={routine.id} style={style.routineCardGroup}>
+                <RoutineExpandableCard
+                  routine={updatedRoutine}
+                  checkedExerciseIds={checkedExerciseIds}
+                  onToggleExercise={(exerciseId) =>
+                    toggleExercise(routine.id, exerciseId)
                   }
-                >
-                  {selectedRoutineStatus === "ACTIVE"
-                    ? "Desactivar"
-                    : "Activar"}
-                </CustomButton>
+                />
+                {selectedRoutineStatus !== "ALL" && canChangeStatus && (
+                  <CustomButton
+                    disabled={isUpdatingRoutine}
+                    isLoading={isUpdatingRoutine}
+                    type="secondary"
+                    onPress={() =>
+                      handleRoutineStatusChange(
+                        routine.id,
+                        selectedRoutineStatus === "ACTIVE"
+                          ? "deactivate"
+                          : "activate",
+                      )
+                    }
+                  >
+                    {selectedRoutineStatus === "ACTIVE"
+                      ? "Desactivar"
+                      : "Activar"}
+                  </CustomButton>
+                )}
+              </View>
+            );
+          })
+        )}
+      </View>
+
+      {/* --- SECCIÓN GENERAR RUTINA CON IA (DESPLEGABLE) --- */}
+      <View style={[style.routineCardGroup, { marginTop: 20 }]}>
+        <ExpandableScreen
+          initialRadius={10}
+          pressScale={0.98}
+          showHeader={false}
+          headerChildren={null}
+          children1={
+            <View
+              style={{
+                backgroundColor: COLOR.BLANCO_TRANSPARENTE,
+                paddingVertical: 14,
+                borderRadius: 10,
+                borderColor: COLOR.TEXTO_PRINCIPAL,
+                borderWidth: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <CustomText type="button_primary" color={COLOR.TEXTO_PRINCIPAL}>
+                Generar rutina con IA
+              </CustomText>
+            </View>
+          }
+          children2={
+            <View style={[style.aiPanel, { marginTop: 0, borderTopWidth: 0 }]}>
+              {!!routineErrorMessage && (
+                <CustomText type="body_secondary" style={{ marginBottom: 10 }}>
+                  {routineErrorMessage}
+                </CustomText>
+              )}
+
+              {/* Grupos musculares */}
+              <View style={style.aiSection}>
+                <CustomText type="button_secondary">
+                  Grupos musculares
+                </CustomText>
+                <View style={style.chipRow}>
+                  {muscleGroupOptions.map((muscleGroup) => {
+                    const isSelected =
+                      selectedMuscleGroups.includes(muscleGroup);
+                    return (
+                      <Pressable
+                        key={muscleGroup}
+                        onPress={() => toggleMuscleGroup(muscleGroup)}
+                        style={[style.chip, isSelected && style.chipSelected]}
+                      >
+                        <CustomText
+                          type="body"
+                          color={
+                            isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL
+                          }
+                          size={13}
+                        >
+                          {muscleGroup}
+                        </CustomText>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+
+              {/* Equipo disponible */}
+              <View style={style.aiSection}>
+                <CustomText type="button_secondary">
+                  Equipo disponible
+                </CustomText>
+                <View style={style.chipRow}>
+                  {equipmentOptions.map((equipment) => {
+                    const isSelected = selectedEquipment.includes(equipment);
+                    return (
+                      <Pressable
+                        key={equipment}
+                        onPress={() => toggleEquipment(equipment)}
+                        style={[style.chip, isSelected && style.chipSelected]}
+                      >
+                        <CustomText
+                          type="body"
+                          color={
+                            isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL
+                          }
+                          size={13}
+                        >
+                          {equipment}
+                        </CustomText>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+
+              {/* Dificultad */}
+              <View style={style.aiSection}>
+                <CustomText type="button_secondary">Dificultad</CustomText>
+                <View style={style.chipRow}>
+                  {difficultyOptions.map((difficulty) => {
+                    const isSelected = selectedDifficulty === difficulty;
+                    return (
+                      <Pressable
+                        key={difficulty}
+                        onPress={() => setSelectedDifficulty(difficulty)}
+                        style={[style.chip, isSelected && style.chipSelected]}
+                      >
+                        <CustomText
+                          type="body"
+                          color={
+                            isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL
+                          }
+                          size={13}
+                        >
+                          {difficulty}
+                        </CustomText>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+
+              {/* Duración */}
+              <View style={style.aiSection}>
+                <CustomText type="button_secondary">
+                  Duración objetivo
+                </CustomText>
+                <View style={style.chipRow}>
+                  {DURATION_OPTIONS.map((duration) => {
+                    const isSelected = selectedDuration === duration;
+                    return (
+                      <Pressable
+                        key={duration}
+                        onPress={() => setSelectedDuration(duration)}
+                        style={[style.chip, isSelected && style.chipSelected]}
+                      >
+                        <CustomText
+                          type="body"
+                          color={
+                            isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL
+                          }
+                          size={13}
+                        >
+                          {duration} min
+                        </CustomText>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+
+              {/* Limitaciones */}
+              <View style={style.aiSection}>
+                <CustomText type="button_secondary">Limitaciones</CustomText>
+                <TextInput
+                  value={limitations}
+                  onChangeText={setLimitations}
+                  placeholder="ninguna"
+                  placeholderTextColor={COLOR.TEXTO_SECUNDARIO}
+                  style={style.limitationsInput}
+                />
+              </View>
+
+              <CustomButton
+                type="primary"
+                isLoading={isGenerating}
+                disabled={
+                  isSelectingRoutine || !routineLimits?.canCreateRoutine
+                }
+                onPress={handleGenerateRoutineOptions}
+              >
+                Generar 3 opciones
+              </CustomButton>
+
+              {/* Lista de rutinas generadas */}
+              {generatedRoutines.length > 0 && (
+                <View style={style.generatedList}>
+                  <CustomText type="button_secondary" style={{ marginTop: 15 }}>
+                    Selecciona una rutina
+                  </CustomText>
+                  {generatedRoutines.map((routine, index) => (
+                    <View
+                      key={`${routine.name}-${index}`}
+                      style={style.generatedCard}
+                    >
+                      <View style={style.generatedCardHeader}>
+                        <CustomText type="button_secondary">
+                          Opción {index + 1}
+                        </CustomText>
+                        <View style={style.generatedCardContent}>
+                          <CustomText
+                            type="button_secondary"
+                            style={style.generatedCardTitle}
+                          >
+                            {routine.name}
+                          </CustomText>
+                          <CustomText type="body_secondary" size={13}>
+                            {routine.exercises.length} ejercicios -{" "}
+                            {routine.estimatedDurationMinutes} min
+                          </CustomText>
+                        </View>
+                      </View>
+                      <CustomButton
+                        type="secondary"
+                        isLoading={isSelectingRoutine}
+                        disabled={isGenerating}
+                        onPress={() =>
+                          handleSelectGeneratedRoutine(index, routine)
+                        }
+                      >
+                        Elegir esta rutina
+                      </CustomButton>
+                    </View>
+                  ))}
+                </View>
               )}
             </View>
-          );
-        })}
+          }
+        />
       </View>
-
-      <View style={style.aiButton}>
-        <View>
-          <CustomButton
-            type="secondary"
-            onPress={() => setIsAiPanelOpen((current) => !current)}
-          >
-            Generar rutina con IA
-          </CustomButton>
-        </View>
-      </View>
-
-      {isAiPanelOpen && (
-        <View style={style.aiPanel}>
-          {!!routineErrorMessage && (
-            <CustomText type="body_secondary">
-              {routineErrorMessage}
-            </CustomText>
-          )}
-          <View style={style.aiSection}>
-            <CustomText type="button_secondary">Grupos musculares</CustomText>
-            <View style={style.chipRow}>
-              {muscleGroupOptions.map((muscleGroup) => {
-                const isSelected = selectedMuscleGroups.includes(muscleGroup);
-
-                return (
-                  <Pressable
-                    key={muscleGroup}
-                    onPress={() => toggleMuscleGroup(muscleGroup)}
-                    style={[style.chip, isSelected && style.chipSelected]}
-                  >
-                    <CustomText
-                      type="body"
-                      color={isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL}
-                      size={13}
-                    >
-                      {muscleGroup}
-                    </CustomText>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-
-          <View style={style.aiSection}>
-            <CustomText type="button_secondary">Equipo disponible</CustomText>
-            <View style={style.chipRow}>
-              {equipmentOptions.map((equipment) => {
-                const isSelected = selectedEquipment.includes(equipment);
-
-                return (
-                  <Pressable
-                    key={equipment}
-                    onPress={() => toggleEquipment(equipment)}
-                    style={[style.chip, isSelected && style.chipSelected]}
-                  >
-                    <CustomText
-                      type="body"
-                      color={isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL}
-                      size={13}
-                    >
-                      {equipment}
-                    </CustomText>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-
-          <View style={style.aiSection}>
-            <CustomText type="button_secondary">Dificultad</CustomText>
-            <View style={style.chipRow}>
-              {difficultyOptions.map((difficulty) => {
-                const isSelected = selectedDifficulty === difficulty;
-
-                return (
-                  <Pressable
-                    key={difficulty}
-                    onPress={() => setSelectedDifficulty(difficulty)}
-                    style={[style.chip, isSelected && style.chipSelected]}
-                  >
-                    <CustomText
-                      type="body"
-                      color={isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL}
-                      size={13}
-                    >
-                      {difficulty}
-                    </CustomText>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-
-          <View style={style.aiSection}>
-            <CustomText type="button_secondary">Duracion objetivo</CustomText>
-            <View style={style.chipRow}>
-              {DURATION_OPTIONS.map((duration) => {
-                const isSelected = selectedDuration === duration;
-
-                return (
-                  <Pressable
-                    key={duration}
-                    onPress={() => setSelectedDuration(duration)}
-                    style={[style.chip, isSelected && style.chipSelected]}
-                  >
-                    <CustomText
-                      type="body"
-                      color={isSelected ? COLOR.FONDO : COLOR.TEXTO_PRINCIPAL}
-                      size={13}
-                    >
-                      {duration} min
-                    </CustomText>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-
-          <View style={style.aiSection}>
-            <CustomText type="button_secondary">Limitaciones</CustomText>
-            <TextInput
-              value={limitations}
-              onChangeText={setLimitations}
-              placeholder="ninguna"
-              placeholderTextColor={COLOR.TEXTO_SECUNDARIO}
-              style={style.limitationsInput}
-            />
-          </View>
-
-          <CustomButton
-            type="primary"
-            isLoading={isGenerating}
-            disabled={isSelectingRoutine || !routineLimits?.canCreateRoutine}
-            onPress={handleGenerateRoutineOptions}
-          >
-            Generar 3 opciones
-          </CustomButton>
-
-          {generatedRoutines.length > 0 && (
-            <View style={style.generatedList}>
-              <CustomText type="button_secondary">
-                Selecciona una rutina
-              </CustomText>
-
-              {generatedRoutines.map((routine, index) => (
-                <View
-                  key={`${routine.name}-${index}`}
-                  style={style.generatedCard}
-                >
-                  <View style={style.generatedCardHeader}>
-                    <CustomText type="button_secondary">
-                      Opcion {index + 1}
-                    </CustomText>
-                    <View style={style.generatedCardContent}>
-                      <CustomText
-                        type="button_secondary"
-                        style={style.generatedCardTitle}
-                      >
-                        {routine.name}
-                      </CustomText>
-                      <CustomText
-                        type="body_secondary"
-                        size={13}
-                        style={style.generatedCardDescription}
-                      >
-                        {routine.exercises.length} ejercicios -{" "}
-                        {routine.estimatedDurationMinutes} min
-                      </CustomText>
-                    </View>
-                  </View>
-
-                  <CustomButton
-                    type="secondary"
-                    isLoading={isSelectingRoutine}
-                    disabled={isGenerating}
-                    onPress={() => handleSelectGeneratedRoutine(index, routine)}
-                  >
-                    Elegir esta
-                  </CustomButton>
-                </View>
-              ))}
-            </View>
-          )}
-        </View>
-      )}
     </ScrollView>
   );
 }
