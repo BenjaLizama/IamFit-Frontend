@@ -422,7 +422,7 @@ export default function MiaChatScreen({ onRequestClose }: MiaChatScreenProps) {
     sourceMessageId?: string,
   ) => {
     if (!isRecord(payload)) {
-      throw new Error("M.I.A. no envio los datos del plan de comidas.");
+      throw new Error("M.I.A. no envió los datos del plan de comidas.");
     }
 
     const mealPlanPayload = payload as MiaGenerateMealPlanPayload;

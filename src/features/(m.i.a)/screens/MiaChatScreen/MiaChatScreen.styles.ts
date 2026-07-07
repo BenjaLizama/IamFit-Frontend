@@ -27,6 +27,7 @@ export const MiaChatScreenStyles = StyleSheet.create({
     gap: UI.spacing.md,
     paddingHorizontal: UI.spacing.md,
     paddingVertical: UI.spacing.xl,
+    transform: [{ scaleY: -1 }, { scaleX: -1 }],
   },
 
   emptyEyebrow: {

@@ -1,5 +1,5 @@
-import { BottomSheet } from "@/src/core/components/BottomSheet";
 import ActivityChart from "@/src/core/components/ActivityChart";
+import { BottomSheet } from "@/src/core/components/BottomSheet";
 import CustomButton from "@/src/core/components/CustomButton";
 import CustomText from "@/src/core/components/CustomText";
 import FilterInformationBox from "@/src/core/components/FilterInformationBox";
@@ -162,11 +162,14 @@ export default function ProfileScreen() {
                 <View style={styles.contentCardIcon}>
                   <Ionicons
                     name={card.icon as never}
-                    size={UI.spacing.xl}
+                    size={UI.spacing.xxs}
                     color={COLOR.AZUL_PRIMARIO}
                   />
                 </View>
-                <CustomText type="body_secondary" style={styles.contentCardTitle}>
+                <CustomText
+                  type="body_secondary"
+                  style={styles.contentCardTitle}
+                >
                   {card.title}
                 </CustomText>
                 <CustomText
@@ -227,7 +230,7 @@ export default function ProfileScreen() {
           <CustomButton
             type="secondary"
             onPress={closeEditField}
-            widht={UI.spacing.giant * 2}
+            widht={UI.spacing.xxs * 2}
           >
             Cancelar
           </CustomButton>
@@ -235,7 +238,7 @@ export default function ProfileScreen() {
             type="primary"
             onPress={saveEditField}
             isLoading={isSavingEdit}
-            widht={UI.spacing.giant * 2}
+            widht={UI.spacing.xxs * 2}
           >
             Guardar
           </CustomButton>
