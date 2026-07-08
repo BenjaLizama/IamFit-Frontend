@@ -1,4 +1,4 @@
-import { StyleProp, TextStyle } from "react-native";
+import { StyleProp, TextProps, TextStyle } from "react-native";
 
 export interface CustomTextProps {
   children: React.ReactNode;
@@ -7,6 +7,8 @@ export interface CustomTextProps {
   size?: number;
   onPress?: () => void;
   style?: StyleProp<TextStyle>;
+  numberOfLines?: number;
+  ellipsizeMode?: TextProps["ellipsizeMode"];
 }
 
 type CustomTextTypes =

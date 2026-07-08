@@ -6,6 +6,8 @@ export interface FoodSummaryCardProps {
   dato2?: number;
   dato3?: number;
   showNutrition?: boolean;
+  onPress?: () => void;
+  isActive?: boolean;
 }
 
 export interface UseFoodSummaryCardProps {

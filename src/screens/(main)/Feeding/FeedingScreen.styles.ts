@@ -174,6 +174,50 @@ export const FeedingScreenStyles = StyleSheet.create({
     gap: UI.spacing.sm,
     marginTop: UI.spacing.sm,
   },
+  mealDetailCard: {
+    backgroundColor: COLOR.FONDO_OPACO,
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.small_radius,
+    borderWidth: 1,
+    gap: UI.spacing.sm,
+    marginTop: UI.spacing.sm,
+    padding: UI.spacing.sm,
+  },
+  mealDetailItem: {
+    gap: UI.spacing.xs,
+    paddingVertical: UI.spacing.xs,
+  },
+  mealDetailSection: {
+    gap: UI.spacing.xs,
+    marginTop: UI.spacing.sm,
+  },
+  detailModalBackdrop: {
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.35)",
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  detailModalContent: {
+    backgroundColor: COLOR.FONDO,
+    borderTopLeftRadius: UI.meddium_radius,
+    borderTopRightRadius: UI.meddium_radius,
+    maxHeight: "85%",
+    padding: UI.spacing.md,
+    width: "100%",
+  },
+  detailModalHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: UI.spacing.md,
+  },
+  detailModalTitle: {
+    gap: UI.spacing.xs,
+  },
+  detailModalBody: {
+    gap: UI.spacing.md,
+    paddingBottom: UI.spacing.md,
+  },
 });
 
 export const FeedingScreenAddFoodStyles = StyleSheet.create({

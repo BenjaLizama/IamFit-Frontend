@@ -22,6 +22,16 @@ export const FoodSummaryCardStyles = StyleSheet.create({
     flex: 1,
     marginRight: wp(10),
   },
+  arrow: {
+    color: COLOR.TEXTO_SECUNDARIO,
+  },
+  caloriesText: {
+    marginTop: hp(4),
+  },
+  containerActive: {
+    borderColor: COLOR.AZUL_PRIMARIO,
+    backgroundColor: "#eff5ff",
+  },
   checkCircle: {
     alignItems: "center",
     backgroundColor: COLOR.FONDO_OPACO,
