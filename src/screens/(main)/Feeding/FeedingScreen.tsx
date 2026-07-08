@@ -244,6 +244,7 @@ export default function FeedingScreen() {
     [],
   );
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+  const [expandedMealKey, setExpandedMealKey] = useState<MealType | null>(null);
   const [mealPlanError, setMealPlanError] = useState("");
   const [isMealPlanModalVisible, setIsMealPlanModalVisible] = useState(false);
   const [selectedGoal, setSelectedGoal] =
@@ -333,6 +334,9 @@ export default function FeedingScreen() {
             generatedInfo?.descripcion ||
             buildMealDescription(summary, meal.key),
           showNutrition,
+          foods,
+          generatedInfo,
+          totals,
         };
       }).filter((meal) => meal.hasContent),
     [generatedDayMenu, summary],
@@ -340,6 +344,10 @@ export default function FeedingScreen() {
   const registeredFoodEntries = useMemo(
     () => Object.values(summary?.entriesByMeal || {}).flat(),
     [summary],
+  );
+  const selectedMeal = useMemo(
+    () => mealCards.find((meal) => meal.key === expandedMealKey) || null,
+    [mealCards, expandedMealKey],
   );
   const allergies = useMemo(
     () => parseListInput(allergiesInput),
@@ -644,6 +652,10 @@ export default function FeedingScreen() {
               setActiveMealPlan(null);
             }
 
+            if (selectedPlanId === mealPlan.id) {
+              setSelectedPlanId(null);
+            }
+
             await loadFeedingManagementData();
           } catch (error) {
             console.error("Error eliminando plan de comidas:", error);
@@ -800,11 +812,87 @@ export default function FeedingScreen() {
                 dato2={meal.carbohydrates}
                 dato3={meal.fat}
                 showNutrition={meal.showNutrition}
+                onPress={() =>
+                  setExpandedMealKey((current) =>
+                    current === meal.key ? null : meal.key,
+                  )
+                }
+                isActive={expandedMealKey === meal.key}
               />
             </View>
           ))}
         </View>
       )}
+
+      <Modal
+        animationType="slide"
+        transparent
+        visible={Boolean(selectedMeal)}
+        onRequestClose={() => setExpandedMealKey(null)}
+      >
+        <View style={styles.detailModalBackdrop}>
+          <View style={styles.detailModalContent}>
+            <View style={styles.detailModalHeader}>
+              <View style={styles.detailModalTitle}>
+                <CustomText type="h2">{selectedMeal?.label}</CustomText>
+                <CustomText type="body_secondary">
+                  {selectedMeal?.calories} kcal
+                </CustomText>
+              </View>
+              <Pressable
+                style={styles.closeButton}
+                onPress={() => setExpandedMealKey(null)}
+              >
+                <CustomText type="button_secondary">X</CustomText>
+              </Pressable>
+            </View>
+            <ScrollView
+              contentContainerStyle={styles.detailModalBody}
+              showsVerticalScrollIndicator={false}
+            >
+              {selectedMeal?.generatedInfo && (
+                <View style={styles.mealDetailSection}>
+                  <CustomText type="button_secondary">Plan sugerido</CustomText>
+                  <CustomText type="body">
+                    {selectedMeal.generatedInfo.descripcion}
+                  </CustomText>
+                  <CustomText type="body_secondary">
+                    {`P: ${Math.round(selectedMeal.generatedInfo.proteina)} - C: ${Math.round(selectedMeal.generatedInfo.carbohidratos)} - G: ${Math.round(selectedMeal.generatedInfo.grasa)}`}
+                  </CustomText>
+                </View>
+              )}
+
+              {selectedMeal?.foods.length ? (
+                <View style={styles.mealDetailSection}>
+                  <CustomText type="button_secondary">
+                    Alimentos registrados
+                  </CustomText>
+                  {selectedMeal.foods.map((food) => (
+                    <View key={food.id} style={styles.mealDetailItem}>
+                      <CustomText type="body">{food.foodName}</CustomText>
+                      <CustomText type="body_secondary">
+                        {food.quantity}g · {Math.round(food.calories || 0)} kcal
+                      </CustomText>
+                    </View>
+                  ))}
+                </View>
+              ) : null}
+
+              {selectedMeal && hasNutrition(selectedMeal.totals) ? (
+                <View style={styles.mealDetailSection}>
+                  <CustomText type="button_secondary">
+                    Macros totales
+                  </CustomText>
+                  <CustomText type="body_secondary">
+                    {`P: ${Math.round(selectedMeal.totals.protein)} - C: ${Math.round(selectedMeal.totals.carbohydrates)} - G: ${Math.round(selectedMeal.totals.fat)}`}
+                  </CustomText>
+                </View>
+              ) : null}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
       {registeredFoodEntries.length > 0 && (
         <View style={styles.managementList}>
           <CustomText type="button_secondary">Comidas registradas</CustomText>
@@ -904,16 +992,6 @@ export default function FeedingScreen() {
                     type="secondary"
                   >
                     {isActive ? "Seleccionado" : "Seleccionar"}
-                  </CustomButton>
-                  <CustomButton
-                    disabled={isManagingMealPlan}
-                    onPress={() => {
-                      setGeneratedMealPlan(plan.response);
-                      setSelectedPlanId(plan.id);
-                    }}
-                    type="primary"
-                  >
-                    Ver plan
                   </CustomButton>
                 </View>
               </View>

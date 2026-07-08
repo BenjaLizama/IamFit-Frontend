@@ -209,14 +209,39 @@ const isRoutineResponse = (
   return typeof value.sessionId === "string" && Array.isArray(value.routines);
 };
 
+const getBriefText = (text: string, maxLength = 60) => {
+  const sentence = text.split(/(?<=[.!?])\s+/)[0];
+
+  if (sentence.length <= maxLength) {
+    return sentence;
+  }
+
+  return `${sentence.slice(0, maxLength).trimEnd()}…`;
+};
+
+const formatMealInfo = (
+  meal: string | { descripcion?: string } | null | undefined,
+) => {
+  if (!meal) {
+    return "Sin datos";
+  }
+
+  const value =
+    typeof meal === "string" ? meal : meal.descripcion || "Sin datos";
+
+  return getBriefText(value);
+};
+
 const formatDayMenu = (
   day: keyof GenerateMealPlanResponse["menu"],
   menu: MealPlanDayMenu,
 ) => {
   const dayLabel = day.charAt(0).toUpperCase() + day.slice(1);
-  const snacks = menu.snacks?.length ? menu.snacks.join(", ") : "Sin snacks";
+  const snacks = menu.snacks?.length
+    ? menu.snacks.map((snack) => formatMealInfo(snack)).join(", ")
+    : "Sin snacks";
 
-  return `${dayLabel}\nDesayuno: ${menu.desayuno}\nAlmuerzo: ${menu.almuerzo}\nCena: ${menu.cena}\nSnacks: ${snacks}`;
+  return `${dayLabel}\nDesayuno: ${formatMealInfo(menu.desayuno)}\nAlmuerzo: ${formatMealInfo(menu.almuerzo)}\nCena: ${formatMealInfo(menu.cena)}\nSnacks: ${snacks}`;
 };
 
 const formatMealPlanForChat = (mealPlan: GenerateMealPlanResponse) => {

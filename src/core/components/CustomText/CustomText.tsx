@@ -10,6 +10,8 @@ export default function CustomText({
   size,
   style,
   onPress,
+  numberOfLines,
+  ellipsizeMode,
 }: CustomTextProps) {
   return (
     <Text
@@ -21,6 +23,8 @@ export default function CustomText({
         size ? { fontSize: size } : null,
       ]}
       onPress={onPress}
+      numberOfLines={numberOfLines}
+      ellipsizeMode={ellipsizeMode}
     >
       {children}
     </Text>
