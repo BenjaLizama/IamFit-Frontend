@@ -14,12 +14,36 @@ import {
 
 const USER_PROFILE_URL = `${API.usuarios}/api/v1/user`;
 
+const normalizeListField = (value: unknown): string[] => {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string");
+  }
+
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
+const normalizeProfile = (data: any): UserProfileResponse => ({
+  ...data,
+  allergies: normalizeListField(data?.allergies),
+  dietaryPreferences: normalizeListField(data?.dietaryPreferences),
+  dislikes: normalizeListField(data?.dislikes),
+  equipment: normalizeListField(data?.equipment ?? data?.availableEquipment),
+  limitations: normalizeListField(data?.limitations),
+});
+
 const getAuthHeaders = async (token?: string | null) => {
   const accessToken = token ?? (await getAccessToken());
 
   return {
     "Content-Type": "application/json",
-    "X-Device-Id": "Test",
+    "X-Device-ID": "Test",
     ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
   };
 };
@@ -32,7 +56,7 @@ export const getProfile = async (
     headers: await getAuthHeaders(token),
   });
 
-  return handleResponse(response);
+  return normalizeProfile(await handleResponse(response));
 };
 
 export const updateProfile = async (
@@ -45,7 +69,7 @@ export const updateProfile = async (
     body: JSON.stringify(data),
   });
 
-  return handleResponse(response);
+  return normalizeProfile(await handleResponse(response));
 };
 
 export const getProfileContext = async (

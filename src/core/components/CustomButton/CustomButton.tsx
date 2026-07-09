@@ -30,6 +30,7 @@ export default function CustomButton({
           styles[type],
           type !== "extra" && styles.button_common,
           (disabled || isLoading) && styles.disabled,
+          widthStyle,
         ]}
       >
         {isLoading ? (

@@ -6,7 +6,7 @@ import FilterInformationBox from "@/src/core/components/FilterInformationBox";
 import FilterSelector from "@/src/core/components/FilterSelector";
 import MiaContextCard from "@/src/core/components/MiaContextCard";
 import Wrapper from "@/src/core/components/Wrapper";
-import { hp } from "@/src/core/utils";
+import { hp, wp } from "@/src/core/utils";
 import { COLOR, UI } from "@/src/theme";
 import { Ionicons } from "@expo/vector-icons";
 import GorhomBottomSheet from "@gorhom/bottom-sheet";
@@ -40,6 +40,7 @@ export default function ProfileScreen() {
     editField,
     editFieldLabel,
     editDraft,
+    editError,
     isSavingEdit,
     setEditDraft,
     handleFilterChange,
@@ -226,11 +227,20 @@ export default function ProfileScreen() {
           style={styles.sheetInput}
           multiline
         />
+        {editError ? (
+          <CustomText
+            type="body_secondary"
+            color={COLOR.ERROR}
+            style={styles.sheetError}
+          >
+            {editError}
+          </CustomText>
+        ) : null}
         <View style={styles.sheetActions}>
           <CustomButton
             type="secondary"
             onPress={closeEditField}
-            widht={UI.spacing.xxs * 2}
+            widht={wp(135)}
           >
             Cancelar
           </CustomButton>
@@ -238,7 +248,7 @@ export default function ProfileScreen() {
             type="primary"
             onPress={saveEditField}
             isLoading={isSavingEdit}
-            widht={UI.spacing.xxs * 2}
+            widht={wp(135)}
           >
             Guardar
           </CustomButton>

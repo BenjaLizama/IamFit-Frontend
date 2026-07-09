@@ -32,6 +32,7 @@ import {
   saveMealPlan,
 } from "@/src/services/feeding/feeding.service";
 import {
+  clearMiaGeneratedMealPlan,
   getMiaGeneratedMealPlan,
   MIA_GENERATED_MEAL_PLAN_EVENT,
 } from "@/src/services/mia/mia.generated.storage";
@@ -39,6 +40,7 @@ import { getAccessToken } from "@/src/services/session/token.storage";
 import { COLOR } from "@/src/theme";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
@@ -79,7 +81,8 @@ const DAY_TO_MENU_KEY = {
   Viernes: "viernes",
 } as const;
 
-const MIA_ACTIVE_MEAL_PLAN_ID = "mia-active-meal-plan";
+const MEAL_PLAN_MENU_CACHE_KEY = "iamfit_saved_meal_plan_menu_cache";
+
 const EMPTY_NUTRITION: NutritionTotals = {
   calories: 0,
   carbohydrates: 0,
@@ -89,12 +92,6 @@ const EMPTY_NUTRITION: NutritionTotals = {
 };
 
 type DayLabel = keyof typeof DAY_TO_MENU_KEY;
-
-type LocalSavedMealPlan = {
-  day: string;
-  id: string;
-  response: GenerateMealPlanResponse;
-};
 
 const buildMealDescription = (
   summary: FoodLogCaloriesResponse | null,
@@ -172,6 +169,15 @@ const hasNutrition = (nutrition: NutritionTotals) =>
   nutrition.fat > 0 ||
   nutrition.protein > 0;
 
+const isWeekMenu = (value: unknown): value is GenerateMealPlanResponse["menu"] =>
+  Boolean(
+    value &&
+      typeof value === "object" &&
+      "lunes" in value &&
+      "martes" in value &&
+      "miercoles" in value,
+  );
+
 const getSavedMealPlanResponse = (
   mealPlan: SavedMealPlan | null,
 ): GenerateMealPlanResponse | null => {
@@ -179,18 +185,45 @@ const getSavedMealPlanResponse = (
     return null;
   }
 
-  const storedMenu = mealPlan.menu as unknown as
-    | GenerateMealPlanResponse
-    | GenerateMealPlanResponse["menu"];
+  let storedMenu = mealPlan.menu as unknown;
 
-  if ("menu" in storedMenu) {
-    return storedMenu;
+  if (typeof storedMenu === "string") {
+    try {
+      storedMenu = JSON.parse(storedMenu);
+    } catch {
+      return null;
+    }
+  }
+
+  if (
+    storedMenu &&
+    typeof storedMenu === "object" &&
+    "menu" in storedMenu &&
+    isWeekMenu((storedMenu as GenerateMealPlanResponse).menu)
+  ) {
+    const response = storedMenu as GenerateMealPlanResponse;
+
+    return {
+      objetivo: response.objetivo || mealPlan.goal,
+      menu: response.menu,
+      recomendaciones_nutricionales:
+        response.recomendaciones_nutricionales ||
+        (response as any).recomendacionesNutricionales ||
+        "",
+    };
+  }
+
+  if (!isWeekMenu(storedMenu)) {
+    return null;
   }
 
   return {
     objetivo: mealPlan.goal,
     menu: storedMenu,
-    recomendaciones_nutricionales: "",
+    recomendaciones_nutricionales:
+      (mealPlan as any).recomendaciones_nutricionales ||
+      (mealPlan as any).recomendacionesNutricionales ||
+      "",
   };
 };
 
@@ -213,6 +246,68 @@ const getListIntersections = (baseList: string[], checkList: string[]) => {
   return baseList.filter((item) =>
     normalizedCheckList.has(normalizeText(item)),
   );
+};
+
+const getMealPlanTitle = (
+  response: GenerateMealPlanResponse | null,
+  fallback = "Plan de comidas",
+) => {
+  if (!response) return fallback;
+
+  return response.objetivo ? `Plan ${response.objetivo}` : fallback;
+};
+
+const readMealPlanMenuCache = async (): Promise<
+  Record<string, GenerateMealPlanResponse>
+> => {
+  const storedValue = await SecureStore.getItemAsync(MEAL_PLAN_MENU_CACHE_KEY);
+
+  if (!storedValue) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(storedValue);
+  } catch {
+    await SecureStore.deleteItemAsync(MEAL_PLAN_MENU_CACHE_KEY);
+    return {};
+  }
+};
+
+const saveMealPlanMenuCache = async (
+  planId: string,
+  mealPlan: GenerateMealPlanResponse,
+) => {
+  const cache = await readMealPlanMenuCache();
+  cache[planId] = mealPlan;
+  await SecureStore.setItemAsync(
+    MEAL_PLAN_MENU_CACHE_KEY,
+    JSON.stringify(cache),
+  );
+};
+
+const hydrateMealPlanMenu = (
+  mealPlan: SavedMealPlan | null,
+  cache: Record<string, GenerateMealPlanResponse>,
+): SavedMealPlan | null => {
+  if (!mealPlan) {
+    return null;
+  }
+
+  if (getSavedMealPlanResponse(mealPlan)) {
+    return mealPlan;
+  }
+
+  const cachedMenu = cache[mealPlan.id];
+
+  if (!cachedMenu) {
+    return mealPlan;
+  }
+
+  return {
+    ...mealPlan,
+    menu: cachedMenu,
+  };
 };
 
 export default function FeedingScreen() {
@@ -240,11 +335,13 @@ export default function FeedingScreen() {
     null,
   );
   const [backendMealPlans, setBackendMealPlans] = useState<SavedMealPlan[]>([]);
-  const [savedMealPlans, setSavedMealPlans] = useState<LocalSavedMealPlan[]>(
-    [],
-  );
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [expandedMealKey, setExpandedMealKey] = useState<MealType | null>(null);
+  const [planDetails, setPlanDetails] = useState<{
+    response: GenerateMealPlanResponse;
+    title: string;
+  } | null>(null);
+  const [planToManage, setPlanToManage] = useState<SavedMealPlan | null>(null);
   const [mealPlanError, setMealPlanError] = useState("");
   const [isMealPlanModalVisible, setIsMealPlanModalVisible] = useState(false);
   const [selectedGoal, setSelectedGoal] =
@@ -272,36 +369,63 @@ export default function FeedingScreen() {
     () => getSavedMealPlanResponse(activeMealPlan),
     [activeMealPlan],
   );
-  const selectedDayMealPlans = useMemo(
-    () => savedMealPlans.filter((plan) => plan.day === selectedDay),
-    [savedMealPlans, selectedDay],
-  );
-  const discoveredSelectedLocalPlan = useMemo(
-    () => savedMealPlans.find((plan) => plan.id === selectedPlanId),
-    [savedMealPlans, selectedPlanId],
-  );
   const discoveredSelectedBackendPlan = useMemo(
     () => backendMealPlans.find((plan) => plan.id === selectedPlanId),
     [backendMealPlans, selectedPlanId],
   );
   const selectedPlanResponse = useMemo(() => {
-    if (discoveredSelectedLocalPlan) {
-      return discoveredSelectedLocalPlan.response;
-    }
-
     if (discoveredSelectedBackendPlan) {
       return getSavedMealPlanResponse(discoveredSelectedBackendPlan);
     }
 
     return null;
-  }, [discoveredSelectedBackendPlan, discoveredSelectedLocalPlan]);
+  }, [discoveredSelectedBackendPlan]);
+  const firstSavedPlanWithMenu = useMemo(
+    () => backendMealPlans.find((plan) => getSavedMealPlanResponse(plan)),
+    [backendMealPlans],
+  );
 
-  const latestSelectedDayMealPlan = selectedDayMealPlans[0]?.response || null;
+  useEffect(() => {
+    if (selectedPlanId && selectedPlanResponse) {
+      return;
+    }
+
+    if (activeMealPlan?.id && selectedPlanId !== activeMealPlan.id) {
+      setSelectedPlanId(activeMealPlan.id);
+      return;
+    }
+
+    const activeBackendPlan = backendMealPlans.find(
+      (plan) => plan.status === "ACTIVE" && getSavedMealPlanResponse(plan),
+    );
+
+    if (activeBackendPlan && selectedPlanId !== activeBackendPlan.id) {
+      setSelectedPlanId(activeBackendPlan.id);
+      return;
+    }
+
+    if (firstSavedPlanWithMenu && selectedPlanId !== firstSavedPlanWithMenu.id) {
+      setSelectedPlanId(firstSavedPlanWithMenu.id);
+    }
+  }, [
+    activeMealPlan,
+    backendMealPlans,
+    firstSavedPlanWithMenu,
+    selectedPlanId,
+    selectedPlanResponse,
+  ]);
+
   const visibleMealPlan =
-    selectedPlanResponse ||
     generatedMealPlan ||
-    latestSelectedDayMealPlan ||
-    activeMealPlanResponse;
+    selectedPlanResponse ||
+    activeMealPlanResponse ||
+    getSavedMealPlanResponse(firstSavedPlanWithMenu ?? null);
+  const visibleMealPlanTitle = generatedMealPlan
+    ? getMealPlanTitle(generatedMealPlan)
+    : discoveredSelectedBackendPlan?.title ||
+      activeMealPlan?.title ||
+      firstSavedPlanWithMenu?.title ||
+      getMealPlanTitle(visibleMealPlan);
   const generatedDayMenu = visibleMealPlan
     ? visibleMealPlan.menu[DAY_TO_MENU_KEY[selectedDay]]
     : null;
@@ -403,17 +527,8 @@ export default function FeedingScreen() {
   const applyMiaMealPlan = React.useCallback(
     (miaMealPlan: GenerateMealPlanResponse) => {
       setGeneratedMealPlan(miaMealPlan);
-      setSavedMealPlans((currentPlans) => [
-        {
-          day: selectedDay,
-          id: MIA_ACTIVE_MEAL_PLAN_ID,
-          response: miaMealPlan,
-        },
-        ...currentPlans.filter((plan) => plan.id !== MIA_ACTIVE_MEAL_PLAN_ID),
-      ]);
-      setSelectedPlanId(MIA_ACTIVE_MEAL_PLAN_ID);
     },
-    [selectedDay],
+    [],
   );
 
   const loadDailyFoodLog = React.useCallback(async () => {
@@ -440,6 +555,7 @@ export default function FeedingScreen() {
   const loadFeedingManagementData = React.useCallback(async () => {
     try {
       const token = await getAccessToken();
+      const menuCache = await readMealPlanMenuCache();
       const [
         activePlanResult,
         foodLimitResult,
@@ -453,7 +569,9 @@ export default function FeedingScreen() {
       ]);
 
       if (activePlanResult.status === "fulfilled") {
-        setActiveMealPlan(activePlanResult.value);
+        setActiveMealPlan(
+          hydrateMealPlanMenu(activePlanResult.value, menuCache),
+        );
       }
 
       if (foodLimitResult.status === "fulfilled") {
@@ -465,7 +583,11 @@ export default function FeedingScreen() {
       }
 
       if (mealPlansResult.status === "fulfilled") {
-        setBackendMealPlans(mealPlansResult.value);
+        setBackendMealPlans(
+          mealPlansResult.value.map((plan) =>
+            hydrateMealPlanMenu(plan, menuCache) ?? plan,
+          ),
+        );
       }
     } catch (error) {
       console.log("Error cargando datos de gestion de alimentacion:", error);
@@ -539,14 +661,6 @@ export default function FeedingScreen() {
       );
 
       setGeneratedMealPlan(response);
-      setSavedMealPlans((currentPlans) => [
-        {
-          day: selectedDay,
-          id: `${Date.now()}-${Math.random()}`,
-          response,
-        },
-        ...currentPlans,
-      ]);
       setIsMealPlanModalVisible(false);
       setRequiresSafetyConfirmation(false);
       console.log("Plan de comidas generado:", response);
@@ -582,10 +696,20 @@ export default function FeedingScreen() {
         },
         token,
       );
+      await saveMealPlanMenuCache(savedPlan.id, generatedMealPlan);
       const activatedPlan = await activateMealPlan(savedPlan.id, token);
+      if (activatedPlan.id !== savedPlan.id) {
+        await saveMealPlanMenuCache(activatedPlan.id, generatedMealPlan);
+      }
+      const hydratedActivatedPlan = hydrateMealPlanMenu(activatedPlan, {
+        [savedPlan.id]: generatedMealPlan,
+        [activatedPlan.id]: generatedMealPlan,
+      });
 
-      setActiveMealPlan(activatedPlan);
+      setActiveMealPlan(hydratedActivatedPlan);
       setSelectedPlanId(activatedPlan.id);
+      setGeneratedMealPlan(null);
+      await clearMiaGeneratedMealPlan();
       await loadFeedingManagementData();
     } catch (error) {
       console.error("Error guardando plan de comidas:", error);
@@ -596,6 +720,17 @@ export default function FeedingScreen() {
       );
     } finally {
       setIsSavingMealPlan(false);
+    }
+  };
+
+  const handleDiscardGeneratedMealPlan = async () => {
+    setGeneratedMealPlan(null);
+    await clearMiaGeneratedMealPlan();
+
+    const fallbackPlan = activeMealPlan ?? firstSavedPlanWithMenu;
+
+    if (fallbackPlan?.id) {
+      setSelectedPlanId(fallbackPlan.id);
     }
   };
 
@@ -794,33 +929,70 @@ export default function FeedingScreen() {
           )}
         </View>
       )}
-      {activeMealPlan && (
+      {visibleMealPlan && (
         <View style={styles.activePlanBox}>
-          <CustomText type="button_secondary">Plan activo</CustomText>
-          <CustomText type="body_secondary">{activeMealPlan.title}</CustomText>
+          <View style={styles.planRowHeader}>
+            <View style={styles.planRowText}>
+              <CustomText type="button_secondary">Plan seleccionado</CustomText>
+              <CustomText type="body_secondary">
+                {visibleMealPlanTitle}
+              </CustomText>
+            </View>
+            <Pressable
+              onPress={() =>
+                setPlanDetails({
+                  response: visibleMealPlan,
+                  title: visibleMealPlanTitle,
+                })
+              }
+              style={styles.textAction}
+            >
+              <CustomText type="button_extra" color={COLOR.AZUL_PRIMARIO}>
+                Ver plan
+              </CustomText>
+            </Pressable>
+          </View>
         </View>
       )}
       {!loading && (
         <View style={styles.mealList}>
-          {mealCards.map((meal) => (
-            <View key={meal.key}>
-              <FoodSummaryCard
-                tipoComida={meal.label}
-                calorias={meal.calories}
-                descripcion={meal.description}
-                dato1={meal.protein}
-                dato2={meal.carbohydrates}
-                dato3={meal.fat}
-                showNutrition={meal.showNutrition}
-                onPress={() =>
-                  setExpandedMealKey((current) =>
-                    current === meal.key ? null : meal.key,
-                  )
-                }
-                isActive={expandedMealKey === meal.key}
-              />
+          {visibleMealPlan && (
+            <View style={styles.sectionHeader}>
+              <CustomText type="button_secondary">
+                Comidas del plan - {selectedDay}
+              </CustomText>
+              <CustomText type="body_secondary">
+                Toca una comida para ver el detalle.
+              </CustomText>
             </View>
-          ))}
+          )}
+          {mealCards.length > 0 ? (
+            mealCards.map((meal) => (
+              <View key={meal.key}>
+                <FoodSummaryCard
+                  tipoComida={meal.label}
+                  calorias={meal.calories}
+                  descripcion={meal.description}
+                  dato1={meal.protein}
+                  dato2={meal.carbohydrates}
+                  dato3={meal.fat}
+                  showNutrition={meal.showNutrition}
+                  onPress={() =>
+                    setExpandedMealKey((current) =>
+                      current === meal.key ? null : meal.key,
+                    )
+                  }
+                  isActive={expandedMealKey === meal.key}
+                />
+              </View>
+            ))
+          ) : (
+            <View style={styles.emptyMealState}>
+              <CustomText type="body_secondary">
+                Selecciona o activa un plan para ver las comidas del dia.
+              </CustomText>
+            </View>
+          )}
         </View>
       )}
 
@@ -949,104 +1121,278 @@ export default function FeedingScreen() {
       )}
       {generatedMealPlan && (
         <View style={styles.generatedPlan}>
-          <CustomText type="button_secondary">Plan generado</CustomText>
+          <View style={styles.planRowHeader}>
+            <View style={styles.planRowText}>
+              <CustomText type="button_secondary">Plan generado</CustomText>
+              <CustomText type="body_secondary">
+                {getMealPlanTitle(generatedMealPlan)}
+              </CustomText>
+            </View>
+            <Pressable
+              onPress={() =>
+                setPlanDetails({
+                  response: generatedMealPlan,
+                  title: getMealPlanTitle(generatedMealPlan),
+                })
+              }
+              style={styles.textAction}
+            >
+              <CustomText type="button_extra" color={COLOR.AZUL_PRIMARIO}>
+                Ver detalles
+              </CustomText>
+            </Pressable>
+          </View>
           <CustomText type="body_secondary">
-            {getMealPlanText(generatedMealPlan)}
+            Revisalo y guardalo solo si quieres activarlo.
           </CustomText>
-          <CustomButton
-            disabled={isSavingMealPlan || !mealPlanLimits?.canSaveMealPlan}
-            isLoading={isSavingMealPlan}
-            onPress={handleSaveAndActivateMealPlan}
-            type="primary"
-          >
-            Guardar y activar
-          </CustomButton>
-        </View>
-      )}
-      {selectedDayMealPlans.length > 0 && (
-        <View style={styles.generatedPlanList}>
-          <CustomText type="button_secondary">
-            Opciones guardadas para {selectedDay}
-          </CustomText>
-          {selectedDayMealPlans.map((plan, index) => {
-            const isActive = plan.id === selectedPlanId;
-
-            return (
-              <View
-                key={plan.id}
-                style={[
-                  styles.generatedPlanOption,
-                  isActive && styles.selectedGeneratedPlanOption,
-                ]}
-              >
-                <CustomText type="button_secondary">
-                  Plan {index + 1}
-                </CustomText>
-                <CustomText type="body_secondary">
-                  {getMealPlanText(plan.response)}
-                </CustomText>
-                <View style={styles.managementActions}>
-                  <CustomButton
-                    disabled={isManagingMealPlan}
-                    onPress={() => setSelectedPlanId(plan.id)}
-                    type="secondary"
-                  >
-                    {isActive ? "Seleccionado" : "Seleccionar"}
-                  </CustomButton>
-                </View>
-              </View>
-            );
-          })}
+          <View style={styles.managementActions}>
+            <CustomButton
+              disabled={isSavingMealPlan || !mealPlanLimits?.canSaveMealPlan}
+              isLoading={isSavingMealPlan}
+              onPress={handleSaveAndActivateMealPlan}
+              type="primary"
+            >
+              Guardar y activar
+            </CustomButton>
+            <CustomButton
+              disabled={isSavingMealPlan}
+              onPress={handleDiscardGeneratedMealPlan}
+              type="secondary"
+            >
+              Descartar
+            </CustomButton>
+          </View>
         </View>
       )}
       {backendMealPlans.length > 0 && (
         <View style={styles.managementList}>
-          <CustomText type="button_secondary">Planes guardados</CustomText>
+          <CustomText type="button_secondary">Mis planes guardados</CustomText>
           {backendMealPlans.map((plan) => {
-            const isActive = plan.id === selectedPlanId;
+            const isSelected = plan.id === selectedPlanId;
+            const response = getSavedMealPlanResponse(plan);
 
             return (
-              <View key={plan.id} style={styles.managementCard}>
-                <View style={styles.managementCardContent}>
-                  <CustomText type="button_secondary">{plan.title}</CustomText>
-                  <CustomText type="body_secondary">
-                    {plan.goal} - {plan.status}
+              <Pressable
+                key={plan.id}
+                disabled={!response}
+                onPress={() => response && setSelectedPlanId(plan.id)}
+                style={[
+                  styles.managementCard,
+                  isSelected && styles.selectedGeneratedPlanOption,
+                ]}
+              >
+                <View style={styles.planRowHeader}>
+                  <View style={styles.planRowText}>
+                    <CustomText type="button_secondary">{plan.title}</CustomText>
+                    <CustomText type="body_secondary">
+                      {isSelected ? "Mostrando comidas" : plan.goal} -{" "}
+                      {plan.status}
+                    </CustomText>
+                  </View>
+                  {response && (
+                    <Pressable
+                      onPress={() => {
+                        setPlanDetails({
+                          response,
+                          title: plan.title,
+                        });
+                      }}
+                      style={styles.textAction}
+                    >
+                      <CustomText
+                        type="button_extra"
+                        color={COLOR.AZUL_PRIMARIO}
+                      >
+                        Ver
+                      </CustomText>
+                    </Pressable>
+                  )}
+                </View>
+                <View style={styles.compactPlanActions}>
+                  <CustomText
+                    type="body_secondary"
+                    style={styles.compactPlanHint}
+                  >
+                    {response
+                      ? "Toca la tarjeta para ver sus comidas"
+                      : "Este plan no tiene menu disponible"}
                   </CustomText>
+                  <Pressable
+                    onPress={() => setPlanToManage(plan)}
+                    style={styles.textAction}
+                  >
+                    <CustomText
+                      type="button_extra"
+                      color={COLOR.AZUL_PRIMARIO}
+                    >
+                      Gestionar
+                    </CustomText>
+                  </Pressable>
                 </View>
-                <View style={styles.managementActions}>
-                  <CustomButton
-                    disabled={isManagingMealPlan}
-                    onPress={() => setSelectedPlanId(plan.id)}
-                    type="secondary"
-                  >
-                    {isActive ? "Seleccionado" : "Seleccionar"}
-                  </CustomButton>
-                  <CustomButton
-                    disabled={isManagingMealPlan}
-                    isLoading={isManagingMealPlan && plan.status !== "ACTIVE"}
-                    onPress={() =>
-                      handleMealPlanStatusChange(
-                        plan,
-                        plan.status === "ACTIVE" ? "deactivate" : "activate",
-                      )
-                    }
-                    type="primary"
-                  >
-                    {plan.status === "ACTIVE" ? "Desactivar" : "Activar"}
-                  </CustomButton>
-                  <CustomButton
-                    disabled={isManagingMealPlan}
-                    onPress={() => handleDeleteMealPlan(plan)}
-                    type="destructive"
-                  >
-                    Eliminar
-                  </CustomButton>
-                </View>
-              </View>
+              </Pressable>
             );
           })}
         </View>
       )}
+
+      <Modal
+        animationType="fade"
+        transparent
+        visible={Boolean(planToManage)}
+        onRequestClose={() => setPlanToManage(null)}
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <CustomText type="h2" style={styles.modalTitle}>
+                Gestionar plan
+              </CustomText>
+              <Pressable
+                style={styles.closeButton}
+                onPress={() => setPlanToManage(null)}
+              >
+                <CustomText type="button_secondary">X</CustomText>
+              </Pressable>
+            </View>
+            <View style={styles.modalBody}>
+              <View style={styles.section}>
+                <CustomText type="button_secondary">
+                  {planToManage?.title}
+                </CustomText>
+                <CustomText type="body_secondary">
+                  {planToManage?.goal} - {planToManage?.status}
+                </CustomText>
+              </View>
+
+              {planToManage && getSavedMealPlanResponse(planToManage) ? (
+                <CustomButton
+                  disabled={isManagingMealPlan}
+                  onPress={() => {
+                    setSelectedPlanId(planToManage.id);
+                    setPlanToManage(null);
+                  }}
+                  type="secondary"
+                >
+                  Mostrar comidas
+                </CustomButton>
+              ) : null}
+
+              {planToManage && (
+                <CustomButton
+                  disabled={isManagingMealPlan}
+                  isLoading={isManagingMealPlan}
+                  onPress={async () => {
+                    await handleMealPlanStatusChange(
+                      planToManage,
+                      planToManage.status === "ACTIVE"
+                        ? "deactivate"
+                        : "activate",
+                    );
+                    setPlanToManage(null);
+                  }}
+                  type="primary"
+                >
+                  {planToManage.status === "ACTIVE"
+                    ? "Desactivar"
+                    : "Activar"}
+                </CustomButton>
+              )}
+
+              {planToManage && (
+                <CustomButton
+                  disabled={isManagingMealPlan}
+                  onPress={() => {
+                    const plan = planToManage;
+                    setPlanToManage(null);
+                    handleDeleteMealPlan(plan);
+                  }}
+                  type="destructive"
+                >
+                  Eliminar
+                </CustomButton>
+              )}
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent
+        visible={Boolean(planDetails)}
+        onRequestClose={() => setPlanDetails(null)}
+      >
+        <View style={styles.detailModalBackdrop}>
+          <View style={styles.detailModalContent}>
+            <View style={styles.detailModalHeader}>
+              <View style={styles.detailModalTitle}>
+                <CustomText type="h2">{planDetails?.title}</CustomText>
+                <CustomText type="body_secondary">
+                  Plan semanal completo
+                </CustomText>
+              </View>
+              <Pressable
+                style={styles.closeButton}
+                onPress={() => setPlanDetails(null)}
+              >
+                <CustomText type="button_secondary">X</CustomText>
+              </Pressable>
+            </View>
+            <ScrollView
+              contentContainerStyle={styles.detailModalBody}
+              showsVerticalScrollIndicator={false}
+            >
+              {planDetails &&
+                filterList.map((day) => {
+                  const dayMenu =
+                    planDetails.response.menu[DAY_TO_MENU_KEY[day]];
+
+                  return (
+                    <View key={day} style={styles.planDaySection}>
+                      <CustomText type="button_secondary">{day}</CustomText>
+                      {MEALS.map((meal) => {
+                        const mealInfo = getGeneratedMealInfo(
+                          dayMenu,
+                          meal.key,
+                        );
+
+                        if (!mealInfo) {
+                          return null;
+                        }
+
+                        return (
+                          <View key={meal.key} style={styles.planMealRow}>
+                            <CustomText type="body">{meal.label}</CustomText>
+                            <CustomText type="body_secondary">
+                              {mealInfo.descripcion}
+                            </CustomText>
+                            <CustomText type="body_secondary">
+                              {Math.round(mealInfo.calorias)} kcal - P:{" "}
+                              {Math.round(mealInfo.proteina)} - C:{" "}
+                              {Math.round(mealInfo.carbohidratos)} - G:{" "}
+                              {Math.round(mealInfo.grasa)}
+                            </CustomText>
+                          </View>
+                        );
+                      })}
+                    </View>
+                  );
+                })}
+
+              {planDetails?.response.recomendaciones_nutricionales ? (
+                <View style={styles.mealDetailSection}>
+                  <CustomText type="button_secondary">
+                    Recomendaciones
+                  </CustomText>
+                  <CustomText type="body_secondary">
+                    {planDetails.response.recomendaciones_nutricionales}
+                  </CustomText>
+                </View>
+              ) : null}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
 
       <Modal
         animationType="fade"
