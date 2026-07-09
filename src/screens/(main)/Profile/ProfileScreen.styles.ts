@@ -109,6 +109,9 @@ export const ProfileScreenStyles = StyleSheet.create({
     padding: UI.spacing.md,
     textAlignVertical: "top",
   },
+  sheetError: {
+    marginBottom: UI.spacing.md,
+  },
   sheetActions: {
     flexDirection: "row",
     gap: UI.spacing.md,

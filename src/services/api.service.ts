@@ -29,8 +29,15 @@ export const handleResponse = async (response: Response) => {
     // 3. Determinamos cuál será el mensaje final del error
     let finalMessage = "Error desconocido";
 
-    if (isJson && (errorData.message || errorData.mensaje)) {
-      finalMessage = errorData.message || errorData.mensaje;
+    if (
+      isJson &&
+      (errorData.message || errorData.mensaje || errorData.detail || errorData.title)
+    ) {
+      finalMessage =
+        errorData.message ||
+        errorData.mensaje ||
+        errorData.detail ||
+        errorData.title;
     } else if (errorData.rawText && errorData.rawText.trim() !== "") {
       finalMessage = `Respuesta cruda del servidor: ${errorData.rawText}`;
     } else if (response.statusText) {
@@ -47,6 +54,8 @@ export const handleResponse = async (response: Response) => {
       errorData.code || response.statusText || `HTTP_${response.status}`;
     customError.error =
       errorData.error || (isJson ? "JSON Error" : "Raw/Empty Error");
+    customError.detail = errorData.detail;
+    customError.title = errorData.title;
 
     // 5. MODO INSPECTOR (Esto te dirá exactamente qué pasa en tu consola)
     console.log("\n--- 🚨 DETALLE DE ERROR DE API ---");

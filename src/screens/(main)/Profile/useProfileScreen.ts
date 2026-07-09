@@ -83,6 +83,7 @@ export const useProfileScreen = () => {
   const [editField, setEditField] = useState<EditableField | null>(null);
   const [editDraft, setEditDraft] = useState("");
   const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
 
   const loadProfileData = useCallback(async () => {
     const [profileData, summaryData, contextData, activeItemsData] =
@@ -148,6 +149,7 @@ export const useProfileScreen = () => {
     (field: EditableField) => {
       const currentValue = (profile?.[field] as string[] | undefined) ?? [];
       setEditDraft(currentValue.join(", "));
+      setEditError(null);
       setEditField(field);
     },
     [profile],
@@ -156,6 +158,7 @@ export const useProfileScreen = () => {
   const closeEditField = useCallback(() => {
     setEditField(null);
     setEditDraft("");
+    setEditError(null);
   }, []);
 
   const saveEditField = useCallback(async () => {
@@ -166,13 +169,31 @@ export const useProfileScreen = () => {
       .map((value) => value.trim())
       .filter(Boolean);
 
-    const payload: UpdateUserProfileRequest = { [editField]: values };
+    const payload: UpdateUserProfileRequest =
+      editField === "limitations"
+        ? { limitations: values.join(", ") }
+        : editField === "equipment"
+          ? { availableEquipment: values }
+          : { [editField]: values };
 
     setIsSavingEdit(true);
+    setEditError(null);
     try {
       const updated = await updateProfile(payload);
       setProfile(updated);
       closeEditField();
+    } catch (error: any) {
+      if (error?.status === 401) {
+        setEditError(
+          "Tu sesion expiro o no fue autorizada. Inicia sesion nuevamente e intenta otra vez.",
+        );
+        return;
+      }
+
+      setEditError(
+        error?.message ??
+          "No se pudieron guardar los cambios. Intenta nuevamente.",
+      );
     } finally {
       setIsSavingEdit(false);
     }
@@ -352,6 +373,7 @@ export const useProfileScreen = () => {
     editField,
     editFieldLabel: editField ? FIELD_LABELS[editField] : "",
     editDraft,
+    editError,
     isSavingEdit,
     setEditDraft,
     handleFilterChange,

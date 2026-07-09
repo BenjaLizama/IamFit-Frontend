@@ -150,19 +150,29 @@ export const useHomeScreen = () => {
       }
 
       if (mealProgressResult.status === "fulfilled") {
-        const currentDay = mealProgressResult.value.days.find(
-          (day) => day.day === mealProgressResult.value.currentDay,
-        );
-        const meals = currentDay?.meals ?? [];
-        const completedMeals = meals.filter((meal) => meal.completed).length;
+        const progress = mealProgressResult.value;
 
-        setMealProgress({
-          completedMeals,
-          totalMeals: meals.length,
-          percentage: meals.length
-            ? clampProgress((completedMeals / meals.length) * 100)
-            : Math.round(mealProgressResult.value.progressPercentage || 0),
-        });
+        if (!progress) {
+          setMealProgress({
+            completedMeals: 0,
+            totalMeals: 0,
+            percentage: 0,
+          });
+        } else {
+          const currentDay = progress.days.find(
+            (day) => day.day === progress.currentDay,
+          );
+          const meals = currentDay?.meals ?? [];
+          const completedMeals = meals.filter((meal) => meal.completed).length;
+
+          setMealProgress({
+            completedMeals,
+            totalMeals: meals.length,
+            percentage: meals.length
+              ? clampProgress((completedMeals / meals.length) * 100)
+              : Math.round(progress.progressPercentage || 0),
+          });
+        }
       }
 
       if (activeItemsResult.status === "fulfilled") {

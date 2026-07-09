@@ -43,8 +43,8 @@ export interface UpdateUserProfileRequest {
   goal?: string | null;
   activityLevel?: string | null;
   allergies?: string[];
-  equipment?: string[];
-  limitations?: string[];
+  availableEquipment?: string[];
+  limitations?: string;
   dietaryPreferences?: string[];
   dislikes?: string[];
 }

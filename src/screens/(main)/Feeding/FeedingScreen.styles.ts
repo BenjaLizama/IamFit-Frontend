@@ -10,6 +10,16 @@ export const FeedingScreenStyles = StyleSheet.create({
     gap: UI.spacing.md,
     marginTop: UI.spacing.md,
   },
+  sectionHeader: {
+    gap: UI.spacing.xs,
+  },
+  emptyMealState: {
+    backgroundColor: COLOR.FONDO_OPACO,
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.small_radius,
+    borderWidth: 1,
+    padding: UI.spacing.md,
+  },
   actions: {
     gap: UI.spacing.sm,
     marginTop: UI.spacing.lg,
@@ -31,6 +41,23 @@ export const FeedingScreenStyles = StyleSheet.create({
     gap: UI.spacing.xs,
     marginTop: UI.spacing.md,
     padding: UI.spacing.md,
+  },
+  planRowHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: UI.spacing.md,
+    justifyContent: "space-between",
+  },
+  planRowText: {
+    flex: 1,
+    gap: UI.spacing.xs,
+  },
+  textAction: {
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.large_radius,
+    borderWidth: 1,
+    paddingHorizontal: UI.spacing.md,
+    paddingVertical: UI.spacing.xs,
   },
   generatedPlan: {
     backgroundColor: COLOR.FONDO_OPACO,
@@ -92,6 +119,13 @@ export const FeedingScreenStyles = StyleSheet.create({
   },
   managementActions: {
     gap: UI.spacing.sm,
+  },
+  compactPlanActions: {
+    alignItems: "flex-start",
+    gap: UI.spacing.sm,
+  },
+  compactPlanHint: {
+    lineHeight: hp(18),
   },
   modalBackdrop: {
     alignItems: "center",
@@ -190,6 +224,20 @@ export const FeedingScreenStyles = StyleSheet.create({
   mealDetailSection: {
     gap: UI.spacing.xs,
     marginTop: UI.spacing.sm,
+  },
+  planDaySection: {
+    backgroundColor: COLOR.FONDO_OPACO,
+    borderColor: COLOR.FONDO_OPACO2,
+    borderRadius: UI.small_radius,
+    borderWidth: 1,
+    gap: UI.spacing.sm,
+    padding: UI.spacing.md,
+  },
+  planMealRow: {
+    borderTopColor: COLOR.FONDO_OPACO2,
+    borderTopWidth: 1,
+    gap: UI.spacing.xs,
+    paddingTop: UI.spacing.sm,
   },
   detailModalBackdrop: {
     alignItems: "center",

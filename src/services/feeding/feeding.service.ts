@@ -63,6 +63,20 @@ const dedupeFoods = (foods: FoodCatalogItem[]) => {
   });
 };
 
+const readJsonSafely = async (response: Response) => {
+  const rawBody = await response.text();
+
+  if (!rawBody.trim()) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(rawBody);
+  } catch {
+    return null;
+  }
+};
+
 export const getDailyFoodLogSummary = async (
   token: string | null,
 ): Promise<FoodLogCaloriesResponse> => {
@@ -221,6 +235,14 @@ export const getActiveMealPlan = async (
     headers: getAuthHeaders(token),
   });
 
+  if (response.status === 404 || response.status === 409) {
+    const errorData = await readJsonSafely(response);
+
+    if (errorData?.code === "MEAL_PLAN_NOT_ACTIVE") {
+      return null;
+    }
+  }
+
   return handleResponse(response);
 };
 
@@ -279,7 +301,7 @@ export const getMealPlanLimits = async (
 
 export const getActiveMealPlanProgress = async (
   token?: string | null,
-): Promise<MealPlanProgressResponse> => {
+): Promise<MealPlanProgressResponse | null> => {
   const response = await fetch(
     `${FEEDING_API_URL}/meal-plans/active/progress`,
     {
@@ -287,6 +309,14 @@ export const getActiveMealPlanProgress = async (
       headers: getAuthHeaders(token),
     },
   );
+
+  if (response.status === 404 || response.status === 409) {
+    const errorData = await readJsonSafely(response);
+
+    if (errorData?.code === "MEAL_PLAN_NOT_ACTIVE") {
+      return null;
+    }
+  }
 
   return handleResponse(response);
 };
