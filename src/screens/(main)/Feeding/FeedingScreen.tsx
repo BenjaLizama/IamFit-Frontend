@@ -33,9 +33,8 @@ import {
   getMealPlanLimits,
   getMealPlanProgress,
   getMealPlans,
-  getMealPlanText,
   saveMealPlan,
-  unconsumeMealPlanMeal,
+  unconsumeMealPlanMeal
 } from "@/src/services/feeding/feeding.service";
 import {
   clearMiaGeneratedMealPlan,
@@ -182,13 +181,15 @@ const hasNutrition = (nutrition: NutritionTotals) =>
   nutrition.fat > 0 ||
   nutrition.protein > 0;
 
-const isWeekMenu = (value: unknown): value is GenerateMealPlanResponse["menu"] =>
+const isWeekMenu = (
+  value: unknown,
+): value is GenerateMealPlanResponse["menu"] =>
   Boolean(
     value &&
-      typeof value === "object" &&
-      "lunes" in value &&
-      "martes" in value &&
-      "miercoles" in value,
+    typeof value === "object" &&
+    "lunes" in value &&
+    "martes" in value &&
+    "miercoles" in value,
   );
 
 const getSavedMealPlanResponse = (
@@ -420,7 +421,10 @@ export default function FeedingScreen() {
       return;
     }
 
-    if (firstSavedPlanWithMenu && selectedPlanId !== firstSavedPlanWithMenu.id) {
+    if (
+      firstSavedPlanWithMenu &&
+      selectedPlanId !== firstSavedPlanWithMenu.id
+    ) {
       setSelectedPlanId(firstSavedPlanWithMenu.id);
     }
   }, [
@@ -622,13 +626,13 @@ export default function FeedingScreen() {
 
       if (mealPlansResult.status === "fulfilled") {
         setBackendMealPlans(
-          mealPlansResult.value.map((plan) =>
-            hydrateMealPlanMenu(plan, menuCache) ?? plan,
+          mealPlansResult.value.map(
+            (plan) => hydrateMealPlanMenu(plan, menuCache) ?? plan,
           ),
         );
       }
     } catch (error) {
-      console.log("Error cargando datos de gestion de alimentacion:", error);
+      console.log("Error cargando datos de gestión de alimentación:", error);
     }
   }, []);
 
@@ -751,7 +755,7 @@ export default function FeedingScreen() {
 
       if (!token) {
         setMealPlanError(
-          "Tu sesion expiro. Inicia sesion nuevamente para guardar el plan.",
+          "Tu sesión expiró. Inicia sesion nuevamente para guardar el plan.",
         );
         return;
       }
@@ -785,7 +789,7 @@ export default function FeedingScreen() {
       console.error("Error guardando plan de comidas:", error);
       if ((error as any)?.status === 401) {
         setMealPlanError(
-          "Tu sesion expiro o no fue autorizada. Inicia sesion nuevamente para guardar el plan.",
+          "Tu sesion expiró o no fue autorizada. Inicia sesión nuevamente para guardar el plan.",
         );
         return;
       }
@@ -1041,7 +1045,7 @@ export default function FeedingScreen() {
       {(foodLimits || mealPlanLimits) && (
         <View style={styles.limitsBox}>
           <CustomText type="button_secondary">
-            Gestion de alimentacion
+            Gestión de alimentación
           </CustomText>
           {foodLimits && (
             <CustomText type="body_secondary">
@@ -1119,7 +1123,7 @@ export default function FeedingScreen() {
           ) : (
             <View style={styles.emptyMealState}>
               <CustomText type="body_secondary">
-                Selecciona o activa un plan para ver las comidas del dia.
+                Selecciona o activa un plan para ver las comidas del día.
               </CustomText>
             </View>
           )}
@@ -1273,7 +1277,7 @@ export default function FeedingScreen() {
             </Pressable>
           </View>
           <CustomText type="body_secondary">
-            Revisalo y guardalo solo si quieres activarlo.
+            Revísalo y guárdalo solo si quieres activarlo.
           </CustomText>
           <View style={styles.managementActions}>
             <CustomButton
@@ -1313,7 +1317,9 @@ export default function FeedingScreen() {
               >
                 <View style={styles.planRowHeader}>
                   <View style={styles.planRowText}>
-                    <CustomText type="button_secondary">{plan.title}</CustomText>
+                    <CustomText type="button_secondary">
+                      {plan.title}
+                    </CustomText>
                     <CustomText type="body_secondary">
                       {isSelected ? "Mostrando comidas" : plan.goal} -{" "}
                       {plan.status}
@@ -1345,16 +1351,13 @@ export default function FeedingScreen() {
                   >
                     {response
                       ? "Toca la tarjeta para ver sus comidas"
-                      : "Este plan no tiene menu disponible"}
+                      : "Este plan no tiene menú disponible"}
                   </CustomText>
                   <Pressable
                     onPress={() => setPlanToManage(plan)}
                     style={styles.textAction}
                   >
-                    <CustomText
-                      type="button_extra"
-                      color={COLOR.AZUL_PRIMARIO}
-                    >
+                    <CustomText type="button_extra" color={COLOR.AZUL_PRIMARIO}>
                       Gestionar
                     </CustomText>
                   </Pressable>
@@ -1422,9 +1425,7 @@ export default function FeedingScreen() {
                   }}
                   type="primary"
                 >
-                  {planToManage.status === "ACTIVE"
-                    ? "Desactivar"
-                    : "Activar"}
+                  {planToManage.status === "ACTIVE" ? "Desactivar" : "Activar"}
                 </CustomButton>
               )}
 
@@ -1694,7 +1695,7 @@ export default function FeedingScreen() {
                   style={styles.input}
                 />
                 <CustomText type="body_secondary" style={styles.helperText}>
-                  Separalas con coma. Nunca deberian aparecer en el plan.
+                  Sepáralas con coma. Nunca deberian aparecer en el plan.
                 </CustomText>
               </View>
 
@@ -1729,7 +1730,7 @@ export default function FeedingScreen() {
               {safetyWarnings.length > 0 && (
                 <View style={styles.warningBox}>
                   <CustomText type="button_secondary">
-                    Doble revision
+                    Doble revisión
                   </CustomText>
                   {safetyWarnings.map((warning) => (
                     <CustomText

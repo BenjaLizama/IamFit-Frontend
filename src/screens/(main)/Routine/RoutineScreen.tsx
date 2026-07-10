@@ -11,8 +11,8 @@ import {
 } from "@/src/services/mia/mia.generated.storage";
 import {
   activateRoutine,
-  completeSessionExercise,
   Routine as BackendRoutine,
+  completeSessionExercise,
   deactivateRoutine,
   generateRoutineOptions,
   GenerateRoutineRequest,
@@ -144,7 +144,7 @@ export default function RoutineScreen() {
     );
 
     if (!sessionExercise) {
-      setRoutineErrorMessage("No se encontro el ejercicio en la sesion.");
+      setRoutineErrorMessage("No se encontró el ejercicio en la sesion.");
       return;
     }
 
@@ -176,7 +176,7 @@ export default function RoutineScreen() {
         [routineId]: updatedSession,
       }));
     } catch (error) {
-      console.log("Error actualizando ejercicio de sesion:", error);
+      console.log("Error actualizando ejercicio de sesión:", error);
       setRoutineErrorMessage(
         error instanceof Error
           ? error.message
@@ -341,7 +341,7 @@ export default function RoutineScreen() {
     routine: BackendRoutine,
   ) => {
     if (!generatedSessionId) {
-      console.log("No hay sessionId de generacion.");
+      console.log("No hay sessionId de generación.");
       return;
     }
 
@@ -410,7 +410,7 @@ export default function RoutineScreen() {
 
   const handleStartWorkoutSession = async (routineId: string) => {
     if (routineId.startsWith("temp-")) {
-      setRoutineErrorMessage("Guarda la rutina antes de iniciar sesion.");
+      setRoutineErrorMessage("Guarda la rutina antes de iniciar sesión.");
       return;
     }
 
@@ -425,7 +425,7 @@ export default function RoutineScreen() {
         [routineId]: session,
       }));
     } catch (error) {
-      console.log("Error iniciando sesion de entrenamiento:", error);
+      console.log("Error iniciando sesión de entrenamiento:", error);
       setRoutineErrorMessage(
         error instanceof Error
           ? error.message

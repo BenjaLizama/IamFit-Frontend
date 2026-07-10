@@ -39,7 +39,7 @@ export default function LoginScreen() {
               keyboardType="email-address"
               onChangeText={email.inputProps.onChangeText}
               onSubmitEditing={() => password.ref.current?.focus()}
-              placeholder="Correo electronico"
+              placeholder="Correo electrónico"
               returnKeyType="next"
               submitBehavior="submit"
               value={email.inputProps.value}
@@ -49,7 +49,7 @@ export default function LoginScreen() {
               ref={password.inputProps.ref}
               onChangeText={password.inputProps.onChangeText}
               onSubmitEditing={handleLogin}
-              placeholder="Contrasena"
+              placeholder="Contraseña"
               returnKeyType="done"
               secureTextEntry
               submitBehavior="blurAndSubmit"
@@ -69,18 +69,15 @@ export default function LoginScreen() {
               >
                 Acceder ahora
               </CustomButton>
-              <CustomText
-                onPress={goToForgotPassword}
-                type="body_interactive"
-              >
-                Olvide mi contrasena
+              <CustomText onPress={goToForgotPassword} type="body_interactive">
+                Olvidé mi contraseña
               </CustomText>
             </View>
             <CustomText type="body">
               No tienes una cuenta?
               <CustomText onPress={goToRegister} type="body_interactive">
                 {" "}
-                Registrate ahora
+                Regístrate ahora
               </CustomText>
             </CustomText>
           </View>

@@ -38,7 +38,7 @@ export default function MessageInputText({
           onChangeText={setMessage}
           onSubmitEditing={handleSend}
           placeholder={
-            disabled ? "M.I.A. esta respondiendo..." : "Preguntale a M.I.A."
+            disabled ? "M.I.A. esta respondiendo..." : "Pregúntale a M.I.A."
           }
           placeholderTextColor={COLOR.TEXTO_TENUE}
           returnKeyType="send"

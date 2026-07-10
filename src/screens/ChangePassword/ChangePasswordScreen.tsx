@@ -57,7 +57,7 @@ export default function ChangePasswordScreen() {
           <View style={styles.first}>
             <CustomText type="h1">Cambiar mi{"\n"}contraseña</CustomText>
             <CustomText type="body" style={styles.description}>
-              Actualiza tu contraseña manteniendo tu sesion activa.
+              Actualiza tu contraseña manteniendo tu sesión activa.
             </CustomText>
           </View>
         }

@@ -186,7 +186,7 @@ export default function ProfileScreen() {
         ) : (
           <View style={styles.emptyCard}>
             <CustomText type="body_secondary" color={COLOR.TEXTO_SECUNDARIO}>
-              Aun no tienes elementos activos en esta categoria.
+              Aún no tienes elementos activos en esta categoría.
             </CustomText>
           </View>
         )}

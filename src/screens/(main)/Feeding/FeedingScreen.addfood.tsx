@@ -1,10 +1,7 @@
 import CustomButton from "@/src/core/components/CustomButton";
 import CustomFormInput from "@/src/core/components/CustomFormInput";
 import CustomText from "@/src/core/components/CustomText";
-import {
-  FoodCatalogItem,
-  MealType,
-} from "@/src/services/feeding/feeding.dtos";
+import { FoodCatalogItem, MealType } from "@/src/services/feeding/feeding.dtos";
 import { addFood, searchFood } from "@/src/services/feeding/feeding.service";
 import { getAccessToken } from "@/src/services/session/token.storage";
 import { COLOR } from "@/src/theme";
@@ -28,14 +25,11 @@ const MEAL_TYPES: Array<{ label: string; value: MealType }> = [
 const getFoodName = (food: FoodCatalogItem) =>
   food.name || "Alimento sin nombre";
 
-const getFoodCalories = (food: FoodCatalogItem) =>
-  food.calories || 0;
+const getFoodCalories = (food: FoodCatalogItem) => food.calories || 0;
 
-const getFoodProtein = (food: FoodCatalogItem) =>
-  food.protein || 0;
+const getFoodProtein = (food: FoodCatalogItem) => food.protein || 0;
 
-const getFoodServing = (food: FoodCatalogItem) =>
-  food.servingSizeG || 100;
+const getFoodServing = (food: FoodCatalogItem) => food.servingSizeG || 100;
 
 export default function FeedingScreenAddFood() {
   const router = useRouter();
@@ -93,7 +87,7 @@ export default function FeedingScreenAddFood() {
       setStatusMessage(
         error instanceof Error
           ? error.message
-          : "No se pudo buscar en el catalogo.",
+          : "No se pudo buscar en el catálogo.",
       );
     } finally {
       setIsSearching(false);
@@ -103,7 +97,7 @@ export default function FeedingScreenAddFood() {
   const handleSelectFood = (food: FoodCatalogItem) => {
     if (!food.id) {
       setStatusMessage(
-        "Este resultado externo aun no tiene ID en el catalogo. Busca de nuevo o selecciona un resultado local.",
+        "Este resultado externo aun no tiene ID en el catálogo. Busca de nuevo o selecciona un resultado local.",
       );
       return;
     }
@@ -121,7 +115,7 @@ export default function FeedingScreenAddFood() {
     }
 
     if (!selectedFood.id) {
-      setStatusMessage("No se puede registrar un alimento sin ID de catalogo.");
+      setStatusMessage("No se puede registrar un alimento sin ID de catálogo.");
       return;
     }
 

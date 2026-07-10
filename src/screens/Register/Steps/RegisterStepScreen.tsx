@@ -104,7 +104,7 @@ export default function RegisterStepScreen({
             <CustomButton
               type="primary"
               onPress={goNext}
-              disabled={disabled} // 👈 Conectado limpiamente
+              disabled={disabled}
               isLoading={loading}
             >
               {buttonLabel}

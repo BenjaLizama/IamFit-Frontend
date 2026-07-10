@@ -1,4 +1,7 @@
-import { MiaContextItem, MiaQuickAction } from "@/src/core/components/MiaContextCard";
+import {
+  MiaContextItem,
+  MiaQuickAction,
+} from "@/src/core/components/MiaContextCard";
 import {
   ProfileActivityType,
   UpdateUserProfileRequest,
@@ -69,13 +72,20 @@ export const useProfileScreen = () => {
   const router = useRouter();
 
   const [profile, setProfile] = useState<UserProfileResponse | null>(null);
-  const [summary, setSummary] = useState<UserProfileSummaryResponse | null>(null);
-  const [context, setContext] = useState<UserProfileContextResponse | null>(null);
+  const [summary, setSummary] = useState<UserProfileSummaryResponse | null>(
+    null,
+  );
+  const [context, setContext] = useState<UserProfileContextResponse | null>(
+    null,
+  );
   const [activeItems, setActiveItems] =
     useState<UserProfileActiveItemsResponse | null>(null);
-  const [activity, setActivity] = useState<UserProfileActivityResponse | null>(null);
+  const [activity, setActivity] = useState<UserProfileActivityResponse | null>(
+    null,
+  );
 
-  const [selectedFilter, setSelectedFilter] = useState<ProfileFilter>("General");
+  const [selectedFilter, setSelectedFilter] =
+    useState<ProfileFilter>("General");
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isChartLoading, setIsChartLoading] = useState(false);
@@ -185,7 +195,7 @@ export const useProfileScreen = () => {
     } catch (error: any) {
       if (error?.status === 401) {
         setEditError(
-          "Tu sesion expiro o no fue autorizada. Inicia sesion nuevamente e intenta otra vez.",
+          "Tu sesión expiró o no fue autorizada. Inicia sesión nuevamente e intenta otra vez.",
         );
         return;
       }
@@ -318,8 +328,12 @@ export const useProfileScreen = () => {
   }, [profile, openEditField]);
 
   const contentCards = useMemo(() => {
-    const cards: { id: string; icon: string; title: string; subtitle: string }[] =
-      [];
+    const cards: {
+      id: string;
+      icon: string;
+      title: string;
+      subtitle: string;
+    }[] = [];
 
     const includeRoutines =
       selectedFilter === "General" ||
