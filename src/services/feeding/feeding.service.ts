@@ -27,7 +27,7 @@ const FEEDING_API_URL = `${API.alimentacion}/api/v1/food`;
 
 const getAuthHeaders = (token?: string | null) => ({
   "Content-Type": "application/json",
-  "X-Device-Id": "Test",
+  "X-Device-ID": "Test",
   ...(token ? { Authorization: `Bearer ${token}` } : {}),
 });
 
@@ -304,6 +304,29 @@ export const getActiveMealPlanProgress = async (
 ): Promise<MealPlanProgressResponse | null> => {
   const response = await fetch(
     `${FEEDING_API_URL}/meal-plans/active/progress`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(token),
+    },
+  );
+
+  if (response.status === 404 || response.status === 409) {
+    const errorData = await readJsonSafely(response);
+
+    if (errorData?.code === "MEAL_PLAN_NOT_ACTIVE") {
+      return null;
+    }
+  }
+
+  return handleResponse(response);
+};
+
+export const getMealPlanProgress = async (
+  planId: string,
+  token?: string | null,
+): Promise<MealPlanProgressResponse | null> => {
+  const response = await fetch(
+    `${FEEDING_API_URL}/meal-plans/${planId}/progress`,
     {
       method: "GET",
       headers: getAuthHeaders(token),
