@@ -15,7 +15,6 @@ import {
   RoutineStatus,
   SelectGeneratedRoutineRequest,
   SelectGeneratedRoutineResponse,
-  SessionExerciseCompletionDto,
   StartWorkoutSessionRequest,
   UpdateRoutineRequest,
   WorkoutHistory,
@@ -235,7 +234,7 @@ export const completeSessionExercise = async (
   exerciseEntryId: string,
   data: CompleteSessionExerciseRequest = {},
   token?: string | null,
-): Promise<SessionExerciseCompletionDto> => {
+): Promise<WorkoutSessionDto> => {
   const response = await fetch(
     `${ROUTINES_URL}/routines/${routineId}/sessions/${sessionId}/exercises/${exerciseEntryId}/complete`,
     {
@@ -253,11 +252,26 @@ export const uncompleteSessionExercise = async (
   sessionId: string,
   exerciseEntryId: string,
   token?: string | null,
-): Promise<SessionExerciseCompletionDto> => {
+): Promise<WorkoutSessionDto> => {
   const response = await fetch(
     `${ROUTINES_URL}/routines/${routineId}/sessions/${sessionId}/exercises/${exerciseEntryId}/uncomplete`,
     {
       method: "PATCH",
+      headers: getAuthHeaders(token),
+    },
+  );
+
+  return handleResponse(response);
+};
+
+export const getActiveWorkoutSession = async (
+  routineId: string,
+  token?: string | null,
+): Promise<WorkoutSessionDto> => {
+  const response = await fetch(
+    `${ROUTINES_URL}/routines/${routineId}/sessions/active`,
+    {
+      method: "GET",
       headers: getAuthHeaders(token),
     },
   );

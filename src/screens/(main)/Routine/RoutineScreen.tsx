@@ -11,6 +11,7 @@ import {
 } from "@/src/services/mia/mia.generated.storage";
 import {
   activateRoutine,
+  completeSessionExercise,
   Routine as BackendRoutine,
   deactivateRoutine,
   generateRoutineOptions,
@@ -18,12 +19,16 @@ import {
   getExerciseOptions,
   getRoutineLimits,
   getRoutines,
+  logWorkout,
   MuscleGroup,
   RoutineDifficulty,
   RoutineEquipment,
   RoutineLimitsResponse,
   RoutineStatus,
   selectGeneratedRoutine,
+  startWorkoutSession,
+  uncompleteSessionExercise,
+  WorkoutSessionDto,
 } from "@/src/services/routines";
 import { getAccessToken } from "@/src/services/session/token.storage";
 import { COLOR } from "@/src/theme";
@@ -85,6 +90,13 @@ export default function RoutineScreen() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUpdatingRoutine, setIsUpdatingRoutine] = useState(false);
   const [isSelectingRoutine, setIsSelectingRoutine] = useState(false);
+  const [isFinishingSession, setIsFinishingSession] = useState(false);
+  const [sessionLoadingRoutineId, setSessionLoadingRoutineId] = useState<
+    string | null
+  >(null);
+  const [workoutSessions, setWorkoutSessions] = useState<
+    Record<string, WorkoutSessionDto>
+  >({});
   const [generatedSessionId, setGeneratedSessionId] = useState<string | null>(
     null,
   );
@@ -119,13 +131,60 @@ export default function RoutineScreen() {
   const [limitations, setLimitations] = useState("ninguna");
   const [routineErrorMessage, setRoutineErrorMessage] = useState("");
 
-  const toggleExercise = (routineId: string, exerciseId: string) => {
-    const compositeKey = `${routineId}-${exerciseId}`;
-    setCheckedExerciseIds((currentIds) =>
-      currentIds.includes(compositeKey)
-        ? currentIds.filter((id) => id !== compositeKey)
-        : [...currentIds, compositeKey],
+  const toggleExercise = async (routineId: string, exerciseId: string) => {
+    const currentSession = workoutSessions[routineId];
+
+    if (!currentSession) {
+      setRoutineErrorMessage("Inicia la rutina antes de marcar ejercicios.");
+      return;
+    }
+
+    const sessionExercise = currentSession.exercises.find(
+      (exercise) => exercise.exerciseEntryId === exerciseId,
     );
+
+    if (!sessionExercise) {
+      setRoutineErrorMessage("No se encontro el ejercicio en la sesion.");
+      return;
+    }
+
+    try {
+      setSessionLoadingRoutineId(routineId);
+      setRoutineErrorMessage("");
+      const token = await getAccessToken();
+      const updatedSession = sessionExercise.completed
+        ? await uncompleteSessionExercise(
+            routineId,
+            currentSession.sessionId,
+            exerciseId,
+            token,
+          )
+        : await completeSessionExercise(
+            routineId,
+            currentSession.sessionId,
+            exerciseId,
+            {
+              repsCompleted: sessionExercise.reps,
+              setsCompleted: sessionExercise.sets,
+              weightUsed: sessionExercise.weightKg ?? undefined,
+            },
+            token,
+          );
+
+      setWorkoutSessions((currentSessions) => ({
+        ...currentSessions,
+        [routineId]: updatedSession,
+      }));
+    } catch (error) {
+      console.log("Error actualizando ejercicio de sesion:", error);
+      setRoutineErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "No se pudo actualizar el ejercicio.",
+      );
+    } finally {
+      setSessionLoadingRoutineId(null);
+    }
   };
 
   const loadRoutines = React.useCallback(async () => {
@@ -349,6 +408,85 @@ export default function RoutineScreen() {
     }
   };
 
+  const handleStartWorkoutSession = async (routineId: string) => {
+    if (routineId.startsWith("temp-")) {
+      setRoutineErrorMessage("Guarda la rutina antes de iniciar sesion.");
+      return;
+    }
+
+    try {
+      setSessionLoadingRoutineId(routineId);
+      setRoutineErrorMessage("");
+      const token = await getAccessToken();
+      const session = await startWorkoutSession(routineId, {}, token);
+
+      setWorkoutSessions((currentSessions) => ({
+        ...currentSessions,
+        [routineId]: session,
+      }));
+    } catch (error) {
+      console.log("Error iniciando sesion de entrenamiento:", error);
+      setRoutineErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "No se pudo iniciar la rutina.",
+      );
+    } finally {
+      setSessionLoadingRoutineId(null);
+    }
+  };
+
+  const handleFinishWorkoutSession = async (routineId: string) => {
+    const session = workoutSessions[routineId];
+
+    if (!session) {
+      return;
+    }
+
+    const startedAt = new Date(session.startedAt).getTime();
+    const elapsedMs = Number.isFinite(startedAt) ? Date.now() - startedAt : 0;
+    const durationMinutes = Math.max(1, Math.round(elapsedMs / 60000));
+    const completedExerciseIds = session.exercises
+      .filter((exercise) => exercise.completed)
+      .map((exercise) => exercise.exerciseEntryId);
+
+    try {
+      setIsFinishingSession(true);
+      setRoutineErrorMessage("");
+      const token = await getAccessToken();
+
+      await logWorkout(
+        routineId,
+        {
+          completedExerciseIds,
+          durationMinutes,
+          notes: "Entrenamiento completado desde IAMFIT.",
+        },
+        token,
+      );
+
+      setWorkoutSessions((currentSessions) => {
+        const nextSessions = { ...currentSessions };
+        delete nextSessions[routineId];
+        return nextSessions;
+      });
+      setCheckedExerciseIds((currentIds) =>
+        currentIds.filter((id) => !id.startsWith(`${routineId}-`)),
+      );
+      await loadRoutines();
+      await loadRoutineLimits();
+    } catch (error) {
+      console.log("Error finalizando entrenamiento:", error);
+      setRoutineErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "No se pudo finalizar el entrenamiento.",
+      );
+    } finally {
+      setIsFinishingSession(false);
+    }
+  };
+
   const mapBackendRoutineToScreenRoutine = (routine: BackendRoutine) => {
     return {
       id:
@@ -432,22 +570,48 @@ export default function RoutineScreen() {
           // Si ya terminó de cargar, dibuja las rutinas normalmente
           routines.map((routine) => {
             const canChangeStatus = !routine.id.startsWith("temp-");
+            const activeSession = workoutSessions[routine.id];
+            const sessionCheckedExerciseIds =
+              activeSession?.exercises
+                .filter((exercise) => exercise.completed)
+                .map(
+                  (exercise) => `${routine.id}-${exercise.exerciseEntryId}`,
+                ) ?? [];
+            const effectiveCheckedExerciseIds = activeSession
+              ? sessionCheckedExerciseIds
+              : checkedExerciseIds;
             const totalExercises = routine.exercises.length;
             const markedExercises = routine.exercises.filter((exercise) =>
-              checkedExerciseIds.includes(`${routine.id}-${exercise.id}`),
+              effectiveCheckedExerciseIds.includes(
+                `${routine.id}-${exercise.id}`,
+              ),
             ).length;
             const updatedRoutine = {
               ...routine,
-              checked: totalExercises > 0 && markedExercises === totalExercises,
+              checked:
+                activeSession?.totalExercises !== undefined
+                  ? activeSession.totalExercises > 0 &&
+                    activeSession.completedExercises ===
+                      activeSession.totalExercises
+                  : totalExercises > 0 && markedExercises === totalExercises,
             };
+            const sessionProgressLabel = activeSession
+              ? `${activeSession.completedExercises}/${activeSession.totalExercises} ejercicios - ${Math.round(activeSession.progressPercentage)}%`
+              : undefined;
+
             return (
               <View key={routine.id} style={style.routineCardGroup}>
                 <RoutineExpandableCard
                   routine={updatedRoutine}
-                  checkedExerciseIds={checkedExerciseIds}
+                  checkedExerciseIds={effectiveCheckedExerciseIds}
+                  isFinishingSession={isFinishingSession}
+                  isSessionLoading={sessionLoadingRoutineId === routine.id}
+                  onFinishSession={() => handleFinishWorkoutSession(routine.id)}
+                  onStartSession={() => handleStartWorkoutSession(routine.id)}
                   onToggleExercise={(exerciseId) =>
                     toggleExercise(routine.id, exerciseId)
                   }
+                  sessionProgressLabel={sessionProgressLabel}
                 />
                 {selectedRoutineStatus !== "ALL" && canChangeStatus && (
                   <CustomButton

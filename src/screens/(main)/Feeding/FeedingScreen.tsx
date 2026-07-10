@@ -12,12 +12,16 @@ import {
   GenerateMealPlanResponse,
   MealPlanDayMenu,
   MealPlanLimitsResponse,
+  MealPlanProgressDay,
+  MealPlanProgressMealId,
+  MealPlanProgressResponse,
   MealType,
   NutritionTotals,
   SavedMealPlan,
 } from "@/src/services/feeding/feeding.dtos";
 import {
   activateMealPlan,
+  consumeMealPlanMeal,
   deactivateMealPlan,
   deleteFoodEntry,
   deleteMealPlan,
@@ -27,9 +31,11 @@ import {
   getDailyFoodLogSummary,
   getFoodLimits,
   getMealPlanLimits,
+  getMealPlanProgress,
   getMealPlans,
   getMealPlanText,
   saveMealPlan,
+  unconsumeMealPlanMeal,
 } from "@/src/services/feeding/feeding.service";
 import {
   clearMiaGeneratedMealPlan,
@@ -80,6 +86,13 @@ const DAY_TO_MENU_KEY = {
   Sabado: "sabado",
   Viernes: "viernes",
 } as const;
+
+const MEAL_TYPE_TO_PROGRESS_ID: Record<MealType, MealPlanProgressMealId> = {
+  ALMUERZO: "almuerzo",
+  CENA: "cena",
+  DESAYUNO: "desayuno",
+  SNACK: "snacks",
+};
 
 const MEAL_PLAN_MENU_CACHE_KEY = "iamfit_saved_meal_plan_menu_cache";
 
@@ -329,6 +342,9 @@ export default function FeedingScreen() {
   const [foodLimits, setFoodLimits] = useState<FoodLimitsResponse | null>(null);
   const [mealPlanLimits, setMealPlanLimits] =
     useState<MealPlanLimitsResponse | null>(null);
+  const [mealPlanProgress, setMealPlanProgress] =
+    useState<MealPlanProgressResponse | null>(null);
+  const [updatingMealKey, setUpdatingMealKey] = useState<MealType | null>(null);
   const [generatedMealPlan, setGeneratedMealPlan] =
     useState<GenerateMealPlanResponse | null>(null);
   const [activeMealPlan, setActiveMealPlan] = useState<SavedMealPlan | null>(
@@ -426,6 +442,20 @@ export default function FeedingScreen() {
       activeMealPlan?.title ||
       firstSavedPlanWithMenu?.title ||
       getMealPlanTitle(visibleMealPlan);
+  const selectedPlanForProgress = generatedMealPlan
+    ? null
+    : discoveredSelectedBackendPlan ||
+      activeMealPlan ||
+      firstSavedPlanWithMenu ||
+      null;
+  const selectedProgressDay = DAY_TO_MENU_KEY[selectedDay];
+  const selectedDayProgress = useMemo(
+    () =>
+      mealPlanProgress?.days.find(
+        (day) => normalizeText(day.day) === selectedProgressDay,
+      ) ?? null,
+    [mealPlanProgress, selectedProgressDay],
+  );
   const generatedDayMenu = visibleMealPlan
     ? visibleMealPlan.menu[DAY_TO_MENU_KEY[selectedDay]]
     : null;
@@ -437,6 +467,12 @@ export default function FeedingScreen() {
 
         // 1. Obtenemos toda la info generada (descripción + macros)
         const generatedInfo = getGeneratedMealInfo(generatedDayMenu, meal.key);
+        const progressMealId = MEAL_TYPE_TO_PROGRESS_ID[meal.key];
+        const progressMeal =
+          selectedDayProgress?.meals.find(
+            (progressItem) =>
+              normalizeText(progressItem.mealId) === progressMealId,
+          ) ?? null;
         const hasGeneratedInfo = Boolean(generatedInfo);
         const hasRegisteredFoods = foods.length > 0;
         const showNutrition =
@@ -460,10 +496,12 @@ export default function FeedingScreen() {
           showNutrition,
           foods,
           generatedInfo,
+          progressMeal,
+          progressMealId,
           totals,
         };
       }).filter((meal) => meal.hasContent),
-    [generatedDayMenu, summary],
+    [generatedDayMenu, selectedDayProgress, summary],
   );
   const registeredFoodEntries = useMemo(
     () => Object.values(summary?.entriesByMeal || {}).flat(),
@@ -598,6 +636,30 @@ export default function FeedingScreen() {
     void loadFeedingManagementData();
   }, [loadFeedingManagementData]);
 
+  const loadSelectedMealPlanProgress = React.useCallback(async () => {
+    if (!selectedPlanForProgress?.id) {
+      setMealPlanProgress(null);
+      return;
+    }
+
+    try {
+      const token = await getAccessToken();
+      const progress = await getMealPlanProgress(
+        selectedPlanForProgress.id,
+        token,
+      );
+
+      setMealPlanProgress(progress);
+    } catch (error) {
+      console.log("Error cargando progreso del plan de comidas:", error);
+      setMealPlanProgress(null);
+    }
+  }, [selectedPlanForProgress?.id]);
+
+  useEffect(() => {
+    void loadSelectedMealPlanProgress();
+  }, [loadSelectedMealPlanProgress]);
+
   useFocusEffect(
     React.useCallback(() => {
       let isActive = true;
@@ -686,6 +748,14 @@ export default function FeedingScreen() {
       setMealPlanError("");
 
       const token = await getAccessToken();
+
+      if (!token) {
+        setMealPlanError(
+          "Tu sesion expiro. Inicia sesion nuevamente para guardar el plan.",
+        );
+        return;
+      }
+
       const savedPlan = await saveMealPlan(
         {
           goal: generatedMealPlan.objetivo,
@@ -713,6 +783,13 @@ export default function FeedingScreen() {
       await loadFeedingManagementData();
     } catch (error) {
       console.error("Error guardando plan de comidas:", error);
+      if ((error as any)?.status === 401) {
+        setMealPlanError(
+          "Tu sesion expiro o no fue autorizada. Inicia sesion nuevamente para guardar el plan.",
+        );
+        return;
+      }
+
       setMealPlanError(
         error instanceof Error
           ? error.message
@@ -887,6 +964,59 @@ export default function FeedingScreen() {
       );
     } finally {
       setIsEditingFoodEntry(false);
+    }
+  };
+
+  const handleToggleMealConsumed = async () => {
+    if (!selectedMeal || !selectedPlanForProgress?.id) {
+      return;
+    }
+
+    if (selectedPlanForProgress.status !== "ACTIVE") {
+      setMealPlanError("Activa el plan antes de marcar comidas consumidas.");
+      return;
+    }
+
+    const day = DAY_TO_MENU_KEY[selectedDay] as MealPlanProgressDay;
+    const mealId = selectedMeal.progressMealId as MealPlanProgressMealId;
+    const isCompleted = Boolean(selectedMeal.progressMeal?.completed);
+
+    try {
+      setUpdatingMealKey(selectedMeal.key);
+      setMealPlanError("");
+      const token = await getAccessToken();
+
+      if (isCompleted) {
+        await unconsumeMealPlanMeal(
+          selectedPlanForProgress.id,
+          day,
+          mealId,
+          {},
+          token,
+        );
+      } else {
+        await consumeMealPlanMeal(
+          selectedPlanForProgress.id,
+          day,
+          mealId,
+          {
+            date: new Date().toISOString().slice(0, 10),
+          },
+          token,
+        );
+      }
+
+      await loadSelectedMealPlanProgress();
+      await loadFeedingManagementData();
+    } catch (error) {
+      console.error("Error actualizando consumo del plan:", error);
+      setMealPlanError(
+        error instanceof Error
+          ? error.message
+          : "No se pudo actualizar el consumo de la comida.",
+      );
+    } finally {
+      setUpdatingMealKey(null);
     }
   };
 

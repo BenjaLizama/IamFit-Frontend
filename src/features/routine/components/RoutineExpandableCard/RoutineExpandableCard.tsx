@@ -15,6 +15,11 @@ export default function RoutineExpandableCard({
   routine,
   checkedExerciseIds,
   onToggleExercise,
+  isFinishingSession = false,
+  isSessionLoading = false,
+  onFinishSession,
+  onStartSession,
+  sessionProgressLabel,
 }: RoutineExpandableCardProps) {
   return (
     <ExpandableScreen
@@ -72,8 +77,30 @@ export default function RoutineExpandableCard({
               })}
             </View>
 
-            <View style={style.actionRow}>
-              <CustomButton type="primary">Iniciar rutina</CustomButton>
+          <View style={style.actionRow}>
+              <CustomButton
+                disabled={isSessionLoading}
+                isLoading={isSessionLoading}
+                onPress={onStartSession}
+                type="primary"
+              >
+                {sessionProgressLabel ? "Sesion iniciada" : "Iniciar rutina"}
+              </CustomButton>
+              {sessionProgressLabel ? (
+                <>
+                  <CustomText type="body_secondary">
+                    {sessionProgressLabel}
+                  </CustomText>
+                  <CustomButton
+                    disabled={isFinishingSession}
+                    isLoading={isFinishingSession}
+                    onPress={onFinishSession}
+                    type="secondary"
+                  >
+                    Finalizar entrenamiento
+                  </CustomButton>
+                </>
+              ) : null}
             </View>
           </View>
         </View>
